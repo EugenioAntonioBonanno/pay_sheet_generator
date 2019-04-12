@@ -1,6 +1,21 @@
 import openpyxl
 import os
 
-place = os.getcwd()
+# Code to write to or edit a excel file. Currently under development.
 
-print("Here I AM!", place)
+# place = os.getcwd()
+# print("Here I AM!", place)
+
+
+wb = openpyxl.load_workbook('example.xlsx')
+
+print(wb.sheetnames)
+
+sheet = wb['Sheet3']
+
+print(sheet)
+
+active = wb.active
+
+print(active)
+
