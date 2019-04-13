@@ -60,7 +60,7 @@ for cell in list(sheet.rows)[1]:
     print(cell.value)
 
 
-############################################# Writing to Excel #############################################
+############################################# Editing  Excel #############################################
 
 
 # Create an empty workbook.
@@ -72,3 +72,19 @@ sheet = wb_2.active
 # Give the sheet a title
 
 sheet.title = "The worlds greatest worksheet!"
+
+# Save the worksheet
+
+wb_2.save('example_copy.xlsx')
+
+# Create or remove sheets
+
+wb_2.create_sheet()
+
+wb_2.create_sheet(index=0, title= "The title")
+
+wb_2.remove_sheet(wb.get_sheet_by_name("sheet to delete here"))
+
+# Writing to cells
+
+sheet['A1'] = "What you want to write"
