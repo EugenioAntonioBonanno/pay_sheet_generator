@@ -10,8 +10,11 @@ password = "godberry5"
 greeting = input("Hello please put in the password to continue: ")
 
 if password == greeting:
-    print("Hello sir, good  to see you again.")
-    task = input("Would you like to edit your schedule or export a copy?")
+    print("Hello, and welcome!")
+else:
+    print("Wrong password program will terminate")
+    exit()
+
 
 
 

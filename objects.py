@@ -1,9 +1,9 @@
 
 
-class Days:
-    def __init__(self, name, classes):
+class Day:
+    def __init__(self, name, sessions):
         self.name = name
-        self.classes = classes
+        self.sessions = sessions
 
 
 class Session():
