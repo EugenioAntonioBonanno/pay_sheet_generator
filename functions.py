@@ -20,17 +20,26 @@ def format_sheet(workbook, month, year):
     sheet.title = "Paysheet"
     sheet.merge_cells("D1:J2")
     sheet.column_dimensions["B"].width = 20
+    sheet.column_dimensions['F'].width = 20
+
     sheet["D1"] = "Ginos Paysheet for " + month + "/" + year
     sheet['D1'].font = font_obj
-    sheet["A1"] = "Date"
-    sheet["B1"] = "Class name"
-    sheet["C1"] = "Length"
+
+    sheet["A3"] = "Date"
+    sheet["B3"] = "Class name"
+    sheet["C3"] = "Length"
+    sheet["D3"] = "Signature"
+    sheet["E3"] = "Date"
+    sheet['F3'] = "Class name"
+    sheet['G3'] = "Length"
+    sheet['H3'] = "Signature"
     return sheet
 
 def write_schedule(to_schedule, sheet, mon, wed, fri):
-    col = ["A", 'B', "C", "D", "E"]
+    col = ["A", 'B', "C", "D", "E", "F", "G", "H"]
+
     col_index = 0
-    row_index = 2
+    row_index = 4
 
     for day in to_schedule:
         day_and_month = str(day.month) + '/' + str(day.day)
@@ -42,11 +51,15 @@ def write_schedule(to_schedule, sheet, mon, wed, fri):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 1
-                # sheet[col[col_index] + str(row_index)] = session.time
-                col_index += 1
-                col_index = 0
-                row_index += 1
+                col_index += 2
+
+                if col_index == 4:
+
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
+
         elif day.weekday() == 2:
             schedule = wed
             for session in schedule:
@@ -55,11 +68,14 @@ def write_schedule(to_schedule, sheet, mon, wed, fri):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 1
-                # sheet[col[col_index] + str(row_index)] = session.time
-                col_index += 1
-                col_index = 0
-                row_index += 1
+                col_index += 2
+
+                if col_index == 4:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
+
         elif day.weekday() == 4:
             schedule = fri
             for session in schedule:
@@ -68,10 +84,12 @@ def write_schedule(to_schedule, sheet, mon, wed, fri):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 1
-                # sheet[col[col_index] + str(row_index)] = session.time
-                col_index += 1
-                col_index = 0
-                row_index += 1
+                col_index += 2
+
+                if col_index == 4:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
     return sheet
 

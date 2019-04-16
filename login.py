@@ -2,9 +2,9 @@ import openpyxl
 from hashlib import sha256 as hash
 
 # Allow users to register or login
-user_names = ['gino']
+total_users = {"Gino": 'godberry5'}
 
-new_users = {}
+add_user = {}
 user = input("Hello, please enter your username to login, or type 'register' to register: ")
 
 if user.lower() == 'register':
@@ -21,7 +21,7 @@ if user.lower() == 'register':
             password_2 = hash(password_2.encode('utf-8'))
 
             if password_1.digest() == password_2.digest():
-                new_users[new_user] = password_1.digest()
+                add_user[new_user] = password_1.digest()
                 open_name = True
             else:
                 print("Sorry your passwords didn't match, please restart the registration process.")
