@@ -88,3 +88,13 @@ wb_2.remove_sheet(wb.get_sheet_by_name("sheet to delete here"))
 # Writing to cells
 
 sheet['A1'] = "What you want to write"
+
+# Adjust the size of columns or rows.
+
+sheet.row_dimensions[1].height = 70
+
+sheet.column_dimensions['B'].width = 20
+
+# Merge an area of cells into one. All cells between first and second spot become one.
+
+sheet.merge_cells('A1:D3')

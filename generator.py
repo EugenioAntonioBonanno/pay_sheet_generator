@@ -4,32 +4,35 @@ import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from sessions_and_days import mon, wed, fri
+from functions import find_month_length
 from datetime import *
 
 # Code to write to or edit a excel file. Currently under development.
 
 
-year = input("Please input the year as a numeric value [ie 2019]")
+# year = input("Please input the year as a numeric value [ie 2019]")
 month = input("Please input a month as a numeric value [ie 04 for April]")
 
 
-if month in ["01", "03", "05", "07", "08", "10"]:
-    end = "31"
-elif month in ["04", "06", "09", "11", "12"]:
-    end = "30"
-else:
-    month = "28"
+end = find_month_length(month)
+
 
 time = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
 
 
 workbook = openpyxl.Workbook()
-
 sheet = workbook.active
+sheet.title = "Paysheet"
+sheet.column_dimensions["B"].width = 20
+sheet["A1"] = "Date"
+sheet["B1"] = "Class name"
+sheet["C1"] = "Length"
+# sheet['A4'] = "Regular start time"
+
 
 col = ["A", 'B', "C", "D", "E"]
 col_index = 0
-row_index = 1
+row_index = 2
 
 for date in time:
     day_and_month = str(date.month) + '/' + str(date.day)
@@ -38,11 +41,11 @@ for date in time:
         for session in schedule:
             sheet[col[col_index] + str(row_index)] = day_and_month
             col_index += 1
-            sheet[col[col_index] + str(row_index)] = session.time
-            col_index += 1
             sheet[col[col_index] + str(row_index)] = session.code
             col_index += 1
             sheet[col[col_index] + str(row_index)] = session.length
+            col_index += 1
+            # sheet[col[col_index] + str(row_index)] = session.time
             col_index += 1
             col_index = 0
             row_index += 1
@@ -51,11 +54,11 @@ for date in time:
         for session in schedule:
             sheet[col[col_index] + str(row_index)] = day_and_month
             col_index += 1
-            sheet[col[col_index] + str(row_index)] = session.time
-            col_index += 1
             sheet[col[col_index] + str(row_index)] = session.code
             col_index += 1
             sheet[col[col_index] + str(row_index)] = session.length
+            col_index += 1
+            # sheet[col[col_index] + str(row_index)] = session.time
             col_index += 1
             col_index = 0
             row_index += 1
@@ -64,11 +67,11 @@ for date in time:
         for session in schedule:
             sheet[col[col_index] + str(row_index)] = day_and_month
             col_index += 1
-            sheet[col[col_index] + str(row_index)] = session.time
-            col_index += 1
             sheet[col[col_index] + str(row_index)] = session.code
             col_index += 1
             sheet[col[col_index] + str(row_index)] = session.length
+            col_index += 1
+            # sheet[col[col_index] + str(row_index)] = session.time
             col_index += 1
             col_index = 0
             row_index += 1
