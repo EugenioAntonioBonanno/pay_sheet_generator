@@ -1,13 +1,16 @@
 from openpyxl.styles import Font
 
 
-def find_month_length(month):
+def find_month_length(month, year):
     if month in ["01", "03", "05", "07", "08", "10"]:
         length = "31"
     elif month in ["04", "06", "09", "11", "12"]:
         length = "30"
     else:
-        length = "28"
+        if year % 4 == 0:
+            length = 29
+        else:
+            length = 28
     return length
 
 
@@ -24,4 +27,51 @@ def format_sheet(workbook, month, year):
     sheet["C1"] = "Length"
     return sheet
 
+def write_schedule(to_schedule, sheet, mon, wed, fri):
+    col = ["A", 'B', "C", "D", "E"]
+    col_index = 0
+    row_index = 2
+
+    for day in to_schedule:
+        day_and_month = str(day.month) + '/' + str(day.day)
+        if day.weekday() == 0:
+            schedule = mon
+            for session in schedule:
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.length
+                col_index += 1
+                # sheet[col[col_index] + str(row_index)] = session.time
+                col_index += 1
+                col_index = 0
+                row_index += 1
+        elif day.weekday() == 2:
+            schedule = wed
+            for session in schedule:
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.length
+                col_index += 1
+                # sheet[col[col_index] + str(row_index)] = session.time
+                col_index += 1
+                col_index = 0
+                row_index += 1
+        elif day.weekday() == 4:
+            schedule = fri
+            for session in schedule:
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.length
+                col_index += 1
+                # sheet[col[col_index] + str(row_index)] = session.time
+                col_index += 1
+                col_index = 0
+                row_index += 1
+    return sheet
 
