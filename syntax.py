@@ -89,6 +89,13 @@ wb_2.remove_sheet(wb.get_sheet_by_name("sheet to delete here"))
 
 sheet['A1'] = "What you want to write"
 
+# Adjust font by creating font object then passing it to .font
+
+from openpyxl.styles import Font
+
+font_obj = Font(name="Times New Roman", bold=True, size=25, italic=True)
+sheet['A1'].font = font_obj
+
 # Adjust the size of columns or rows.
 
 sheet.row_dimensions[1].height = 70

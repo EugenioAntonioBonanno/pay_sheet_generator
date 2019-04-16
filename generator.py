@@ -4,13 +4,13 @@ import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from sessions_and_days import mon, wed, fri
-from functions import find_month_length
+from functions import find_month_length, format_sheet
 from datetime import *
 
 # Code to write to or edit a excel file. Currently under development.
 
 
-# year = input("Please input the year as a numeric value [ie 2019]")
+year = "2019"
 month = input("Please input a month as a numeric value [ie 04 for April]")
 
 
@@ -21,13 +21,9 @@ time = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=pars
 
 
 workbook = openpyxl.Workbook()
-sheet = workbook.active
-sheet.title = "Paysheet"
-sheet.column_dimensions["B"].width = 20
-sheet["A1"] = "Date"
-sheet["B1"] = "Class name"
-sheet["C1"] = "Length"
-# sheet['A4'] = "Regular start time"
+
+sheet = format_sheet(workbook, month, year)
+
 
 
 col = ["A", 'B', "C", "D", "E"]
