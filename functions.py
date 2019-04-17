@@ -1,19 +1,19 @@
 from openpyxl.styles import Font
 
-
+# Takes in a month an year and returns how many days that month will have in it.
 def find_month_length(month, year):
     if month in ["01", "03", "05", "07", "08", "10"]:
         length = "31"
     elif month in ["04", "06", "09", "11", "12"]:
         length = "30"
     else:
-        if year % 4 == 0:
+        if int(year) % 4 == 0:
             length = 29
         else:
             length = 28
     return length
 
-
+# Sets up a excel sheet to fit users schedule. Adds titles.
 def format_sheet(workbook, month, year):
     sheet = workbook.active
     font_obj = Font(name="Times New Roman", bold=True, size=25, italic=True)
@@ -35,7 +35,8 @@ def format_sheet(workbook, month, year):
     sheet['H3'] = "Signature"
     return sheet
 
-def write_schedule(to_schedule, sheet, mon, wed, fri):
+# Writes users schedule across 8 cells before dropping down one row.
+def write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H"]
 
     col_index = 0
@@ -43,7 +44,10 @@ def write_schedule(to_schedule, sheet, mon, wed, fri):
 
     for day in to_schedule:
         day_and_month = str(day.month) + '/' + str(day.day)
-        if day.weekday() == 0:
+
+        if day.day in days_to_skip:
+            pass
+        elif day.weekday() == 0:
             schedule = mon
             for session in schedule:
                 sheet[col[col_index] + str(row_index)] = day_and_month
@@ -54,7 +58,6 @@ def write_schedule(to_schedule, sheet, mon, wed, fri):
                 col_index += 2
 
                 if col_index == 4:
-
                     pass
                 else:
                     col_index = 0
