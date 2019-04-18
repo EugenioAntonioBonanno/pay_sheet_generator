@@ -4,8 +4,20 @@ import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from sessions_and_days import mon, wed, fri
-from functions import find_month_length, format_sheet, write_schedule, get_days_missed
+from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed
+from user_functions import register_user, login_user
 from datetime import *
+
+
+user_choice = input("Hello, please enter your username to login, or type 'register' to register: ")
+
+if user_choice.lower() == 'register':
+    register_user()
+
+if user_choice.lower() == "login":
+    login_user()
+
+
 
 
 # Allows the user to set the year and month they want a schedule created for.
