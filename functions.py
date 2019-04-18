@@ -16,13 +16,16 @@ def find_month_length(month, year):
 # Sets up a excel sheet to fit users schedule. Adds titles.
 def format_sheet(workbook, month, year):
     sheet = workbook.active
-    font_obj = Font(name="Times New Roman", bold=True, size=25, italic=True)
+    font_obj = Font(name="Times New Roman", bold=True, size=20, italic=True)
     sheet.title = "Paysheet"
     sheet.merge_cells("C1:G2")
+    sheet.column_dimensions["A"].width = 6
+    sheet.column_dimensions["F"].width = 6
     sheet.column_dimensions["B"].width = 17
     sheet.column_dimensions['G'].width = 17
+    sheet.column_dimensions["E"].width = 5
 
-    sheet["C1"] = "Ginos Paysheet:" + month + "/" + year
+    sheet["C1"] = "Ginos Paysheet: " + month + "/" + year
     sheet['C1'].font = font_obj
 
     sheet["A3"] = "Date"

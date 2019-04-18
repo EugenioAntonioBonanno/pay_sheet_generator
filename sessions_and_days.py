@@ -32,4 +32,3 @@ fri = [f70, w67, w52, w46, w49, ext, ext]
 
 monday = Day("Monday", mon)
 
-print(monday.sessions[1].code)
