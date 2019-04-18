@@ -53,6 +53,9 @@ def login_user():
 
         if hash(password.encode('utf-8')).digest() == all_users[name]:
             print("Welcome", name + ".")
+            break
         else:
             print("Sorry it appears your password is incorrect, please try again")
+            break
+    return name
 

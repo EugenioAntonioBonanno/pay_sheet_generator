@@ -6,6 +6,7 @@ from dateutil.parser import *
 from sessions_and_days import mon, wed, fri
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed
 from user_functions import register_user, login_user
+from objects import Session, Day, User
 from datetime import *
 
 
@@ -15,7 +16,31 @@ if user_choice.lower() == 'register':
     register_user()
 
 if user_choice.lower() == "login":
-    login_user()
+    active_user = login_user()
+
+
+
+
+
+
+    make_or_write = input("Do you want to set a new schedule of print your current one?")
+    sessions = []
+
+    while True:
+        session_id = input("Please input the id for this class ex F60 \n:")
+        length = input("Please input its length in hours such as 1 or .5 \n:")
+        day_taught = input("Please tell me the day you teach this class as a number. Ex 1 = Monday")
+        sessions.append(Session(session_id, length, day_taught))
+        add_another = input("Enter 'yes' to add another class or 'done' if you have created all your classes \n:")
+
+        if add_another.lower() == 'done':
+            print(sessions)
+            break
+
+
+
+
+
 
 
 

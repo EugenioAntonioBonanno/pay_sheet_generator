@@ -7,7 +7,12 @@ class Day:
 
 
 class Session:
-    def __init__(self, code, length, time):
+    def __init__(self, code, length, day_taught):
         self.code = code
         self.length = length
-        self.time = time
+        self.day_taught = day_taught
+
+class User:
+    def __init__(self, sessions, days):
+        self.days = days
+        self.sessions = sessions
