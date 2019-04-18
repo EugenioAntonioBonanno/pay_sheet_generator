@@ -18,26 +18,26 @@ def format_sheet(workbook, month, year):
     sheet = workbook.active
     font_obj = Font(name="Times New Roman", bold=True, size=25, italic=True)
     sheet.title = "Paysheet"
-    sheet.merge_cells("D1:J2")
-    sheet.column_dimensions["B"].width = 20
-    sheet.column_dimensions['F'].width = 20
+    sheet.merge_cells("C1:G2")
+    sheet.column_dimensions["B"].width = 17
+    sheet.column_dimensions['G'].width = 17
 
-    sheet["D1"] = "Ginos Paysheet for " + month + "/" + year
-    sheet['D1'].font = font_obj
+    sheet["C1"] = "Ginos Paysheet:" + month + "/" + year
+    sheet['C1'].font = font_obj
 
     sheet["A3"] = "Date"
     sheet["B3"] = "Class name"
     sheet["C3"] = "Length"
     sheet["D3"] = "Signature"
-    sheet["E3"] = "Date"
-    sheet['F3'] = "Class name"
-    sheet['G3'] = "Length"
-    sheet['H3'] = "Signature"
+    sheet["F3"] = "Date"
+    sheet['G3'] = "Class name"
+    sheet['H3'] = "Length"
+    sheet['I3'] = "Signature"
     return sheet
 
 # Writes users schedule across 8 cells before dropping down one row.
 def write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip):
-    col = ["A", 'B', "C", "D", "E", "F", "G", "H"]
+    col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
 
     col_index = 0
     row_index = 4
@@ -55,9 +55,9 @@ def write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 2
+                col_index += 3
 
-                if col_index == 4:
+                if col_index == 5:
                     pass
                 else:
                     col_index = 0
@@ -71,9 +71,9 @@ def write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 2
+                col_index += 3
 
-                if col_index == 4:
+                if col_index == 5:
                     pass
                 else:
                     col_index = 0
@@ -87,12 +87,28 @@ def write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip):
                 sheet[col[col_index] + str(row_index)] = session.code
                 col_index += 1
                 sheet[col[col_index] + str(row_index)] = session.length
-                col_index += 2
+                col_index += 3
 
-                if col_index == 4:
+                if col_index == 5:
                     pass
                 else:
                     col_index = 0
                     row_index += 1
     return sheet
 
+
+# Uses a while true loop to allow users to build a list of any days they missed work.
+def get_days_missed():
+    days_to_skip = []
+
+    while True:
+        print("Enter any days you missed work due to sickness or holiday as a number. [ex '12']")
+        print("Or enter 'end' if you've either missed no days or have entered all the ones you missed")
+        print("Your current missed days are as follows:", days_to_skip)
+        missed_work = input(":")
+        if missed_work.lower() == 'end':
+            break
+        else:
+            days_to_skip.append(int(missed_work))
+
+    return days_to_skip
