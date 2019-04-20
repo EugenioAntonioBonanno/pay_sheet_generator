@@ -12,7 +12,8 @@ class Session:
         self.length = length
         self.day_taught = day_taught
 
+
 class User:
-    def __init__(self, week, days):
-        self.days = days
-        self.week = week
+    def __init__(self, user_name, week):
+        self.user_name = user_name
+        self.week = week  #list of day objects

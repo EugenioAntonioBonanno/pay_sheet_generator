@@ -24,8 +24,36 @@ if user_choice.lower() == "login":
         schedule = open(active_user, 'rb')
         users_schedule = pickle.load(schedule)
         schedule.close()
-        print("LOOK AT ME!")
-        print(users_schedule.days)
+
+        # Allows the user to set the year and month they want a schedule created for.
+        year = "2019"
+        month = input("Please input a month as a numeric value [ie 04 for April]: \n")
+
+        # Generates a list of user input representing days they missed work
+        days_to_skip = get_days_missed()
+
+        # Figures out how many days are in the month
+        end = find_month_length(month, year)
+
+        # Creates a list of all the days in the month
+        to_schedule = list(
+            rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
+
+        # Creates excel workbook
+        workbook = openpyxl.Workbook()
+
+        # Formats the currently active sheet
+        sheet = format_sheet(workbook, active_user, month, year)
+
+        # Writes users schedule to active sheet then saves workbook.
+        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip)
+
+        try:
+            workbook.save('paysheet.xlsx')
+            print("Your Paysheet has been created and saved and should be available in the same directly as this program")
+        except:
+            print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
+                  "If they are close them, and then retry, well paying careful attention to the on screen instructions.")
 
 
 
@@ -35,38 +63,14 @@ if user_choice.lower() == "login":
 
 
 
-# Allows the user to set the year and month they want a schedule created for.
-year = "2019"
-month = input("Please input a month as a numeric value [ie 04 for April]: \n")
-
-# Generates a list of user input representing days they missed work
-days_to_skip = get_days_missed()
-
-
-# Figures out how many days are in the month
-end = find_month_length(month, year)
-
-# Creates a list of all the days in the month
-to_schedule = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
-
-# Creates excel workbook
-workbook = openpyxl.Workbook()
-
-
-# Formats the currently active sheet
-sheet = format_sheet(workbook, month, year)
-
-# Writes users schedule to active sheet then saves workbook.
-sheet = write_schedule(to_schedule, sheet, mon, wed, fri, days_to_skip)
 
 
 
-try:
-    workbook.save('paysheet.xlsx')
-    print("Your Paysheet has been created and saved and should be available in the same directly as this program")
-except:
-    print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
-          "If they are close them, and then retry, well paying careful attention to the on screen instructions.")
+
+
+
+
+
 
 
 
