@@ -1,6 +1,7 @@
 import pickle
 from hashlib import sha256 as hash
 
+
 def register_user():
     try:
         users = open("users", 'rb')
@@ -46,7 +47,6 @@ def login_user():
 
         if name in all_users:
             password = input("Please enter your password: \n")
-            print(all_users['gino'])
         else:
             print("Sorry that username isn't registered, please register first.")
             exit()

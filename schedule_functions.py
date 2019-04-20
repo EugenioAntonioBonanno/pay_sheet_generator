@@ -45,14 +45,8 @@ def format_sheet(workbook, active_user, month, year):
 # Writes users schedule across 8 cells before dropping down one row.
 def write_schedule(to_schedule, sheet, users_schedule, days_to_skip):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
-
     col_index = 0
     row_index = 4
-
-    for day in users_schedule.week:
-        for session in day.sessions:
-            if day.name == "Monday":
-                print(session.code)
 
     for day in to_schedule:
         day_and_month = str(day.month) + '/' + str(day.day)
@@ -172,11 +166,13 @@ def create_schedule(active_user):
         length = input("Please input its length in hours such as 1 or .5: \n")
         day_taught = input("Please tell me the day you teach this class as a number. [ Ex 1 = Monday ]: \n")
         sessions.append(Session(session_id, length, day_taught))
-        print(sessions)
+        print("You have entered the following classes:", end=" ")
+        for session in sessions:
+            print(session.code, "day = ", session.day_taught, end=" ")
+        print("")
         add_another = input("Enter 'add' to add another class or 'done' if you have created all your classes: \n")
 
         if add_another.lower() == 'done':
-            print(sessions)
             break
 
     monday_sessions = []

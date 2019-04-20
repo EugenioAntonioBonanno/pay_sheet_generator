@@ -35,8 +35,7 @@ if user_choice.lower() == "login":
         end = find_month_length(month, year)
 
         # Creates a list of all the days in the month
-        to_schedule = list(
-            rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
+        to_schedule = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
 
         # Creates excel workbook
         workbook = openpyxl.Workbook()
