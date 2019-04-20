@@ -42,10 +42,10 @@ def login_user():
         all_users = {}
 
     while True:
-        name = input("What is your username?")
+        name = input("What is your username? \n")
 
         if name in all_users:
-            password = input("Please input your password.")
+            password = input("Please input your password. \n")
             print(all_users['gino'])
         else:
             print("Sorry that username isn't registered, please register first.")
