@@ -13,6 +13,6 @@ class Session:
         self.day_taught = day_taught
 
 class User:
-    def __init__(self, sessions, days):
+    def __init__(self, week, days):
         self.days = days
-        self.sessions = sessions
+        self.week = week

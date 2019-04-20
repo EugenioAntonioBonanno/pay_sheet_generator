@@ -24,18 +24,58 @@ if user_choice.lower() == "login":
 
 
     make_or_write = input("Do you want to set a new schedule of print your current one?")
-    sessions = []
 
+
+    sessions = []
     while True:
-        session_id = input("Please input the id for this class ex F60 \n:")
-        length = input("Please input its length in hours such as 1 or .5 \n:")
+        session_id = input("Please input the id for this class ex F60: \n")
+        length = input("Please input its length in hours such as 1 or .5: \n")
         day_taught = input("Please tell me the day you teach this class as a number. Ex 1 = Monday")
         sessions.append(Session(session_id, length, day_taught))
-        add_another = input("Enter 'yes' to add another class or 'done' if you have created all your classes \n:")
+        add_another = input("Enter 'add' to add another class or 'done' if you have created all your classes: \n")
 
         if add_another.lower() == 'done':
             print(sessions)
             break
+
+    monday_sessions= []
+    tuesday_sessions = []
+    wednesday_sessions = []
+    thursday_sessions = []
+    friday_sessions = []
+
+    for session in sessions:
+        if session.day_taught == 1:
+            monday_sessions.append(session)
+        elif session.day_taught == 2:
+            tuesday_sessions.append(session)
+        elif session.day_taught == 3:
+            wednesday_sessions.append(session)
+        elif session.day_taught == 4:
+            thursday_sessions.append(session)
+        elif session.day_taught == 5:
+            friday_sessions.append(session)
+
+    week = []
+    monday = Day("Monday", monday_sessions)
+    week.append(monday)
+    tuesday = Day("Tuesday", tuesday_sessions)
+    week.append(tuesday)
+    wednesday = Day("Wednesday", wednesday_sessions)
+    week.append(wednesday)
+    thursday = Day("Thursday", thursday_sessions)
+    week.append(thursday)
+    friday = Day("Friday", friday_sessions)
+    week.append(friday)
+
+    users_schedule = User(active_user, week)
+
+    #for day in users_schedule.week:
+
+
+
+
+
 
 
 
