@@ -154,10 +154,9 @@ def get_days_missed():
     days_to_skip = []
 
     while True:
-        print("Enter any days you missed work due to sickness or holiday as a number. [ex '12']")
-        print("Or enter 'end' if you've either missed no days or have entered all the ones you missed")
+        print("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] or enter 'end'")
         print("Your current missed days are as follows:", days_to_skip)
-        missed_work = input(":")
+        missed_work = input("")
         if missed_work.lower() == 'end':
             break
         else:

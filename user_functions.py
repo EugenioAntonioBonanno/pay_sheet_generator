@@ -12,13 +12,13 @@ def register_user():
 
     while True:
 
-        new_user = input("Please tell me your desired user name: ")
+        new_user = input("Please tell me your desired user name: \n ")
         if new_user.lower() in all_users:
             print("Sorry that name is taken.")
         else:
-            password_1 = input("Hello " + new_user + " please create your password: ")
+            password_1 = input("Hello " + new_user + " please create your password: \n ")
             password_1 = hash(password_1.encode('utf-8'))
-            password_2 = input("please enter it one more time: ")
+            password_2 = input("please enter it one more time: \n ")
             password_2 = hash(password_2.encode('utf-8'))
 
             if password_1.digest() == password_2.digest():
@@ -42,10 +42,10 @@ def login_user():
         all_users = {}
 
     while True:
-        name = input("What is your username? \n")
+        name = input("Please enter your user name: \n")
 
         if name in all_users:
-            password = input("Please input your password. \n")
+            password = input("Please enter your password: \n")
             print(all_users['gino'])
         else:
             print("Sorry that username isn't registered, please register first.")
