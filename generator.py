@@ -6,7 +6,6 @@ from schedule_functions import find_month_length, format_sheet, write_schedule, 
 from user_functions import register_user, login_user
 
 
-
 user_choice = input("Hello, please enter 'login' to login, or type 'register' to register: \n ")
 
 if user_choice.lower() == 'register':
@@ -15,7 +14,7 @@ if user_choice.lower() == 'register':
 if user_choice.lower() == "login":
     active_user = login_user()
 
-    make_or_write = input("Enter 'set' to set your schedule, or 'export' to create a copy of it: \n ")
+    make_or_write = input("Enter 'set' to set your schedule, or 'export' to create a copy of it: \n")
 
     if make_or_write.lower() == "set":
         create_schedule(active_user)
@@ -48,7 +47,7 @@ if user_choice.lower() == "login":
 
         try:
             workbook.save('paysheet.xlsx')
-            print("Your Paysheet has been created and saved and should be available in the same directly as this program")
+            print("Your Paysheet has been created and saved and should be available in the same directly as this program.")
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")

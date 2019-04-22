@@ -42,6 +42,7 @@ def format_sheet(workbook, active_user, month, year):
     sheet['I3'] = "Signature"
     return sheet
 
+
 # Writes users schedule across 8 cells before dropping down one row.
 def write_schedule(to_schedule, sheet, users_schedule, days_to_skip):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
@@ -146,12 +147,12 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip):
 # Uses a while true loop to allow users to build a list of any days they missed work.
 def get_days_missed():
     days_to_skip = []
-
+    print("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] for the 12th or enter 'done'. \n")
     while True:
-        print("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] or enter 'end'")
+
         print("Your current missed days are as follows:", days_to_skip)
-        missed_work = input("")
-        if missed_work.lower() == 'end':
+        missed_work = input("Enter a missed day as a number or 'done' to move on. \n")
+        if missed_work.lower() == 'done':
             break
         else:
             days_to_skip.append(int(missed_work))
@@ -159,21 +160,26 @@ def get_days_missed():
     return days_to_skip
 
 
+# Prompts a user for information that can be used to create Session objects representing the classes taught.
 def create_schedule(active_user):
     sessions = []
+    print("\nPlease input your class info in EXACTLY the same format that will be described below: \n"
+          "[class (W55) length(in hours) day (as a num)]. \n"
+          "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
+          "Use the following example to format your input: 'W60 1 3'.\n"
+          "The above means class W60, taught for one hour, on Wednesday \n"
+          "Do not include '' or a space before W in your input. \n")
     while True:
-        session_id = input("Please input the id for this class ex F60: \n")
-        length = input("Please input its length in hours such as 1 or .5: \n")
-        day_taught = input("Please tell me the day you teach this class as a number. [ Ex 1 = Monday ]: \n")
-        sessions.append(Session(session_id, length, day_taught))
-        print("You have entered the following classes:", end=" ")
-        for session in sessions:
-            print(session.code, "day = ", session.day_taught, end=" ")
-        print("")
-        add_another = input("Enter 'add' to add another class or 'done' if you have created all your classes: \n")
-
-        if add_another.lower() == 'done':
+        session_info = input("Please input class information or type 'done' if you are finished: \n")
+        if session_info.lower() == "done":
             break
+        else:
+            session_list = session_info.split()
+            sessions.append(Session(session_list[0], session_list[1], session_list[2]))
+            print("You have entered the following classes:", end=" ")
+            for session in sessions:
+                print(session.code, "day = ", session.day_taught, end=" ")
+            print("\n")
 
     monday_sessions = []
     tuesday_sessions = []

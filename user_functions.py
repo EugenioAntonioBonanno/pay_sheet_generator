@@ -1,7 +1,7 @@
 import pickle
 from hashlib import sha256 as hash
 
-
+# Allows a user to register a local account
 def register_user():
     try:
         users = open("users", 'rb')
@@ -33,6 +33,7 @@ def register_user():
                 print("Sorry your passwords didn't match, please restart the registration process.")
 
 
+# Allows a user to login well retaining any session objects they had created
 def login_user():
     try:
         users = open("users", 'rb')

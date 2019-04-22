@@ -1,5 +1,4 @@
 
-
 class Day:
     def __init__(self, name, sessions):
         self.name = name
