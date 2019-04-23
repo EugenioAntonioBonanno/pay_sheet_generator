@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6680a370-e2e0-4239-ae71-e96b2f0c3756" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.paysheet.xlsx#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin" beforeDir="false" afterPath="$PROJECT_DIR$/admin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/objects.py" beforeDir="false" afterPath="$PROJECT_DIR$/objects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paysheet.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/paysheet.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_functions.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="49" column="121" selection-start-line="49" selection-start-column="121" selection-end-line="49" selection-end-column="121" />
+            <state relative-caret-position="816">
+              <caret line="48" column="53" selection-start-line="48" selection-start-column="53" selection-end-line="48" selection-end-column="53" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -32,10 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/schedule_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
+            <state relative-caret-position="-366">
               <caret line="153" column="81" selection-start-line="153" selection-start-column="81" selection-end-line="153" selection-end-column="81" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
@@ -90,8 +83,8 @@
         <option value="$PROJECT_DIR$/user_functions.py" />
         <option value="$PROJECT_DIR$/objects.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/generator.py" />
         <option value="$PROJECT_DIR$/schedule_functions.py" />
+        <option value="$PROJECT_DIR$/generator.py" />
       </list>
     </option>
   </component>
@@ -255,9 +248,6 @@
     <entry file="file://$PROJECT_DIR$/users.py" />
     <entry file="file://$PROJECT_DIR$/login.py" />
     <entry file="file://$PROJECT_DIR$/pickle_test.py" />
-    <entry file="file://$PROJECT_DIR$/objects.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/sessions_and_days.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -282,22 +272,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generator.py">
+    <entry file="file://$PROJECT_DIR$/objects.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/schedule_functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="49" column="121" selection-start-line="49" selection-start-column="121" selection-end-line="49" selection-end-column="121" />
+        <state relative-caret-position="-366">
+          <caret line="153" column="81" selection-start-line="153" selection-start-column="81" selection-end-line="153" selection-end-column="81" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/schedule_functions.py">
+    <entry file="file://$PROJECT_DIR$/generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="153" column="81" selection-start-line="153" selection-start-column="81" selection-end-line="153" selection-end-column="81" />
+        <state relative-caret-position="816">
+          <caret line="48" column="53" selection-start-line="48" selection-start-column="53" selection-end-line="48" selection-end-column="53" />
           <folding>
-            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>

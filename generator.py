@@ -46,7 +46,7 @@ if user_choice.lower() == "login":
         sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip)
 
         try:
-            workbook.save('paysheet.xlsx')
+            workbook.save('paysheet' + active_user + '.xlsx')
             print("Your Paysheet has been created and saved and should be available in the same directly as this program.")
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
