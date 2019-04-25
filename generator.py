@@ -2,8 +2,8 @@ import openpyxl
 import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
-from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, create_schedule
-from user_functions import register_user, login_user
+from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
+from user_functions import register_user, login_user, create_schedule
 
 
 user_choice = input("Hello, please enter 'login' to login, or type 'register' to register: \n ")
@@ -36,21 +36,16 @@ if user_choice.lower() == "login":
         # Creates a list of all the days in the month
         to_schedule = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
 
-        monthly_meeting = input("Did you have a meeting this month? If yes enter the date as a number \n"
-                                "or enter 'no':\n")
+        monthly_meeting = get_monthly_meeting()
 
-
-
-
-
+        classes_subbed = get_classes_subbed()
 
         workbook = openpyxl.Workbook()
-
 
         sheet = format_sheet(workbook, active_user, month, year)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting)
+        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting, classes_subbed)
 
         try:
             workbook.save('paysheet' + active_user + '.xlsx')

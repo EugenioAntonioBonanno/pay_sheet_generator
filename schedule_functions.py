@@ -1,6 +1,5 @@
 from openpyxl.styles import Font
-from objects import Day, User, Session, SubbedSession
-import pickle
+from objects import SubbedSession
 
 
 # Takes in a month an year and returns how many days that month will have in it.
@@ -44,7 +43,7 @@ def format_sheet(workbook, active_user, month, year):
 
 
 # Writes users schedule across 8 cells before dropping down one row.
-def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting):
+def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting, classes_subbed):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
     col_index = 0
     row_index = 4
@@ -68,6 +67,21 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
             else:
                 col_index = 0
                 row_index += 1
+
+        for subbed in classes_subbed:
+            if int(subbed.date) == int(day.day):
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = subbed.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = subbed.length
+                col_index += 3
+
+                if col_index == 5:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
 
         if day.weekday() == 0:
             schedule = users_schedule.week
@@ -174,76 +188,28 @@ def get_days_missed():
 
     return days_to_skip
 
-def get_days_subbed():
+def get_classes_subbed():
+    classes_subbed = []
     while True:
-        classes_subbed = []
 
-        subbed = input("Have you subbed any classes this month? \n input 'done' if you haven't\n"
-                   " If you have enter it in the following format [class id, length , date] \n"
-                   "ex: W34 2 13 :/n")
+        subbed = input("Have you subbed any classes this month? \nInput 'done' if you haven't.\n"
+                   "If you have enter it in the following format [class id, length , date] \n"
+                   "ex: W34 2 13 :\n")
+
         if subbed.lower() == 'done':
             break
         else:
-            class_subbed = subbed.split()
-            classes_subbed.append(SubbedSession(class_subbed[0], class_subbed[1], class_subbed[2]))
+            subbed = subbed.split()
+            classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
 
     return classes_subbed
 
-# Prompts a user for information that can be used to create Session objects representing the classes taught.
-def create_schedule(active_user):
-    sessions = []
-    print("\nPlease input your class info in EXACTLY the same format that will be described below: \n"
-          "[class (W55) length(in hours) day (as a num)]. \n"
-          "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
-          "Use the following example to format your input: 'W60 1 3'.\n"
-          "The above means class W60, taught for one hour, on Wednesday \n"
-          "Do not include '' or a space before W in your input. \n")
-    while True:
-        session_info = input("Please input class information or type 'done' if you are finished: \n")
-        if session_info.lower() == "done":
-            break
-        else:
-            session_list = session_info.split()
-            sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-            print("You have entered the following classes:", end=" ")
-            for session in sessions:
-                print(session.code, "day = ", session.day_taught, end=" ")
-            print("\n")
-
-    monday_sessions = []
-    tuesday_sessions = []
-    wednesday_sessions = []
-    thursday_sessions = []
-    friday_sessions = []
-
-    for session in sessions:
-        if session.day_taught == '1':
-            monday_sessions.append(session)
-        elif session.day_taught == '2':
-            tuesday_sessions.append(session)
-        elif session.day_taught == '3':
-            wednesday_sessions.append(session)
-        elif session.day_taught == '4':
-            thursday_sessions.append(session)
-        elif session.day_taught == '5':
-            friday_sessions.append(session)
-
-    week = []
-    monday = Day("Monday", monday_sessions)
-    week.append(monday)
-    tuesday = Day("Tuesday", tuesday_sessions)
-    week.append(tuesday)
-    wednesday = Day("Wednesday", wednesday_sessions)
-    week.append(wednesday)
-    thursday = Day("Thursday", thursday_sessions)
-    week.append(thursday)
-    friday = Day("Friday", friday_sessions)
-    week.append(friday)
-
-    users_schedule = User(active_user, week)
-
-    schedule = open(active_user, "wb")
-    pickle.dump(users_schedule, schedule)
-    schedule.close()
+def get_monthly_meeting():
+    meeting = input("Did you have a meeting this month? If yes enter the date as a number \n"
+                       "or enter 'no':\n")
+    if meeting.lower() == "no":
+        return 100
+    else:
+        return meeting
 
 

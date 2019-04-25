@@ -1,7 +1,16 @@
+from objects import SubbedSession
 
 
-test = input("DO IT!!!: \n")
+classes_subbed = []
+while True:
 
-test_list = test.split()
-
-print(test_list[0], test_list[1], test_list[2])
+    subbed = input("Have you subbed any classes this month? \nInput 'done' if you haven't.\n"
+                   "If you have enter it in the following format [class id, length , date] \n"
+                   "ex: W34 2 13 :\n")
+    if subbed.lower() == 'done':
+        break
+    else:
+        print(subbed)
+        subbed_list = subbed.split()
+        print(subbed_list)
+        classes_subbed.append(SubbedSession(subbed[2]))
