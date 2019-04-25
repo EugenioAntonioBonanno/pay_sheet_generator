@@ -44,7 +44,7 @@ def format_sheet(workbook, active_user, month, year):
 
 
 # Writes users schedule across 8 cells before dropping down one row.
-def write_schedule(to_schedule, sheet, users_schedule, days_to_skip):
+def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
     col_index = 0
     row_index = 4
@@ -54,6 +54,21 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip):
 
         if day.day in days_to_skip:
             pass
+
+        elif int(day.day) == int(monthly_meeting):
+            sheet[col[col_index] + str(row_index)] = day_and_month
+            col_index += 1
+            sheet[col[col_index] + str(row_index)] = "Meeting"
+            col_index += 1
+            sheet[col[col_index] + str(row_index)] = "1"
+            col_index += 3
+
+            if col_index == 5:
+                pass
+            else:
+                col_index = 0
+                row_index += 1
+
         elif day.weekday() == 0:
             schedule = users_schedule.week
             for weekday in schedule:

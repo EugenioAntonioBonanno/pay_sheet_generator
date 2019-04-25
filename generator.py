@@ -36,6 +36,9 @@ if user_choice.lower() == "login":
         # Creates a list of all the days in the month
         to_schedule = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
 
+        monthly_meeting = input("Did you have a meeting this month? If yes enter the date as a number \n"
+                                "or enter 'no':\n")
+
         # Creates excel workbook
         workbook = openpyxl.Workbook()
 
@@ -43,7 +46,7 @@ if user_choice.lower() == "login":
         sheet = format_sheet(workbook, active_user, month, year)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip)
+        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting)
 
         try:
             workbook.save('paysheet' + active_user + '.xlsx')
