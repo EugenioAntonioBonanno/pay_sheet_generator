@@ -1,5 +1,5 @@
 from openpyxl.styles import Font
-from objects import Day, User, Session
+from objects import Day, User, Session, SubbedSession
 import pickle
 
 
@@ -55,7 +55,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
         if day.day in days_to_skip:
             pass
 
-        elif int(day.day) == int(monthly_meeting):
+        if int(day.day) == int(monthly_meeting):
             sheet[col[col_index] + str(row_index)] = day_and_month
             col_index += 1
             sheet[col[col_index] + str(row_index)] = "Meeting"
@@ -69,7 +69,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                 col_index = 0
                 row_index += 1
 
-        elif day.weekday() == 0:
+        if day.weekday() == 0:
             schedule = users_schedule.week
             for weekday in schedule:
                 for session in weekday.sessions:
@@ -174,6 +174,20 @@ def get_days_missed():
 
     return days_to_skip
 
+def get_days_subbed():
+    while True:
+        classes_subbed = []
+
+        subbed = input("Have you subbed any classes this month? \n input 'done' if you haven't\n"
+                   " If you have enter it in the following format [class id, length , date] \n"
+                   "ex: W34 2 13 :/n")
+        if subbed.lower() == 'done':
+            break
+        else:
+            class_subbed = subbed.split()
+            classes_subbed.append(SubbedSession(class_subbed[0], class_subbed[1], class_subbed[2]))
+
+    return classes_subbed
 
 # Prompts a user for information that can be used to create Session objects representing the classes taught.
 def create_schedule(active_user):

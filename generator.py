@@ -39,10 +39,14 @@ if user_choice.lower() == "login":
         monthly_meeting = input("Did you have a meeting this month? If yes enter the date as a number \n"
                                 "or enter 'no':\n")
 
-        # Creates excel workbook
+
+
+
+
+
         workbook = openpyxl.Workbook()
 
-        # Formats the currently active sheet
+
         sheet = format_sheet(workbook, active_user, month, year)
 
         # Writes users schedule to active sheet then saves workbook.
