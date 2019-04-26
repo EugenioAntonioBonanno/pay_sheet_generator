@@ -179,10 +179,6 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
     return sheet
 
 
-
-
-
-
 # Uses a while true loop to allow users to build a list of any days they missed work.
 def get_days_missed():
     days_to_skip = []
@@ -198,13 +194,18 @@ def get_days_missed():
 
     return days_to_skip
 
+
 def get_classes_subbed():
     classes_subbed = []
+    print(("\nHave you subbed any classes this month? \nInput 'done' if you haven't or when finished entering those you have.\n"
+                   "If you have enter each class one at a time in the following format [class id, length , date] \n"
+                   "ex: W34 2 13."))
     while True:
-
-        subbed = input("Have you subbed any classes this month? \nInput 'done' if you haven't.\n"
-                   "If you have enter it in the following format [class id, length , date] \n"
-                   "ex: W34 2 13 :\n")
+        print("Your current list of classes you have subbed this month is as follows :")
+        for session in classes_subbed:
+            print(session.code, end=" ")
+        print("\n")
+        subbed = input("Enter a class to add to your subbed classes, or 'done' if you are finished:\n")
 
         if subbed.lower() == 'done':
             break
