@@ -14,3 +14,4 @@ while True:
         subbed_list = subbed.split()
         print(subbed_list)
         classes_subbed.append(SubbedSession(subbed[2]))
+

@@ -50,40 +50,12 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
 
     for day in to_schedule:
         day_and_month = str(day.month) + '/' + str(day.day)
+        skip = False
 
         if day.day in days_to_skip:
-            pass
+            skip = True
 
-        if int(day.day) == int(monthly_meeting):
-            sheet[col[col_index] + str(row_index)] = day_and_month
-            col_index += 1
-            sheet[col[col_index] + str(row_index)] = "Meeting"
-            col_index += 1
-            sheet[col[col_index] + str(row_index)] = "1"
-            col_index += 3
-
-            if col_index == 5:
-                pass
-            else:
-                col_index = 0
-                row_index += 1
-
-        for subbed in classes_subbed:
-            if int(subbed.date) == int(day.day):
-                sheet[col[col_index] + str(row_index)] = day_and_month
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = subbed.code
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = subbed.length
-                col_index += 3
-
-                if col_index == 5:
-                    pass
-                else:
-                    col_index = 0
-                    row_index += 1
-
-        if day.weekday() == 0:
+        elif day.weekday() == 0:
             schedule = users_schedule.week
             for weekday in schedule:
                 for session in weekday.sessions:
@@ -100,6 +72,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+
         elif day.weekday() == 1:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -170,7 +143,44 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+        if skip:
+            pass
+        else:
+            if int(day.day) == int(monthly_meeting):
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = "Meeting"
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = "1"
+                col_index += 3
+
+                if col_index == 5:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
+
+            if len(classes_subbed) > 0:
+                for subbed in classes_subbed:
+                    if int(subbed.date) == int(day.day):
+                        sheet[col[col_index] + str(row_index)] = day_and_month
+                        col_index += 1
+                        sheet[col[col_index] + str(row_index)] = subbed.code
+                        col_index += 1
+                        sheet[col[col_index] + str(row_index)] = subbed.length
+                        col_index += 3
+
+                        if col_index == 5:
+                            pass
+                        else:
+                            col_index = 0
+                            row_index += 1
+
     return sheet
+
+
+
+
 
 
 # Uses a while true loop to allow users to build a list of any days they missed work.
