@@ -4,9 +4,9 @@ from objects import SubbedSession
 
 # Takes in a month an year and returns how many days that month will have in it.
 def find_month_length(month, year):
-    if month in ["01", "03", "05", "07", "08", "10"]:
+    if month in ["01", "1" "03", "3", "05", "5", "07", "7", "08", '8', "10"]:
         length = "31"
-    elif month in ["04", "06", "09", "11", "12"]:
+    elif month in ["04", '4', "06", '6', "09", '9', "11", "12"]:
         length = "30"
     else:
         if int(year) % 4 == 0:

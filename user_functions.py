@@ -3,6 +3,8 @@ from hashlib import sha256 as hash
 from objects import Session, Day, User
 
 # Allows a user to register a local account
+
+
 def register_user():
     try:
         users = open("users", 'rb')
