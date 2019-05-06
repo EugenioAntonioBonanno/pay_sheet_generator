@@ -49,7 +49,7 @@ if user_choice.lower() == "login":
 
         try:
             workbook.save('paysheet' + active_user + '.xlsx')
-            print("Your Paysheet has been created and saved and should be available in the same directly as this program.")
+            print("Your Paysheet has been created and saved and should be available in the same location on your hardrive as this program.")
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")

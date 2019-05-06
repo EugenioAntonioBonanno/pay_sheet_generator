@@ -54,7 +54,6 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
 
         if day.day in days_to_skip:
             skip = True
-
         elif day.weekday() == 0:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -90,6 +89,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+
         elif day.weekday() == 2:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -107,7 +107,6 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
-
         elif day.weekday() == 3:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -125,7 +124,6 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
-
         elif day.weekday() == 4:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -201,7 +199,7 @@ def get_classes_subbed():
                    "If you have enter each class one at a time in the following format [class id, length , date] \n"
                    "ex: W34 2 13."))
     while True:
-        print("Your current list of classes you have subbed this month is as follows :")
+        print("Your current list of classes you have subbed this month is as follows:")
         for session in classes_subbed:
             print(session.code, end=" ")
         print("\n")
@@ -215,12 +213,32 @@ def get_classes_subbed():
 
     return classes_subbed
 
+
 def get_monthly_meeting():
-    meeting = input("Did you have a meeting this month? If yes enter the date as a number \n"
-                       "or enter 'no':\n")
-    if meeting.lower() == "no":
+    meeting = input("Did you have a meeting this month? If yes enter the day of the meeting as a number [ex 5th = 5] \n"
+                       "or enter 'done' to create a schedule with no monthl meeting:\n")
+    if meeting.lower() == "done":
         return 100
     else:
         return meeting
 
+
+def write_day(users_schedule, col_index, row_index, day_and_month, sheet, col, day="Monday"):
+    schedule = users_schedule.week
+    for weekday in schedule:
+        for session in weekday.sessions:
+            if weekday.name == day:
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = session.length
+                col_index += 3
+
+                if col_index == 5:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
+    return sheet
 
