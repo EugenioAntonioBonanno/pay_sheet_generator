@@ -1,13 +1,17 @@
 import pickle
 from hashlib import sha256 as hash
 from objects import Session, Day, User
+from pathlib import Path
 
 # Allows a user to register a local account
+root = Path(".")
+
+users_info_path = root / "user_info" / 'users'
 
 
 def register_user():
     try:
-        users = open("users", 'rb')
+        users = open(users_info_path, 'rb')
         all_users = pickle.load(users)
         users.close()
 
@@ -27,7 +31,7 @@ def register_user():
 
             if password_1.digest() == password_2.digest():
                 all_users[new_user] = password_1.digest()
-                users = open('users', 'wb')
+                users = open(users_info_path, 'wb')
                 pickle.dump(all_users, users)
                 users.close()
                 print("You are now registered, you may login next time.")
@@ -39,7 +43,7 @@ def register_user():
 # Allows a user to login well retaining any session objects they had created
 def login_user():
     try:
-        users = open("users", 'rb')
+        users = open(users_info_path, 'rb')
         all_users = pickle.load(users)
         users.close()
 
@@ -63,8 +67,11 @@ def login_user():
             break
     return name
 
+
 def create_schedule(active_user):
     sessions = []
+    users_object_path = root / "user_objects" / active_user
+
     print("\nPlease input your class info in EXACTLY the same format that will be described below: \n"
           "[class (W55) length(in hours) day (as a num)]. \n"
           "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
@@ -115,7 +122,7 @@ def create_schedule(active_user):
 
     users_schedule = User(active_user, week)
 
-    schedule = open(active_user, "wb")
+    schedule = open(users_object_path, "wb")
     pickle.dump(users_schedule, schedule)
     schedule.close()
 

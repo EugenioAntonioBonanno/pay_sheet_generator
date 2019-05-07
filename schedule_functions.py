@@ -107,6 +107,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+
         elif day.weekday() == 3:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -124,6 +125,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+
         elif day.weekday() == 4:
             schedule = users_schedule.week
             for weekday in schedule:
@@ -141,6 +143,7 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
                         else:
                             col_index = 0
                             row_index += 1
+
         if skip:
             pass
         else:
@@ -240,5 +243,8 @@ def write_day(users_schedule, col_index, row_index, day_and_month, sheet, col, d
                 else:
                     col_index = 0
                     row_index += 1
-    return sheet
+    return_values = {"sheet": sheet, 'row_index': row_index, "col_index": col_index}
+
+    return return_values
+
 

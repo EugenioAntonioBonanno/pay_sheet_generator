@@ -4,6 +4,11 @@ from dateutil.rrule import *
 from dateutil.parser import *
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
 from user_functions import register_user, login_user, create_schedule
+from pathlib import Path
+
+root = Path(".")
+
+
 
 while True:
     user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account: \n ")
@@ -21,7 +26,8 @@ while True:
                 create_schedule(active_user)
                 break
             elif make_or_write.lower() == "export":
-                schedule = open(active_user, 'rb')
+                users_object_path = root / "user_objects" / active_user
+                schedule = open(users_object_path, 'rb')
                 users_schedule = pickle.load(schedule)
                 schedule.close()
                 break
