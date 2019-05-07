@@ -1,10 +1,11 @@
-import openpyxl
+import openpyxl, os
 import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
 from user_functions import register_user, login_user, create_schedule
 from pathlib import Path
+
 
 root = Path(".")
 
@@ -27,6 +28,7 @@ while True:
                 break
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user
+
                 schedule = open(users_object_path, 'rb')
                 users_schedule = pickle.load(schedule)
                 schedule.close()
@@ -68,11 +70,16 @@ while True:
         sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting, classes_subbed)
 
         try:
-            workbook.save('paysheet' + active_user + '.xlsx')
+
+            if not os.path.isdir("paysheets"):
+                os.makedirs("paysheets")
+
+
+            workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
             print("Your Paysheet has been created and saved and should be available in the same location on your hardrive as this program.")
             break
         except:
-            print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open."
+            print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")
             break
 
