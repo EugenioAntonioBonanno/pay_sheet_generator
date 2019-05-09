@@ -42,6 +42,15 @@ def register_user():
 
 # Allows a user to login well retaining any session objects they had created
 def login_user():
+
+    name = check_username()
+
+    name = check_password(name)
+
+    return name
+
+
+def check_username():
     try:
         users = open(users_info_path, 'rb')
         all_users = pickle.load(users)
@@ -54,17 +63,31 @@ def login_user():
         name = input("Please enter your user name: \n")
 
         if name in all_users:
-            password = input("Please enter your password: \n")
+            break
         else:
-            print("Sorry that username isn't registered, please register first.")
-            exit()
+            print("Sorry we don't have a user by that name. Pleaase try again, or register a new account")
+    return name
 
-        if hash(password.encode('utf-8')).digest() == all_users[name]:
-            print("Welcome", name + ".")
-            break
-        else:
-            print("Sorry it appears your password is incorrect, please try again")
-            break
+
+def check_password(name):
+    try:
+        users = open(users_info_path, 'rb')
+        all_users = pickle.load(users)
+        users.close()
+    except:
+        all_users = {}
+
+
+    while True:
+        password = input("Please enter your password: \n")
+
+        if password:
+            if hash(password.encode('utf-8')).digest() == all_users[name]:
+                print("Welcome", name + ".")
+                break
+            else:
+                print("Sorry it appears your password is incorrect, please try again")
+
     return name
 
 

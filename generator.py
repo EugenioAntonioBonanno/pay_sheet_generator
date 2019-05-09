@@ -76,7 +76,7 @@ while True:
 
 
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
-            print("Your Paysheet has been created and saved and should be available in the same location on your hardrive as this program.")
+            print("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
             break
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
