@@ -10,6 +10,14 @@ from pathlib import Path
 root = Path(".")
 
 
+def get_sick_days_filter(edays_to_skip):
+    def sick_days_filter(day):
+        if day.day in edays_to_skip:
+            return False
+        else:
+            return True
+    return sick_days_filter
+
 
 while True:
     user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account: \n ")
@@ -56,7 +64,8 @@ while True:
         end = find_month_length(month, year)
 
         # Creates a list of all the days in the month
-        to_schedule = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
+        date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
+        to_schedule = list(filter(get_sick_days_filter(days_to_skip), date_range))
 
         monthly_meeting = get_monthly_meeting()
 

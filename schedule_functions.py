@@ -55,94 +55,19 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
         if day.day in days_to_skip:
             skip = True
         elif day.weekday() == 0:
-            schedule = users_schedule.week
-            for weekday in schedule:
-                for session in weekday.sessions:
-                    if weekday.name == "Monday":
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.length
-                        col_index += 3
-
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+            [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Monday")
 
         elif day.weekday() == 1:
-            schedule = users_schedule.week
-            for weekday in schedule:
-                for session in weekday.sessions:
-                    if weekday.name == "Tuesday":
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.length
-                        col_index += 3
-
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+            [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Tuesday")
 
         elif day.weekday() == 2:
-            schedule = users_schedule.week
-            for weekday in schedule:
-                for session in weekday.sessions:
-                    if weekday.name == "Wednesday":
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.length
-                        col_index += 3
-
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+            [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Wednesday")
 
         elif day.weekday() == 3:
-            schedule = users_schedule.week
-            for weekday in schedule:
-                for session in weekday.sessions:
-                    if weekday.name == "Thursday":
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.length
-                        col_index += 3
-
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+            [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Thursday")
 
         elif day.weekday() == 4:
-            schedule = users_schedule.week
-            for weekday in schedule:
-                for session in weekday.sessions:
-                    if weekday.name == "Friday":
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = session.length
-                        col_index += 3
-
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+            [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Friday")
 
         if skip:
             pass
@@ -226,7 +151,7 @@ def get_monthly_meeting():
         return meeting
 
 
-def write_day(users_schedule, col_index, row_index, day_and_month, sheet, col, day="Monday"):
+def write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Monday"):
     schedule = users_schedule.week
     for weekday in schedule:
         for session in weekday.sessions:
@@ -243,8 +168,6 @@ def write_day(users_schedule, col_index, row_index, day_and_month, sheet, col, d
                 else:
                     col_index = 0
                     row_index += 1
-    return_values = {"sheet": sheet, 'row_index': row_index, "col_index": col_index}
-
-    return return_values
+    return [sheet, row_index, col_index]
 
 
