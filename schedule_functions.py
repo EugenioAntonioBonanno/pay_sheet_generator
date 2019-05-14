@@ -43,18 +43,15 @@ def format_sheet(workbook, active_user, month, year):
 
 
 # Writes users schedule across 8 cells before dropping down one row.
-def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting, classes_subbed):
+def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed):
     col = ["A", 'B', "C", "D", "E", "F", "G", "H", "I"]
     col_index = 0
     row_index = 4
 
     for day in to_schedule:
         day_and_month = str(day.month) + '/' + str(day.day)
-        skip = False
 
-        if day.day in days_to_skip:
-            skip = True
-        elif day.weekday() == 0:
+        if day.weekday() == 0:
             [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Monday")
 
         elif day.weekday() == 1:
@@ -69,38 +66,35 @@ def write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_mee
         elif day.weekday() == 4:
             [sheet, row_index, col_index] = write_day(users_schedule, row_index, col_index, day_and_month, sheet, col, day="Friday")
 
-        if skip:
-            pass
-        else:
-            if int(day.day) == int(monthly_meeting):
-                sheet[col[col_index] + str(row_index)] = day_and_month
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = "Meeting"
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = "1"
-                col_index += 3
+        if int(day.day) == int(monthly_meeting):
+            sheet[col[col_index] + str(row_index)] = day_and_month
+            col_index += 1
+            sheet[col[col_index] + str(row_index)] = "Meeting"
+            col_index += 1
+            sheet[col[col_index] + str(row_index)] = "1"
+            col_index += 3
 
-                if col_index == 5:
-                    pass
-                else:
-                    col_index = 0
-                    row_index += 1
+            if col_index == 5:
+                pass
+            else:
+                col_index = 0
+                row_index += 1
 
-            if len(classes_subbed) > 0:
-                for subbed in classes_subbed:
-                    if int(subbed.date) == int(day.day):
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = subbed.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = subbed.length
-                        col_index += 3
+        if len(classes_subbed) > 0:
+            for subbed in classes_subbed:
+                if int(subbed.date) == int(day.day):
+                    sheet[col[col_index] + str(row_index)] = day_and_month
+                    col_index += 1
+                    sheet[col[col_index] + str(row_index)] = subbed.code
+                    col_index += 1
+                    sheet[col[col_index] + str(row_index)] = subbed.length
+                    col_index += 3
 
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+                    if col_index == 5:
+                        pass
+                    else:
+                        col_index = 0
+                        row_index += 1
 
     return sheet
 

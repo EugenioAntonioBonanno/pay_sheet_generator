@@ -10,9 +10,9 @@ from pathlib import Path
 root = Path(".")
 
 
-def get_sick_days_filter(edays_to_skip):
+def make_skipped_days_filter(skipped_days):
     def sick_days_filter(day):
-        if day.day in edays_to_skip:
+        if day.day in skipped_days:
             return False
         else:
             return True
@@ -65,7 +65,7 @@ while True:
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
-        to_schedule = list(filter(get_sick_days_filter(days_to_skip), date_range))
+        days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
         monthly_meeting = get_monthly_meeting()
 
@@ -76,7 +76,7 @@ while True:
         sheet = format_sheet(workbook, active_user, month, year)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = write_schedule(to_schedule, sheet, users_schedule, days_to_skip, monthly_meeting, classes_subbed)
+        sheet = write_schedule(days_to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed)
 
         try:
 
@@ -94,28 +94,4 @@ while True:
 
     else:
         print("Sorry but I can understand what you want to do, please try again")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
