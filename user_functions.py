@@ -106,12 +106,19 @@ def create_schedule(active_user):
         if session_info.lower() == "done":
             break
         else:
-            session_list = session_info.split()
-            sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-            print("You have entered the following classes:", end=" ")
-            for session in sessions:
-                print(session.code, "day = ", session.day_taught, end=" ")
-            print("\n")
+            try:
+                session_list = session_info.split()
+                if len(session_list) == 3:
+                        sessions.append(Session(session_list[0], session_list[1], session_list[2]))
+                        print("You have entered the following classes:", end=" ")
+                        for session in sessions:
+                            print(session.code, "day = ", session.day_taught, end=" ")
+                        print("\n")
+                else:
+                    print("Sorry it seems the data you entered doesnt the required format. Please try again")
+            except:
+                    print("Sorry it seems the data you entered doesnt the required format. Please try again")
+
 
     monday_sessions = []
     tuesday_sessions = []
