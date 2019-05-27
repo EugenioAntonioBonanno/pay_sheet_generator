@@ -30,9 +30,9 @@ while True:
         active_user = login_user()
 
         while True:
-            make_or_write = input("Enter 'set' to set your schedule, or 'export' to create a copy of it: \n")
-            if make_or_write.lower() == "set":
-                create_schedule(active_user)
+            make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, or 'export' to create a copy of it: \n")
+            if make_or_write.lower() == "set" or make_or_write.lower() == 'add':
+                create_schedule(active_user, make_or_write)
                 break
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user

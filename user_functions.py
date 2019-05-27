@@ -91,7 +91,7 @@ def check_password(name):
     return name
 
 
-def create_schedule(active_user):
+def create_schedule(active_user, make_or_write):
     sessions = []
     users_object_path = root / "user_objects" / active_user
 
@@ -101,58 +101,118 @@ def create_schedule(active_user):
           "Use the following example to format your input: 'W60 1 3'.\n"
           "The above means class W60, taught for one hour, on Wednesday \n"
           "Do not include '' or a space before W in your input. \n")
-    while True:
-        session_info = input("Please input class information or type 'done' if you are finished: \n")
-        if session_info.lower() == "done":
-            break
-        else:
-            try:
-                session_list = session_info.split()
-                if len(session_list) == 3:
+
+
+    if make_or_write.lower() == "set":
+
+        while True:
+            session_info = input("Please input class information or type 'done' if you are finished: \n")
+            if session_info.lower() == "done":
+                break
+            else:
+                try:
+                    session_list = session_info.split()
+                    if len(session_list) == 3:
+                            sessions.append(Session(session_list[0], session_list[1], session_list[2]))
+                            print("You have entered the following classes:", end=" ")
+                            for session in sessions:
+                                print(session.code, "day = ", session.day_taught, end=" ")
+                            print("\n")
+                    else:
+                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                except:
+                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+
+
+        monday_sessions = []
+        tuesday_sessions = []
+        wednesday_sessions = []
+        thursday_sessions = []
+        friday_sessions = []
+
+        for session in sessions:
+            if session.day_taught == '1':
+                monday_sessions.append(session)
+            elif session.day_taught == '2':
+                tuesday_sessions.append(session)
+            elif session.day_taught == '3':
+                wednesday_sessions.append(session)
+            elif session.day_taught == '4':
+                thursday_sessions.append(session)
+            elif session.day_taught == '5':
+                friday_sessions.append(session)
+
+        week = []
+        monday = Day("Monday", monday_sessions)
+        week.append(monday)
+        tuesday = Day("Tuesday", tuesday_sessions)
+        week.append(tuesday)
+        wednesday = Day("Wednesday", wednesday_sessions)
+        week.append(wednesday)
+        thursday = Day("Thursday", thursday_sessions)
+        week.append(thursday)
+        friday = Day("Friday", friday_sessions)
+        week.append(friday)
+
+        users_schedule = User(active_user, week)
+
+        schedule = open(users_object_path, "wb")
+        pickle.dump(users_schedule, schedule)
+        schedule.close()
+
+    elif make_or_write.lower() == "add":
+        while True:
+            session_info = input("Please input class information or type 'done' if you are finished: \n")
+            if session_info.lower() == "done":
+                break
+            else:
+                try:
+                    session_list = session_info.split()
+                    if len(session_list) == 3:
                         sessions.append(Session(session_list[0], session_list[1], session_list[2]))
                         print("You have entered the following classes:", end=" ")
                         for session in sessions:
                             print(session.code, "day = ", session.day_taught, end=" ")
                         print("\n")
-                else:
+                    else:
+                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                except:
                     print("Sorry it seems the data you entered doesnt the required format. Please try again")
-            except:
-                    print("Sorry it seems the data you entered doesnt the required format. Please try again")
 
 
-    monday_sessions = []
-    tuesday_sessions = []
-    wednesday_sessions = []
-    thursday_sessions = []
-    friday_sessions = []
+        monday_sessions = []
+        tuesday_sessions = []
+        wednesday_sessions = []
+        thursday_sessions = []
+        friday_sessions = []
 
-    for session in sessions:
-        if session.day_taught == '1':
-            monday_sessions.append(session)
-        elif session.day_taught == '2':
-            tuesday_sessions.append(session)
-        elif session.day_taught == '3':
-            wednesday_sessions.append(session)
-        elif session.day_taught == '4':
-            thursday_sessions.append(session)
-        elif session.day_taught == '5':
-            friday_sessions.append(session)
+        for session in sessions:
+            if session.day_taught == '1':
+                monday_sessions.append(session)
+            elif session.day_taught == '2':
+                tuesday_sessions.append(session)
+            elif session.day_taught == '3':
+                wednesday_sessions.append(session)
+            elif session.day_taught == '4':
+                thursday_sessions.append(session)
+            elif session.day_taught == '5':
+                friday_sessions.append(session)
 
-    week = []
-    monday = Day("Monday", monday_sessions)
-    week.append(monday)
-    tuesday = Day("Tuesday", tuesday_sessions)
-    week.append(tuesday)
-    wednesday = Day("Wednesday", wednesday_sessions)
-    week.append(wednesday)
-    thursday = Day("Thursday", thursday_sessions)
-    week.append(thursday)
-    friday = Day("Friday", friday_sessions)
-    week.append(friday)
+        week = []
+        monday = Day("Monday", monday_sessions)
+        week.append(monday)
+        tuesday = Day("Tuesday", tuesday_sessions)
+        week.append(tuesday)
+        wednesday = Day("Wednesday", wednesday_sessions)
+        week.append(wednesday)
+        thursday = Day("Thursday", thursday_sessions)
+        week.append(thursday)
+        friday = Day("Friday", friday_sessions)
+        week.append(friday)
 
-    users_schedule = User(active_user, week)
+        users_schedule = User(active_user, week)
 
-    schedule = open(users_object_path, "wb")
-    pickle.dump(users_schedule, schedule)
-    schedule.close()
+        schedule = open(users_object_path, "ab")
+        pickle.dump(users_schedule, schedule)
+        schedule.close()
 
