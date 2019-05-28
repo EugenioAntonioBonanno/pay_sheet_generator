@@ -162,62 +162,45 @@ def create_schedule(active_user, make_or_write):
 
         print("\nYour schedule has been successfully created, the program will now return you to the previous menu.. \n \n")
 
-    elif make_or_write.lower() == "add":
-        while True:
-            session_info = input("Please input class information or type 'done' if you are finished: \n")
-            if session_info.lower() == "done":
-                break
+def add_class(active_user):
+    classes_to_add = []
+    users_object_path = root / "user_objects" / active_user
+    schedule = open(users_object_path, 'rb')
+    users_schedule = pickle.load(schedule)
+
+    while True:
+
+        class_to_add = input("Please enter the class you wish to add in the same format you entered it"
+                                "[class, length' day] ex: W60 1 3. Or type 'done': \n")
+
+        if class_to_add.lower() == 'done':
+            break
+
+        try:
+            class_list = class_to_add.split()
+            if len(class_list) == 3:
+                classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
+                print("You have entered the following classes:", end=" ")
+                for session in classes_to_add:
+                    print(session.code, "day = ", session.day_taught, end=" ")
+                print("\n")
             else:
-                try:
-                    session_list = session_info.split()
-                    if len(session_list) == 3:
-                        sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                        print("You have entered the following classes:", end=" ")
-                        for session in sessions:
-                            print(session.code, "day = ", session.day_taught, end=" ")
-                        print("\n")
-                    else:
-                        print("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                except:
-                    print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+        except:
+            print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+
+    for add_session in classes_to_add:
+        for user_day in users_schedule.week:
+            for user_session in user_day.sessions:
+                if user_session.day_taught == add_session.day_taught:
+                    user_day.sessions.append(add_session)
+                    break
 
 
-        monday_sessions = []
-        tuesday_sessions = []
-        wednesday_sessions = []
-        thursday_sessions = []
-        friday_sessions = []
+    schedule = open(users_object_path, "wb")
+    pickle.dump(users_schedule, schedule)
+    schedule.close()
 
-        for session in sessions:
-            if session.day_taught == '1':
-                monday_sessions.append(session)
-            elif session.day_taught == '2':
-                tuesday_sessions.append(session)
-            elif session.day_taught == '3':
-                wednesday_sessions.append(session)
-            elif session.day_taught == '4':
-                thursday_sessions.append(session)
-            elif session.day_taught == '5':
-                friday_sessions.append(session)
-
-        week = []
-        monday = Day("Monday", monday_sessions)
-        week.append(monday)
-        tuesday = Day("Tuesday", tuesday_sessions)
-        week.append(tuesday)
-        wednesday = Day("Wednesday", wednesday_sessions)
-        week.append(wednesday)
-        thursday = Day("Thursday", thursday_sessions)
-        week.append(thursday)
-        friday = Day("Friday", friday_sessions)
-        week.append(friday)
-
-        users_schedule = User(active_user, week)
-
-        schedule = open(users_object_path, "ab")
-        pickle.dump(users_schedule, schedule)
-        schedule.close()
-        print("\nYour schedule has been successfully edited, the program will now return you to the previous menu \n \n")
 
 
 def remove_class(active_user):
@@ -270,25 +253,5 @@ def remove_class(active_user):
     schedule.close()
 
 
-
-
-
-class Day:
-    def __init__(self, name, sessions):
-        self.name = name
-        self.sessions = sessions
-
-
-class Session:
-    def __init__(self, code, length, day_taught):
-        self.code = code
-        self.length = length
-        self.day_taught = day_taught
-
-
-class User:
-    def __init__(self, user_name, week):
-        self.user_name = user_name
-        self.week = week  #list of day objects
 
 
