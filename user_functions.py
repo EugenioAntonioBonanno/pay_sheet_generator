@@ -65,7 +65,7 @@ def check_username():
         if name in all_users:
             break
         else:
-            print("Sorry we don't have a user by that name. Pleaase try again, or register a new account")
+            print("Sorry we don't have a user by that name. Please try again, or register a new account")
     return name
 
 
@@ -160,6 +160,8 @@ def create_schedule(active_user, make_or_write):
         pickle.dump(users_schedule, schedule)
         schedule.close()
 
+        print("\nYour schedule has been successfully created, the program will now return you to the previous menu.. \n \n")
+
     elif make_or_write.lower() == "add":
         while True:
             session_info = input("Please input class information or type 'done' if you are finished: \n")
@@ -215,4 +217,5 @@ def create_schedule(active_user, make_or_write):
         schedule = open(users_object_path, "ab")
         pickle.dump(users_schedule, schedule)
         schedule.close()
+        print("\nYour schedule has been successfully edited, the program will now return you to the previous menu \n \n")
 

@@ -1,4 +1,5 @@
-import openpyxl, os
+import openpyxl
+import os
 import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
@@ -33,7 +34,6 @@ while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, or 'export' to create a copy of it: \n")
             if make_or_write.lower() == "set" or make_or_write.lower() == 'add':
                 create_schedule(active_user, make_or_write)
-                break
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user
                 schedule = open(users_object_path, 'rb')
@@ -97,11 +97,11 @@ while True:
 
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
             print("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
-            break
+            exit()
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")
-            break
+            exit()
 
     else:
         print("Sorry but I can understand what you want to do, please try again")
