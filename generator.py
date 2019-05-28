@@ -36,11 +36,22 @@ while True:
                 break
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user
-
                 schedule = open(users_object_path, 'rb')
                 users_schedule = pickle.load(schedule)
-                schedule.close()
+
+                while True:
+                    try:
+                        added_days = (pickle.load(schedule))
+                        for day in added_days.week:
+                            for user_day in users_schedule.week:
+                                if day.name == user_day.name:
+                                    for session in day.sessions:
+                                        user_day.sessions.append(session)
+                    except EOFError:
+                        schedule.close()
+                        break
                 break
+
             else:
                 print("Sorry that wasn't one of the options, please try again.")
 

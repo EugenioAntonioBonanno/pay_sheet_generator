@@ -138,7 +138,7 @@ def get_classes_subbed():
 
 def get_monthly_meeting():
     meeting = input("Did you have a meeting this month? If yes enter the day of the meeting as a number [ex 5th = 5] \n"
-                       "or enter 'done' to create a schedule with no monthl meeting:\n")
+                       "or enter 'done' to create a schedule with no monthly meeting added:\n")
     if meeting.lower() == "done":
         return 100
     else:
