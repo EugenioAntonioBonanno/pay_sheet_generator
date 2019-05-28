@@ -177,9 +177,9 @@ def create_schedule(active_user, make_or_write):
                             print(session.code, "day = ", session.day_taught, end=" ")
                         print("\n")
                     else:
-                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                        print("Sorry it seems the data you entered doesnt match the required format. Please try again")
                 except:
-                    print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                    print("Sorry it seems the data you entered doesnt match the required format. Please try again")
 
 
         monday_sessions = []
@@ -218,4 +218,77 @@ def create_schedule(active_user, make_or_write):
         pickle.dump(users_schedule, schedule)
         schedule.close()
         print("\nYour schedule has been successfully edited, the program will now return you to the previous menu \n \n")
+
+
+def remove_class(active_user):
+    classes_to_remove = []
+    users_object_path = root / "user_objects" / active_user
+    schedule = open(users_object_path, 'rb')
+    users_schedule = pickle.load(schedule)
+
+    while True:
+        try:
+            added_days = (pickle.load(schedule))
+            for day in added_days.week:
+                for user_day in users_schedule.week:
+                    if day.name == user_day.name:
+                        for session in day.sessions:
+                            user_day.sessions.append(session)
+        except EOFError:
+            schedule.close()
+            break
+
+    while True:
+
+        class_to_remove = input("Please enter the class you wish to remove in the same format you entered it"
+                            "[class, length' day] ex: W60 1 3. Or type 'done': \n")
+
+        if class_to_remove.lower() == 'done':
+            break
+
+        try:
+            class_list = class_to_remove.split()
+            if len(class_list) == 3:
+                classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
+                print("You have entered the following classes:", end=" ")
+                for session in classes_to_remove:
+                    print(session.code, "day = ", session.day_taught, end=" ")
+                print("\n")
+            else:
+                print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+        except:
+            print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+
+    for day in users_schedule.week:
+        for user_session in day.sessions:
+            for delete_session in classes_to_remove:
+                if user_session.code == delete_session.code and user_session.length == delete_session.length and user_session.day_taught == delete_session.day_taught:
+                    day.sessions.remove(user_session)
+
+    schedule = open(users_object_path, "wb")
+    pickle.dump(users_schedule, schedule)
+    schedule.close()
+
+
+
+
+
+class Day:
+    def __init__(self, name, sessions):
+        self.name = name
+        self.sessions = sessions
+
+
+class Session:
+    def __init__(self, code, length, day_taught):
+        self.code = code
+        self.length = length
+        self.day_taught = day_taught
+
+
+class User:
+    def __init__(self, user_name, week):
+        self.user_name = user_name
+        self.week = week  #list of day objects
+
 

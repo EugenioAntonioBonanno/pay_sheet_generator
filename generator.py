@@ -4,7 +4,7 @@ import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
-from user_functions import register_user, login_user, create_schedule
+from user_functions import register_user, login_user, create_schedule, remove_class
 from pathlib import Path
 
 
@@ -31,7 +31,8 @@ while True:
         active_user = login_user()
 
         while True:
-            make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, or 'export' to create a copy of it: \n")
+            make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
+                                  "'remove' to remove a class, or 'export' to create a copy of it: \n")
             if make_or_write.lower() == "set" or make_or_write.lower() == 'add':
                 create_schedule(active_user, make_or_write)
             elif make_or_write.lower() == "export":
@@ -51,6 +52,9 @@ while True:
                         schedule.close()
                         break
                 break
+
+            elif make_or_write.lower() == 'remove':
+                remove_class(active_user)
 
             else:
                 print("Sorry that wasn't one of the options, please try again.")
@@ -97,7 +101,8 @@ while True:
 
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
             print("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
-            exit()
+
+            break
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")
