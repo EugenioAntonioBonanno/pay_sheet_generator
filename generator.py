@@ -4,7 +4,7 @@ import pickle
 from dateutil.rrule import *
 from dateutil.parser import *
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
-from user_functions import register_user, login_user, create_schedule, remove_class, add_class
+from user_functions import register_user, login_user, create_schedule, remove_class, add_class, view_schedule
 from pathlib import Path
 
 
@@ -32,11 +32,13 @@ while True:
 
         while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
-                                  "'remove' to remove a class, or 'export' to create a copy of it: \n")
+                                  "'remove' to remove a class, 'view' to see your current schedule, or 'export' to create a copy of it: \n")
             if make_or_write.lower() == "set":
                 create_schedule(active_user, make_or_write)
             elif make_or_write.lower() == 'add':
                 add_class(active_user)
+            elif make_or_write.lower() == 'view':
+                view_schedule(active_user)
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user
                 schedule = open(users_object_path, 'rb')

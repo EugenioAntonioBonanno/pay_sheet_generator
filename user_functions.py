@@ -162,6 +162,7 @@ def create_schedule(active_user, make_or_write):
 
         print("\nYour schedule has been successfully created, the program will now return you to the previous menu.. \n \n")
 
+
 def add_class(active_user):
     classes_to_add = []
     users_object_path = root / "user_objects" / active_user
@@ -251,6 +252,41 @@ def remove_class(active_user):
     schedule = open(users_object_path, "wb")
     pickle.dump(users_schedule, schedule)
     schedule.close()
+
+
+def view_schedule(active_user):
+    users_object_path = root / "user_objects" / active_user
+    schedule = open(users_object_path, 'rb')
+    users_schedule = pickle.load(schedule)
+
+    while True:
+        day_to_see = input("Please enter the days you wish to view as a number or 'done' to exit. \n [1 = Monday 5 = Friday]:\n")
+
+        if day_to_see == '1':
+            day_to_see = "Monday"
+        elif day_to_see == '2':
+            day_to_see = "Tuesday"
+        elif day_to_see == '3':
+            day_to_see = "Wednesday"
+        elif day_to_see == '4':
+            day_to_see = "Thursday"
+        elif day_to_see == '5':
+            day_to_see = "Friday"
+        elif day_to_see.lower() == 'done':
+            break
+        else:
+            print("Sorry that isn't a valid option please try again")
+            pass
+
+        for day in users_schedule.week:
+            if day.name == day_to_see:
+                print("")
+                for session in day.sessions:
+                    print("Day:", day_to_see + ' Class Code:', session.code + ' Class length:', session.length)
+                print("")
+
+
+
 
 
 
