@@ -2,6 +2,8 @@ import pickle
 from hashlib import sha256 as hash
 from objects import Session, Day, User
 from pathlib import Path
+import getpass
+
 
 # Allows a user to register a local account
 root = Path(".")
@@ -24,9 +26,9 @@ def register_user():
         if new_user.lower() in all_users:
             print("Sorry that name is taken.")
         else:
-            password_1 = input("Hello " + new_user + " please create your password: \n ")
+            password_1 = getpass.getpass("Hello " + new_user + " please create your password: \n ")
             password_1 = hash(password_1.encode('utf-8'))
-            password_2 = input("please enter it one more time: \n ")
+            password_2 = getpass.getpass("please enter it one more time: \n ")
             password_2 = hash(password_2.encode('utf-8'))
 
             if password_1.digest() == password_2.digest():
@@ -79,7 +81,7 @@ def check_password(name):
 
 
     while True:
-        password = input("Please enter your password: \n")
+        password = getpass.getpass("Please enter your password: \n")
 
         if password:
             if hash(password.encode('utf-8')).digest() == all_users[name]:
