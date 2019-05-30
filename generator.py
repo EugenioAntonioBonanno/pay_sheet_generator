@@ -6,10 +6,19 @@ from dateutil.parser import *
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, get_monthly_meeting
 from user_functions import register_user, login_user, create_schedule, remove_class, add_class, view_schedule
 from pathlib import Path
-import getpass
-
+import logging
 
 root = Path(".")
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('logs.txt')
+file_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
 
 
 def make_skipped_days_filter(skipped_days):
@@ -23,6 +32,7 @@ def make_skipped_days_filter(skipped_days):
 
 while True:
     user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account: \n ")
+    logger.info('A user entered: ' + user_choice)
 
     if user_choice.lower() == 'register':
         register_user()
