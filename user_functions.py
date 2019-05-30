@@ -3,6 +3,18 @@ from hashlib import sha256 as hash
 from objects import Session, Day, User
 from pathlib import Path
 import getpass
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('logs.txt')
+file_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+
 
 
 # Allows a user to register a local account
@@ -36,10 +48,12 @@ def register_user():
                 users = open(users_info_path, 'wb')
                 pickle.dump(all_users, users)
                 users.close()
-                print("You are now registered, you may login next time.")
+                print("You are now registered, you may run the program again and login.")
+                logger.info(new_user + " has been created successfully")
                 break
             else:
                 print("Sorry your passwords didn't match, please restart the registration process.")
+                logger.info(new_user + " entered passwords that don't match ")
 
 
 # Allows a user to login well retaining any session objects they had created

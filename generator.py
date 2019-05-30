@@ -76,7 +76,7 @@ while True:
                 print("Sorry I can't make sense of what month you mean. Please try again.")
 
         # Generates a list of user input representing days they missed work
-        days_to_skip = get_days_missed()
+        days_to_skip = get_days_missed(active_user)
 
         # Figures out how many days are in the month
         end = find_month_length(month, year)
@@ -87,7 +87,7 @@ while True:
 
         monthly_meeting = get_monthly_meeting()
 
-        classes_subbed = get_classes_subbed()
+        classes_subbed = get_classes_subbed(active_user)
 
         workbook = openpyxl.Workbook()
 

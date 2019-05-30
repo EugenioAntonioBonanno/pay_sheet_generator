@@ -1,5 +1,17 @@
 from openpyxl.styles import Font
 from objects import SubbedSession
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('logs.txt')
+file_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
 
 
 # Takes in a month an year and returns how many days that month will have in it.
@@ -100,13 +112,15 @@ def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, classes_
 
 
 # Uses a while true loop to allow users to build a list of any days they missed work.
-def get_days_missed():
+def get_days_missed(active_user):
     days_to_skip = []
     print("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] for the 12th or enter 'done'. \n")
+
     while True:
 
         print("Your current missed days are as follows:", days_to_skip)
         missed_work = input("Enter a missed day as a number or 'done' to move on. \n")
+        logger.info((active_user + " entered:" + missed_work))
         if missed_work.lower() == 'done':
             break
         else:
@@ -115,7 +129,7 @@ def get_days_missed():
     return days_to_skip
 
 
-def get_classes_subbed():
+def get_classes_subbed(active_user):
     classes_subbed = []
     print(("\nHave you subbed any classes this month? \nInput 'done' if you haven't or when finished entering those you have.\n"
                    "If you have enter each class one at a time in the following format [class id, length , date] \n"
@@ -126,7 +140,7 @@ def get_classes_subbed():
             print(session.code, end=" ")
         print("\n")
         subbed = input("Enter a class to add to your subbed classes, or 'done' if you are finished:\n")
-
+        logger.info((active_user + " entered:" + subbed))
         if subbed.lower() == 'done':
             break
         else:
