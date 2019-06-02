@@ -44,6 +44,7 @@ while True:
         while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
                                   "'remove' to remove a class, 'view' to see your current schedule, or 'export' to create a copy of it: \n")
+            logger.info(active_user + ' has chosen the option: ' + make_or_write)
             if make_or_write.lower() == "set":
                 create_schedule(active_user, make_or_write)
             elif make_or_write.lower() == 'add':
@@ -61,6 +62,7 @@ while True:
 
             else:
                 print("Sorry that wasn't one of the options, please try again.")
+                logger.info(active_user + ' could not proceed with option '+ make_or_write + ' due to invalid input.')
 
 
         year = "2019"
@@ -68,12 +70,14 @@ while True:
         while True:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08', "9", '09', "10", '11', '12']
             month = input("Please input a month as a numeric value [EX 4 for April]: \n")
+            logger.info(active_user, 'set the month to', month, 'well making schedule.')
             if len(month) == 1:
                 month = "0" + month
             if month in possible_months:
                 break
             else:
                 print("Sorry I can't make sense of what month you mean. Please try again.")
+                logger.info(active_user + ' set the month to something that is not recognized as a month: ' + month + ' well making schedule.')
 
         # Generates a list of user input representing days they missed work
         days_to_skip = get_days_missed(active_user)
@@ -85,7 +89,7 @@ while True:
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"), until=parse("2019" + month + end + "T090000")))
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
-        monthly_meeting = get_monthly_meeting()
+        monthly_meeting = get_monthly_meeting(active_user)
 
         classes_subbed = get_classes_subbed(active_user)
 
@@ -100,15 +104,15 @@ while True:
 
             if not os.path.isdir("paysheets"):
                 os.makedirs("paysheets")
-
-
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
             print("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
+            logger.info(active_user + ' successfully generated a paysheet.')
 
             break
         except:
             print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")
+            logger.info(active_user + ' encountered an error well generating a paysheet.')
             exit()
 
     else:

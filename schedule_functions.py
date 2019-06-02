@@ -120,6 +120,7 @@ def get_days_missed(active_user):
 
         print("Your current missed days are as follows:", days_to_skip)
         missed_work = input("Enter a missed day as a number or 'done' to move on. \n")
+        logger.info(active_user + " added " + missed_work + ' to their list of days they did not work ')
         logger.info((active_user + " entered:" + missed_work))
         if missed_work.lower() == 'done':
             break
@@ -144,15 +145,20 @@ def get_classes_subbed(active_user):
         if subbed.lower() == 'done':
             break
         else:
-            subbed = subbed.split()
-            classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
+            try:
+                subbed = subbed.split()
+                classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
+                logger.info(active_user + " added " + subbed + 'to their list of classes they subbed.')
+            except:
+                print("Sorry but you entered that class in incorrectly, it won't be added. Please try again")
 
     return classes_subbed
 
 
-def get_monthly_meeting():
+def get_monthly_meeting(active_user):
     meeting = input("Did you have a meeting this month? If yes enter the day of the meeting as a number [ex 5th = 5] \n"
                        "or enter 'done' to create a schedule with no monthly meeting added:\n")
+    logger.info(active_user + " to their monthly meeting as " + meeting + '.')
     if meeting.lower() == "done":
         return 100
     else:
