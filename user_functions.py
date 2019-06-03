@@ -277,19 +277,23 @@ def view_schedule(active_user):
     users_schedule = pickle.load(schedule)
 
     while True:
-        day_to_see = input("Please enter the days you wish to view as a number or 'done' to exit. \n [1 = Monday 5 = Friday]:\n")
+        day_to_see = input("Please enter the day you wish to view as a number, enter 'all' to see your entire schedule or 'done' to exit. \n [1 = Monday 5 = Friday]:\n")
         logger.info(active_user + ' is about to view the day ' + day_to_see + ' from their schedule')
 
+        to_view = []
+
         if day_to_see == '1':
-            day_to_see = "Monday"
+            to_view.append("Monday")
         elif day_to_see == '2':
-            day_to_see = "Tuesday"
+            to_view.append("Tuesday")
         elif day_to_see == '3':
-            day_to_see = "Wednesday"
+            to_view.append("Wednesday")
         elif day_to_see == '4':
-            day_to_see = "Thursday"
+            to_view.append("Thursday")
         elif day_to_see == '5':
-            day_to_see = "Friday"
+            to_view.append("Friday")
+        elif day_to_see.lower() == 'all':
+            to_view = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
         elif day_to_see.lower() == 'done':
             break
         else:
@@ -298,10 +302,10 @@ def view_schedule(active_user):
             pass
 
         for day in users_schedule.week:
-            if day.name == day_to_see:
+            if day.name in to_view:
                 print("")
                 for session in day.sessions:
-                    print("Day:", day_to_see + ' Class Code:', session.code + ' Class length:', session.length)
+                    print("Day:", day.name + ' Class Code:', session.code + ' Class length:', session.length)
                 print("")
 
 
