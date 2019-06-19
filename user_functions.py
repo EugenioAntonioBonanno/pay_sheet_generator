@@ -6,15 +6,15 @@ import getpass
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
 
 file_handler = logging.FileHandler('logs.txt')
 file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
-
 
 
 # Allows a user to register a local account
@@ -36,7 +36,7 @@ def register_user():
 
         new_user = input("Please tell me your desired user name: \n ")
         if new_user.lower() in all_users:
-            print("Sorry that name is taken.")
+            logger.debug("Sorry that name is taken.")
         else:
             password_1 = getpass.getpass("Hello " + new_user + " please create your password: \n ")
             password_1 = hash(password_1.encode('utf-8'))
@@ -48,11 +48,11 @@ def register_user():
                 users = open(users_info_path, 'wb')
                 pickle.dump(all_users, users)
                 users.close()
-                print("You are now registered, you may run the program again and login.")
+                logger.debug("You are now registered, you may run the program again and login.")
                 logger.info(new_user + " has been created successfully")
                 break
             else:
-                print("Sorry your passwords didn't match, please restart the registration process.")
+                logger.debug("Sorry your passwords didn't match, please restart the registration process.")
                 logger.info(new_user + " tired to create a user, but entered passwords that don't match ")
 
 
@@ -81,7 +81,7 @@ def check_username():
         if name in all_users:
             break
         else:
-            print("Sorry we don't have a user by that name. Please try again, or register a new account")
+            logger.debug("Sorry we don't have a user by that name. Please try again, or register a new account")
     return name
 
 
@@ -99,11 +99,11 @@ def check_password(name):
 
         if password:
             if hash(password.encode('utf-8')).digest() == all_users[name]:
-                print("Welcome", name + ".")
+                logger.debug("Welcome " + name + ".")
                 logger.info(name + " has successfully logged in")
                 break
             else:
-                print("Sorry it appears your password is incorrect, please try again")
+                logger.debug("Sorry it appears your password is incorrect, please try again")
                 logger.info(name + " entered the wrong password ")
 
     return name
@@ -113,7 +113,7 @@ def create_schedule(active_user, make_or_write):
     sessions = []
     users_object_path = root / "user_objects" / active_user
 
-    print("\nPlease input your class info in EXACTLY the same format that will be described below: \n"
+    logger.debug("\nPlease input your class info in EXACTLY the same format that will be described below: \n"
           "[class (W55) length(in hours) day (as a num)]. \n"
           "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
           "Use the following example to format your input: 'W60 1 3'.\n"
@@ -132,16 +132,16 @@ def create_schedule(active_user, make_or_write):
                     session_list = session_info.split()
                     if len(session_list) == 3:
                             sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                            print("You have entered the following classes:", end=" ")
+                            logger.debug("You have entered the following classes:", end=" ")
                             for session in sessions:
-                                print(session.code, "day = ", session.day_taught, end=" ")
-                            print("\n")
+                                logger.debug(session.code, "day = ", session.day_taught, end=" ")
+                            logger.debug("\n")
                             logger.info(active_user + " added the class", session_info, "to there schedule.")
                     else:
-                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                        logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
                         logger.info(active_user + "attempted to add the incorrect format: " + session_info + " to their schedule.")
                 except:
-                        print("Sorry it seems the data you entered doesnt the required format. Please try again")
+                        logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
                         logger.info(active_user + "attempted to add the incorrect format:" + session_info + " to their schedule.")
 
 
@@ -181,7 +181,7 @@ def create_schedule(active_user, make_or_write):
         pickle.dump(users_schedule, schedule)
         schedule.close()
 
-        print("\nYour schedule has been successfully created, the program will now return you to the previous menu.. \n \n")
+        logger.debug("\nYour schedule has been successfully created, the program will now return you to the previous menu.. \n \n")
         logger.info(active_user + "has successfully set up their schedule.")
 
 
@@ -203,17 +203,17 @@ def add_class(active_user):
             class_list = class_to_add.split()
             if len(class_list) == 3:
                 classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
-                print("You have entered the following classes:", end=" ")
+                logger.debug("You have entered the following classes:", end=" ")
                 for session in classes_to_add:
-                    print(session.code, "day = ", session.day_taught, end=" ")
-                print("\n")
+                    logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                logger.debug("\n")
                 logger.info(active_user + "added the class", class_to_add, 'to their schedule.')
 
             else:
-                print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
                 logger.info(active_user + "attempted to add incorrect input " + class_to_add + ' to their schedule.')
         except:
-            print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+            logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
             logger.info(active_user + " attempted to add incorrect input " + class_to_add + ' to their schedule.')
 
     for add_session in classes_to_add:
@@ -227,7 +227,6 @@ def add_class(active_user):
     schedule = open(users_object_path, "wb")
     pickle.dump(users_schedule, schedule)
     schedule.close()
-
 
 
 def remove_class(active_user):
@@ -248,16 +247,16 @@ def remove_class(active_user):
             class_list = class_to_remove.split()
             if len(class_list) == 3:
                 classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
-                print("You have entered the following classes:", end=" ")
+                logger.debug("You have entered the following classes:", end=" ")
                 for session in classes_to_remove:
-                    print(session.code, "day = ", session.day_taught, end=" ")
-                print("\n")
-                logger.info(active_user + "removed the class", class_to_remove, 'from their schedule.')
+                    logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                logger.debug("\n")
+                logger.info(active_user + "removed the class" + class_to_remove + ' from their schedule.')
             else:
-                print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
                 logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove + ' from their schedule.')
         except:
-            print("Sorry it seems the data you entered doesnt match the required format. Please try again")
+            logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
             logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove + ' from their schedule.')
 
     for day in users_schedule.week:
@@ -297,16 +296,16 @@ def view_schedule(active_user):
         elif day_to_see.lower() == 'done':
             break
         else:
-            print("Sorry that isn't a valid option please try again")
+            logger.debug("Sorry that isn't a valid option please try again")
             logger.info(active_user + 'failed to view ' + day_to_see + ' from their schedule due to incorrect input')
             pass
 
         for day in users_schedule.week:
             if day.name in to_view:
-                print("")
+                logger.debug("")
                 for session in day.sessions:
-                    print("Day:", day.name + ' Class Code:', session.code + ' Class length:', session.length)
-                print("")
+                    logger.debug("Day: " + day.name + ' Class Code: ' + session.code + ' Class length: ' + session.length)
+                logger.debug("")
 
 
 

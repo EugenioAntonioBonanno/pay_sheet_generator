@@ -4,12 +4,13 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
 
 file_handler = logging.FileHandler('logs.txt')
 file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
 
@@ -114,11 +115,11 @@ def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, classes_
 # Uses a while true loop to allow users to build a list of any days they missed work.
 def get_days_missed(active_user):
     days_to_skip = []
-    print("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] for the 12th or enter 'done'. \n")
+    logger.debug("Enter any days you missed work due to sickness or holiday as a number. [ex '12'] for the 12th or enter 'done'. \n")
 
     while True:
 
-        print("Your current missed days are as follows:", days_to_skip)
+        logger.debug("Your current missed days are as follows:", days_to_skip)
         missed_work = input("Enter a missed day as a number or 'done' to move on. \n")
         logger.info(active_user + " added " + missed_work + ' to their list of days they did not work ')
         logger.info((active_user + " entered:" + missed_work))
@@ -132,14 +133,14 @@ def get_days_missed(active_user):
 
 def get_classes_subbed(active_user):
     classes_subbed = []
-    print(("\nHave you subbed any classes this month? \nInput 'done' if you haven't or when finished entering those you have.\n"
+    logger.debug(("\nHave you subbed any classes this month? \nInput 'done' if you haven't or when finished entering those you have.\n"
                    "If you have enter each class one at a time in the following format [class id, length , date] \n"
                    "ex: W34 2 13."))
     while True:
-        print("Your current list of classes you have subbed this month is as follows:")
+        logger.debug("Your current list of classes you have subbed this month is as follows:")
         for session in classes_subbed:
-            print(session.code, end=" ")
-        print("\n")
+            logger.debug(session.code, end=" ")
+        logger.debug("\n")
         subbed = input("Enter a class to add to your subbed classes, or 'done' if you are finished:\n")
         logger.info((active_user + " entered:" + subbed))
         if subbed.lower() == 'done':
@@ -150,7 +151,7 @@ def get_classes_subbed(active_user):
                 classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
                 logger.info(active_user + " added " + subbed + 'to their list of classes they subbed.')
             except:
-                print("Sorry but you entered that class in incorrectly, it won't be added. Please try again")
+                logger.debug("Sorry but you entered that class in incorrectly, it won't be added. Please try again")
 
     return classes_subbed
 
