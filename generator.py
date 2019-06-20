@@ -1,6 +1,8 @@
 import os
+import getpass
 import pickle
 import logging
+import sys
 from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
@@ -8,9 +10,11 @@ import openpyxl
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, \
     get_monthly_meeting
 from user_functions import register_user, login_user, create_schedule, remove_class, add_class, view_schedule
+from user import User, UserDataService, UserAuthenticator, UserRepository
 
 
 root = Path(".")
+user_database_path = root / "user_info" / "users"
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(message)s', level=logging.DEBUG)
@@ -22,6 +26,10 @@ file_handler.setFormatter(formatter)
 file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
+
+if os.getenv("PSG_USER_DATABASE_PATH") == "":
+    logger.debug("Please export the user database path to environment as 'PSG_USER_DATABASE_PATH'")
+    sys.exit(1)
 
 
 def make_skipped_days_filter(skipped_days):
@@ -42,7 +50,21 @@ while True:
         break
 
     if user_choice.lower() == "login":
-        active_user = login_user()
+        is_authenticated = False
+        while not is_authenticated:
+            name = input("Please enter your user name:\n")
+            password = getpass.getpass("Please enter your password:\n")
+
+            user = UserRepository(UserDataService()).find_by_username(name)
+
+            is_authenticated = UserAuthenticator().is_authentic(user, password)
+            if is_authenticated:
+                active_user = user.username
+                logger.debug("Welcome " + name + ".")
+                logger.info(active_user + " has successfully logged in")
+            else:
+                logger.debug(
+                    "Sorry that information doesn't match our records. Please try again, or register a new account")
 
         while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
