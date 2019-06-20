@@ -11,12 +11,13 @@ import logging
 root = Path(".")
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
 
 file_handler = logging.FileHandler('logs.txt')
 file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
 
@@ -61,7 +62,7 @@ while True:
                 remove_class(active_user)
 
             else:
-                print("Sorry that wasn't one of the options, please try again.")
+                logger.debug("Sorry that wasn't one of the options, please try again.")
                 logger.info(active_user + ' could not proceed with option '+ make_or_write + ' due to invalid input.')
 
 
@@ -76,7 +77,7 @@ while True:
             if month in possible_months:
                 break
             else:
-                print("Sorry I can't make sense of what month you mean. Please try again.")
+                logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
                 logger.info(active_user + ' set the month to something that is not recognized as a month: ' + month + ' well making schedule.')
 
         # Generates a list of user input representing days they missed work
@@ -105,16 +106,16 @@ while True:
             if not os.path.isdir("paysheets"):
                 os.makedirs("paysheets")
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
-            print("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
+            logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets' located inside the folder containing this program.")
             logger.info(active_user + ' successfully generated a paysheet.')
 
             break
         except:
-            print("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
+            logger.debug("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are currently open. "
                   "If they are close them, and then retry well paying careful attention to the on screen instructions.")
             logger.info(active_user + ' encountered an error well generating a paysheet.')
             exit()
 
     else:
-        print("Sorry but I can understand what you want to do, please try again")
+        logger.debug("Sorry but I can understand what you want to do, please try again")
 

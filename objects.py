@@ -17,6 +17,7 @@ class User:
         self.user_name = user_name
         self.week = week  #list of day objects
 
+
 class SubbedSession:
     def __init__(self, code, length, date):
         self.code = code
