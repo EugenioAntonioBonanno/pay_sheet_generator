@@ -57,59 +57,6 @@ def register_user():
                 logger.info(new_user + " tired to create a user, but entered passwords that don\"t match ")
 
 
-# Allows a user to login well retaining any session objects they had created
-def login_user():
-
-    name = check_username()
-
-    name = check_password(name)
-
-    return name
-
-
-def check_username():
-    try:
-        users = open(users_info_path, "rb")
-        all_users = pickle.load(users)
-        users.close()
-
-    except:
-        all_users = {}
-
-    while True:
-        name = input("Please enter your user name: \n")
-
-        if name in all_users:
-            break
-        else:
-            logger.debug("Sorry we don\"t have a user by that name. Please try again, or register a new account")
-    return name
-
-
-def check_password(name):
-    try:
-        users = open(users_info_path, "rb")
-        all_users = pickle.load(users)
-        users.close()
-    except:
-        all_users = {}
-
-
-    while True:
-        password = getpass.getpass("Please enter your password: \n")
-
-        if password:
-            if hash(password.encode("utf-8")).digest() == all_users[name]:
-                logger.debug("Welcome " + name + ".")
-                logger.info(name + " has successfully logged in")
-                break
-            else:
-                logger.debug("Sorry it appears your password is incorrect, please try again")
-                logger.info(name + " entered the wrong password ")
-
-    return name
-
-
 def create_schedule(active_user, make_or_write):
     sessions = []
     users_object_path = root / "user_objects" / active_user
