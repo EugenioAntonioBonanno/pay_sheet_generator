@@ -9,7 +9,7 @@ from dateutil.parser import parse
 import openpyxl
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, \
     get_monthly_meeting
-from user_functions import register_user, login_user, create_schedule, remove_class, add_class, view_schedule
+from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
 from user import User, UserDataService, UserAuthenticator, UserRepository
 
 
