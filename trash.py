@@ -57,10 +57,6 @@ while True:
 
             user = UserRepository(UserDataService()).find_by_username(name)
 
-            if user is None:
-                logger.debug("Sorry but t")
-                break
-
             is_authenticated = UserAuthenticator().is_authentic(user, password)
             if is_authenticated:
                 active_user = user.username
@@ -100,7 +96,7 @@ while True:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
                                "9", '09', "10", '11', '12']
             month = input("Please input a month as a numeric value [EX 4 for April]: \n")
-            logger.info(active_user, 'set the month to', month, 'well making schedule.')
+            logger.info(active_user, 'set the month to', str(month), 'well making schedule.')
             if len(month) == 1:
                 month = "0" + month
             if month in possible_months:
@@ -108,7 +104,7 @@ while True:
             else:
                 logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
                 logger.info(active_user + ' set the month to something that is not recognized as a month:'
-                                          ' ' + month + ' well making schedule.')
+                                          ' ' + str(month) + ' well making schedule.')
 
         # Generates a list of user input representing days they missed work
         days_to_skip = get_days_missed(active_user)
