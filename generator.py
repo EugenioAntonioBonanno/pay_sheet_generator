@@ -10,7 +10,7 @@ import openpyxl
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, \
     get_monthly_meeting
 from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
-from user import User, UserDataService, UserAuthenticator, UserRepository
+from user import UserDataService, UserAuthenticator, UserRepository
 
 
 root = Path(".")
@@ -92,7 +92,7 @@ while True:
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")
-                logger.info(active_user + " could not proceed with option  "+ make_or_write + " due to invalid input. ")
+                logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input. ")
 
         year = "2019"
 
@@ -100,7 +100,7 @@ while True:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
                                "9", '09', "10", '11', '12']
             month = input("Please input a month as a numeric value [EX 4 for April]: \n")
-            logger.info(active_user, 'set the month to', month, 'well making schedule.')
+            logger.info(active_user, 'set the month to ' + month + ' well making schedule.')
             if len(month) == 1:
                 month = "0" + month
             if month in possible_months:

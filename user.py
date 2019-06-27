@@ -64,11 +64,11 @@ class UserDataService:
 
     def __user_database_exists(self):
 
-        return Path(os.getenv("PSG_USER_DATABASE_PATH")).is_file()
+        return Path(users_info_path).is_file()
 
     def __create_user_database(self):
         try:
-            users = open(os.getenv("PSG_USER_DATABASE_PATH"), "wb")
+            users = open(users_info_path, "wb")
             pickle.dump({}, users)
         except Exception as error:
             logger.error("database creation failed: " + error)
