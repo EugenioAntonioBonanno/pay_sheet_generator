@@ -3,33 +3,36 @@ import getpass
 import pickle
 import logging
 import sys
+import openpyxl
 from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
-import openpyxl
+from hashlib import sha256 as hash
 from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, \
     get_monthly_meeting
 from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
-from user import UserDataService, UserAuthenticator, UserRepository
+from user import UserDataService, UserAuthenticator, UserRepository, User
 
-
-root = Path(".")
-user_database_path = root / "user_info" / "users"
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+logging.basicConfig(format="%(message)s", level=logging.DEBUG)
 
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
+formatter = logging.Formatter("%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s")
 
-file_handler = logging.FileHandler('logs.txt')
+file_handler = logging.FileHandler("logs.txt")
 file_handler.setFormatter(formatter)
 file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
 
-if os.getenv("PSG_USER_DATABASE_PATH") == "":
-    logger.debug("Please export the user database path to environment as 'PSG_USER_DATABASE_PATH'")
-    sys.exit(1)
+
+root = Path(".")
+user_database_path = root / "user_info" / "users"
+
+
+#if os.getenv("PSG_USER_DATABASE_PATH") == "":
+    #logger.debug("Please export the user database path to environment as 'PSG_USER_DATABASE_PATH'")
+    #sys.exit(1)
 
 
 def make_skipped_days_filter(skipped_days):
@@ -45,9 +48,28 @@ while True:
     user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account: \n ")
     logger.info("A user entered: " + user_choice)
 
+
     if user_choice.lower() == 'register':
-        register_user()
-        break
+        new_user = input("Please input your desired user name:\n")
+        advance = UserDataService().check_if_user_unique(new_user)
+
+        if advance:
+            password_1 = getpass.getpass("Hello " + new_user + " please create your password: \n ")
+            password_1 = hash(password_1.encode("utf-8"))
+            password_2 = getpass.getpass("please enter it one more time: \n ")
+            password_2 = hash(password_2.encode("utf-8"))
+            advance = UserDataService().ensure_passwords_match(password_1.digest(), password_2.digest())
+
+            if advance:
+                UserDataService().save_user(User(new_user, password_2.digest()))
+                logger.debug(new_user + " has been saved. GREAT SUCCESS!")
+        else:
+            logger.debug("Sorry that name is already taken. Please try again")
+
+
+
+
+
 
     if user_choice.lower() == "login":
         is_authenticated = False

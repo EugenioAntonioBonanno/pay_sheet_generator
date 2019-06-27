@@ -48,13 +48,32 @@ class UserDataService:
         try:
             users = open(users_info_path, "rb")
             all_users = pickle.load(users)
+            users.close()
+
             all_users[user.username] = user.hashed_password
+            users = open(users_info_path, "wb")
             pickle.dump(all_users, users)
             users.close()
 
         except Exception as error:
+            logger.error("database creation failed: " + str(error))
+            raise UserDataServiceException("Sorry but we cannot currently access the database.")
+
+    def check_if_user_unique(self, new_user):
+        self.__ensure_database_exists()
+        try:
+            users = open(users_info_path, "rb")
+            all_users = pickle.load(users)
+            if new_user in all_users:
+                return False
+            else:
+                return True
+        except Exception as error:
             logger.error("database creation failed: " + error)
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
+
+    def ensure_passwords_match(self, password_1, password_2):
+        return password_1 == password_2
 
 
     def __ensure_database_exists(self):
@@ -85,7 +104,6 @@ class UserRepository:
     def __init__(self, data_service):
         self.__data_service = data_service
 
-
     def find_by_username(self, username):
         users = self.__data_service.load()
         if username in users:
@@ -95,7 +113,6 @@ class UserRepository:
 
     def register_user(self, user: User):
        self.__data_service.save_user(user)
-
 
 
 class UserAuthenticator:
