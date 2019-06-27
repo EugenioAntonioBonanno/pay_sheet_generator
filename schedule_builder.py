@@ -68,20 +68,9 @@ class ScheduleWriter:
                 [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
             if len(classes_subbed) > 0:
-                for subbed in classes_subbed:
-                    if int(subbed.date) == int(day.day):
-                        sheet[col[col_index] + str(row_index)] = day_and_month
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = subbed.code
-                        col_index += 1
-                        sheet[col[col_index] + str(row_index)] = subbed.length
-                        col_index += 3
+                [sheet, row_index, col_index] = self.write_subbed_classes(classes_subbed, day, sheet, col, col_index, row_index, day_and_month)
 
-                        if col_index == 5:
-                            pass
-                        else:
-                            col_index = 0
-                            row_index += 1
+
 
         return sheet
 
@@ -120,6 +109,24 @@ class ScheduleWriter:
             row_index += 1
 
         return [sheet, row_index, col_index]
+
+    def write_subbed_classes(self, classes_subbed, day, sheet, col, col_index, row_index, day_and_month):
+        for subbed in classes_subbed:
+            if int(subbed.date) == int(day.day):
+                sheet[col[col_index] + str(row_index)] = day_and_month
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = subbed.code
+                col_index += 1
+                sheet[col[col_index] + str(row_index)] = subbed.length
+                col_index += 3
+
+                if col_index == 5:
+                    pass
+                else:
+                    col_index = 0
+                    row_index += 1
+
+            return [sheet, row_index, col_index]
 
 
 

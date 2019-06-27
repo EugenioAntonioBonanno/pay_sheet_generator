@@ -148,7 +148,7 @@ def get_classes_subbed(active_user):
     while True:
         logger.debug("Your current list of classes you have subbed this month is as follows:")
         for session in classes_subbed:
-            logger.debug(session.code, end=" ")
+            logger.debug(session.code + " ")
         logger.debug("\n")
         subbed = input("Enter a class to add to your subbed classes, or \"done\" if you are finished:\n")
         logger.info((active_user + " entered:" + subbed))
