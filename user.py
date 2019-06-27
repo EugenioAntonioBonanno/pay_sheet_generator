@@ -16,6 +16,9 @@ file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
 
+root = Path(".")
+
+users_info_path = root / "user_info" / "users"
 
 class User:
 
@@ -32,7 +35,7 @@ class UserDataService:
     def load(self):
         self.__ensure_database_exists()
         try:
-            users = open(os.getenv("PSG_USER_DATABASE_PATH"), "rb")
+            users = open(users_info_path, "rb")
             all_users = pickle.load(users)
             users.close()
             return all_users
@@ -43,7 +46,7 @@ class UserDataService:
     def save_user(self, user: User):
         self.__ensure_database_exists()
         try:
-            users = open(os.getenv("PSG_USER_DATABASE_PATH"), "rb")
+            users = open(users_info_path, "rb")
             all_users = pickle.load(users)
             all_users[user.username] = user.hashed_password
             pickle.dump(all_users, users)
