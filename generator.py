@@ -2,7 +2,6 @@ import os
 import getpass
 import pickle
 import logging
-import sys
 import openpyxl
 from pathlib import Path
 from dateutil.rrule import rrule, DAILY
@@ -12,6 +11,7 @@ from schedule_functions import find_month_length, format_sheet, write_schedule, 
     get_monthly_meeting
 from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
+from schedule_builder import ScheduleFormatter, ScheduleWriter
 
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,6 @@ while True:
     user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account: \n ")
     logger.info("A user entered: " + user_choice)
 
-
     if user_choice.lower() == 'register':
         new_user = input("Please input your desired user name:\n")
         advance = UserDataService().check_if_user_unique(new_user)
@@ -63,13 +62,12 @@ while True:
             if advance:
                 UserDataService().save_user(User(new_user, password_2.digest()))
                 logger.debug(new_user + " has been saved. GREAT SUCCESS!")
+                break
+            else:
+                logger.debug("Sorry your passwords don't match.")
+
         else:
             logger.debug("Sorry that name is already taken. Please try again")
-
-
-
-
-
 
     if user_choice.lower() == "login":
         is_authenticated = False
@@ -80,7 +78,7 @@ while True:
             user = UserRepository(UserDataService()).find_by_username(name)
 
             if user is None:
-                logger.debug("Sorry but t")
+                logger.debug("Sorry but that user doesn't exist")
                 break
 
             is_authenticated = UserAuthenticator().is_authentic(user, password)
@@ -149,10 +147,14 @@ while True:
 
         workbook = openpyxl.Workbook()
 
-        sheet = format_sheet(workbook, active_user, month, year)
+        sheet = ScheduleFormatter().create_schedule(workbook)
+
+        sheet = ScheduleFormatter().format_schedule(sheet, active_user, month, year)
+
+        sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = write_schedule(days_to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed)
+        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed)
 
         try:
 
