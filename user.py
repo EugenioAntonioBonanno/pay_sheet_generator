@@ -1,7 +1,11 @@
 import os
 from hashlib import sha256 as hash
+from pathlib import Path
 import pickle
 
+
+root = Path(".")
+users_info_path = root / "user_info" / "users"
 
 class User:
 
@@ -17,7 +21,7 @@ class UserDataService:
 
     def load(self):
         try:
-            users = open(os.getenv("PSG_USER_DATABASE_PATH"), "rb")
+            users = open(users_info_path, "rb")
             all_users = pickle.load(users)
             users.close()
             return all_users
