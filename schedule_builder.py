@@ -65,18 +65,7 @@ class ScheduleWriter:
                                                           day="Friday")
 
             if int(day.day) == int(monthly_meeting):
-                sheet[col[col_index] + str(row_index)] = day_and_month
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = "Meeting"
-                col_index += 1
-                sheet[col[col_index] + str(row_index)] = "1"
-                col_index += 3
-
-                if col_index == 5:
-                    pass
-                else:
-                    col_index = 0
-                    row_index += 1
+                [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
             if len(classes_subbed) > 0:
                 for subbed in classes_subbed:
