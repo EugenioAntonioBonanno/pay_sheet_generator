@@ -127,7 +127,9 @@ def get_days_missed(active_user):
 
     while True:
 
-        logger.debug("Your current missed days are as follows: " + days_to_skip)
+        logger.debug("Your current missed days are as follows: ")
+        for day in days_to_skip:
+            logger.debug(str(day))
         missed_work = input("Enter a missed day as a number or \"done\" to move on. \n")
         logger.info(active_user + " added " + missed_work + " to their list of days they did not work ")
         logger.info((active_user + " entered:" + missed_work))
