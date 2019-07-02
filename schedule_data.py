@@ -17,7 +17,7 @@ file_handler.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 
 
-class create_new_schedule:
+class CreateNewSchedule:
 
     def add_sessions(self, active_user):
         sessions = []
@@ -37,11 +37,11 @@ class create_new_schedule:
                     session_list = session_info.split()
                     if len(session_list) == 3:
                         sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                        logger.debug("You have entered the following classes:", end=" ")
+                        logger.debug("You have entered the following classes:")
                         for session in sessions:
-                            logger.debug(session.code, "day = ", session.day_taught, end=" ")
-                        logger.debug("\n")
-                        logger.info(active_user + " added the class", session_info, "to there schedule.")
+                            logger.debug(session.code + " day = " + session.day_taught)
+                        logger.debug(" ")
+                        logger.info(active_user + " added the class " + session_info + " to there schedule.")
                     else:
                         logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
                         logger.info(active_user + "attempted to add the incorrect format: " + session_info +
