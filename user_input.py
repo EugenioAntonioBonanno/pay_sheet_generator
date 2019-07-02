@@ -12,7 +12,7 @@ file_handler.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 
 
-class SubbedSession:
+class ExtraSession:
     def __init__(self, code, length, date):
         self.code = code
         self.length = length
@@ -39,28 +39,33 @@ class MonthlySpecificData:
 
         return days_to_skip
 
-    def get_classes_subbed(self, active_user):
-        classes_subbed = []
+    def get_extra_session_worked(self, active_user):
+        extra_sessions_worked = []
         logger.debug(("\nHave you subbed any classes this month? \nInput \"done\" if you haven\"t or when finished entering"
                       " those you have.\n"
                       "If you have enter each class one at a time in the following format [class id length date] \n"
                       "ex: W34 2 13."))
         while True:
             logger.debug("Your current list of classes you have subbed this month is as follows:")
-            for session in classes_subbed:
+            for session in extra_sessions_worked:
                 logger.debug(session.code + " ")
             logger.debug("\n")
-            subbed = input("Enter a class to add to your subbed classes, or \"done\" if you are finished:\n")
-            logger.info((active_user + " entered:" + subbed))
-            if subbed.lower() == "done":
+            extra_session = input("Enter a class to add to your subbed classes, or \"done\" if you are finished:\n")
+            logger.info((active_user + " entered:" + extra_session))
+            if extra_session.lower() == "done":
                 break
             else:
                 try:
-                    subbed = subbed.split(" ")
-                    classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
-                    logger.info(active_user + " added " + subbed + "to their list of classes they subbed.")
+                    extra_session_split = extra_session.split(" ")
+                    extra_sessions_worked.append(ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
+                    logger.info(active_user + " added " + extra_session + "to their list of classes they subbed.")
                 except:
                     logger.debug("Sorry but you entered that class in incorrectly, it won\"t be added. Please try again")
 
-        return classes_subbed
+        return extra_sessions_worked
 
+
+extra_sessions = MonthlySpecificData().get_extra_session_worked(active_user="gino")
+
+for session in extra_sessions:
+    print(session.code)
