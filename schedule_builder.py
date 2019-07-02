@@ -43,29 +43,36 @@ class ScheduleWriter:
 
             if day.weekday() == 0:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
-                                                          day="Monday")
+                                                               day="Monday")
 
             elif day.weekday() == 1:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
-                                                          day="Tuesday")
+                                                               day="Tuesday")
 
             elif day.weekday() == 2:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
-                                                          day="Wednesday")
+                                                               day="Wednesday")
 
             elif day.weekday() == 3:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
-                                                          day="Thursday")
+                                                               day="Thursday")
 
             elif day.weekday() == 4:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
-                                                          day="Friday")
+                                                               day="Friday")
+            elif day.weekday() == 5:
+                [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
+                                                               day="Saturday")
+            elif day.weekday() == 4:
+                [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
+                                                               day="Sunday")
 
             if int(day.day) == int(monthly_meeting):
                 [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
             if len(extra_sessions_worked) > 0:
-                [sheet, row_index, col_index] = self.write_extra_sessions(extra_sessions_worked, day, sheet, col, col_index, row_index, day_and_month)
+                [sheet, row_index, col_index] = self.write_extra_sessions(extra_sessions_worked, day, sheet, col,
+                                                                          col_index, row_index, day_and_month)
 
 
         return sheet

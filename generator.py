@@ -121,7 +121,7 @@ while True:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
                                "9", '09', "10", '11', '12']
             month = input("Please input a month as a numeric value [EX 4 for April]: \n")
-            logger.info(active_user, 'set the month to ' + month + ' well making schedule.')
+            logger.info(active_user + ' set the month to ' + month + ' well making schedule.')
             if len(month) == 1:
                 month = "0" + month
             if month in possible_months:
