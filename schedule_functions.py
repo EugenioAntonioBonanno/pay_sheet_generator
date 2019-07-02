@@ -143,7 +143,7 @@ def get_classes_subbed(active_user):
     classes_subbed = []
     logger.debug(("\nHave you subbed any classes this month? \nInput \"done\" if you haven\"t or when finished entering"
                   " those you have.\n"
-                  "If you have enter each class one at a time in the following format [class id, length , date] \n"
+                  "If you have enter each class one at a time in the following format [class id length date] \n"
                   "ex: W34 2 13."))
     while True:
         logger.debug("Your current list of classes you have subbed this month is as follows:")
@@ -156,7 +156,7 @@ def get_classes_subbed(active_user):
             break
         else:
             try:
-                subbed = subbed.split()
+                subbed = subbed.split(" ")
                 classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
                 logger.info(active_user + " added " + subbed + "to their list of classes they subbed.")
             except:

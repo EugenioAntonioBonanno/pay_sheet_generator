@@ -70,8 +70,6 @@ class ScheduleWriter:
             if len(classes_subbed) > 0:
                 [sheet, row_index, col_index] = self.write_subbed_classes(classes_subbed, day, sheet, col, col_index, row_index, day_and_month)
 
-
-
         return sheet
 
     def write_day(self, users_schedule, row_index, col_index, day_and_month, sheet, col, day="Monday"):
@@ -92,7 +90,6 @@ class ScheduleWriter:
                         col_index = 0
                         row_index += 1
         return [sheet, row_index, col_index]
-
 
     def write_monthly_meeting(self, sheet, col, col_index, row_index, day_and_month):
         sheet[col[col_index] + str(row_index)] = day_and_month
