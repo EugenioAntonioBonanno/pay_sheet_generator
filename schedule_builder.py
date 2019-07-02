@@ -1,7 +1,4 @@
 from openpyxl.styles import Font
-from objects import SubbedSession
-import logging
-
 
 class ScheduleFormatter:
 
@@ -36,7 +33,7 @@ class ScheduleFormatter:
 
 class ScheduleWriter:
 
-    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed):
+    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked):
         col = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
         col_index = 0
         row_index = 4
@@ -67,8 +64,9 @@ class ScheduleWriter:
             if int(day.day) == int(monthly_meeting):
                 [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
-            if len(classes_subbed) > 0:
-                [sheet, row_index, col_index] = self.write_subbed_classes(classes_subbed, day, sheet, col, col_index, row_index, day_and_month)
+            if len(extra_sessions_worked) > 0:
+                [sheet, row_index, col_index] = self.write_extra_sessions(extra_sessions_worked, day, sheet, col, col_index, row_index, day_and_month)
+
 
         return sheet
 
@@ -107,14 +105,14 @@ class ScheduleWriter:
 
         return [sheet, row_index, col_index]
 
-    def write_subbed_classes(self, classes_subbed, day, sheet, col, col_index, row_index, day_and_month):
-        for subbed in classes_subbed:
-            if int(subbed.date) == int(day.day):
+    def write_extra_sessions(self, extra_sessions_worked, day, sheet, col, col_index, row_index, day_and_month):
+        for worked in extra_sessions_worked:
+            if int(worked.date) == int(day.day):
                 sheet[col[col_index] + str(row_index)] = day_and_month
                 col_index += 1
-                sheet[col[col_index] + str(row_index)] = subbed.code
+                sheet[col[col_index] + str(row_index)] = worked.code
                 col_index += 1
-                sheet[col[col_index] + str(row_index)] = subbed.length
+                sheet[col[col_index] + str(row_index)] = worked.length
                 col_index += 3
 
                 if col_index == 5:
@@ -123,7 +121,7 @@ class ScheduleWriter:
                     col_index = 0
                     row_index += 1
 
-            return [sheet, row_index, col_index]
+        return [sheet, row_index, col_index]
 
 
 

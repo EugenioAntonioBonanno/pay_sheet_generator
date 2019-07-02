@@ -12,6 +12,7 @@ from schedule_functions import find_month_length, format_sheet, write_schedule, 
 from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_builder import ScheduleFormatter, ScheduleWriter
+from user_input import MonthSpecificData
 
 
 logger = logging.getLogger(__name__)
@@ -130,20 +131,19 @@ while True:
                 logger.info(active_user + ' set the month to something that is not recognized as a month:'
                                           ' ' + month + ' well making schedule.')
 
-        # Generates a list of user input representing days they missed work
         days_to_skip = get_days_missed(active_user)
 
-        # Figures out how many days are in the month
         end = find_month_length(month, year)
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
                                 until=parse("2019" + month + end + "T090000")))
+
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
         monthly_meeting = get_monthly_meeting(active_user)
 
-        classes_subbed = get_classes_subbed(active_user)
+        extra_sessions_worked = MonthSpecificData().get_extra_session_worked(active_user)
 
         workbook = openpyxl.Workbook()
 
@@ -154,7 +154,7 @@ while True:
         sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed)
+        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked)
 
         try:
 

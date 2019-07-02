@@ -19,7 +19,7 @@ class ExtraSession:
         self.date = date
 
 
-class MonthlySpecificData:
+class MonthSpecificData:
 
     def get_days_missed(self, active_user):
         days_to_skip = []
@@ -65,7 +65,7 @@ class MonthlySpecificData:
         return extra_sessions_worked
 
 
-extra_sessions = MonthlySpecificData().get_extra_session_worked(active_user="gino")
+#extra_sessions = MonthlySpecificData().get_extra_session_worked(active_user="gino")
 
-for session in extra_sessions:
-    print(session.code)
+#for session in extra_sessions:
+ #   print(session.code)
