@@ -98,6 +98,8 @@ class CreateNewSchedule:
 
     def save_users_schedule(self, users_schedule, users_object_path, active_user):
 
+        self.__ensure_database_exists(active_user)
+
         schedule = open(users_object_path, "wb")
         pickle.dump(users_schedule, schedule)
         schedule.close()
@@ -105,3 +107,24 @@ class CreateNewSchedule:
         logger.debug("\nYour schedule has been successfully created, the program will now return you "
                      "to the previous menu.. \n \n")
         logger.info(active_user + "has successfully set up their schedule.")
+
+    def __ensure_database_exists(self, active_user):
+        users_object_path = self.create_object_path(active_user)
+        if self.__user_database_exists(users_object_path):
+            return
+        self.__create_user_database(users_object_path)
+
+    def __user_database_exists(self, users_object_path):
+
+        return Path(users_object_path).is_file()
+
+    def __create_user_database(self, users_object_path):
+        try:
+            users = open(users_object_path, "wb")
+            pickle.dump({}, users)
+        except Exception as error:
+            logger.error("database creation failed: " + error)
+            raise ScheduleDataException("Sorry but database creation has failed.")
+
+class ScheduleDataException(Exception):
+    pass
