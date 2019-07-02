@@ -65,7 +65,3 @@ class MonthSpecificData:
         return extra_sessions_worked
 
 
-#extra_sessions = MonthlySpecificData().get_extra_session_worked(active_user="gino")
-
-#for session in extra_sessions:
- #   print(session.code)

@@ -11,8 +11,8 @@ from schedule_functions import find_month_length, format_sheet, write_schedule, 
     get_monthly_meeting
 from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
-from schedule_builder import ScheduleFormatter, ScheduleWriter
-from user_input import MonthSpecificData
+from schedule_exporter import ScheduleFormatter, ScheduleWriter
+from monthly_variables import MonthSpecificData
 
 
 logger = logging.getLogger(__name__)
