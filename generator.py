@@ -7,9 +7,8 @@ from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from hashlib import sha256 as hash
-from schedule_functions import find_month_length, format_sheet, write_schedule, get_days_missed, get_classes_subbed, \
-    get_monthly_meeting
-from user_functions import register_user, create_schedule, remove_class, add_class, view_schedule
+from schedule_functions import find_month_length, get_days_missed,get_monthly_meeting
+from user_functions import remove_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
