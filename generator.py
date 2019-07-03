@@ -13,7 +13,7 @@ from user_functions import register_user, create_schedule, remove_class, add_cla
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
-from schedule_data import CreateNewSchedule
+from schedule_data import CreateNewSchedule, ScheduleDataService
 
 
 logger = logging.getLogger(__name__)
@@ -98,11 +98,11 @@ while True:
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CreateNewSchedule().add_sessions(active_user)
-                week = CreateNewSchedule().set_users_week(sessions)
-                users_schedule = CreateNewSchedule().create_user_object(active_user, week)
-                users_object_path = CreateNewSchedule().create_object_path(active_user)
-                CreateNewSchedule().save_users_schedule(users_schedule, users_object_path, active_user)
+                sessions = CreateNewSchedule(ScheduleDataService).add_sessions(active_user)
+                week = CreateNewSchedule(ScheduleDataService).set_users_week(sessions)
+                users_schedule = CreateNewSchedule(ScheduleDataService).create_user_object(active_user, week)
+                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService().create_object_path(active_user), active_user)
+
             elif make_or_write.lower() == "add":
                 add_class(active_user)
             elif make_or_write.lower() == "view":

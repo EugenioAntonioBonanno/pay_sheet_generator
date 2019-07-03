@@ -17,7 +17,50 @@ file_handler.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 
 
+class ScheduleDataService:
+
+    def create_object_path(self, active_user):
+
+        users_object_path = root / "user_objects" / active_user
+        return users_object_path
+
+    def save_users_schedule(self, users_schedule, users_object_path, active_user):
+
+        self.__ensure_database_exists(active_user)
+
+        schedule = open(users_object_path, "wb")
+        pickle.dump(users_schedule, schedule)
+        schedule.close()
+
+        logger.debug("\nYour schedule has been successfully created, the program will now return you "
+                     "to the previous menu.. \n \n")
+        logger.info(active_user + "has successfully set up their schedule.")
+
+    def __ensure_database_exists(self, active_user):
+        users_object_path = self.create_object_path(active_user)
+        if self.__user_database_exists(users_object_path):
+            return
+        self.__create_user_database(users_object_path)
+
+    def __user_database_exists(self, users_object_path):
+
+        return Path(users_object_path).is_file()
+
+    def __create_user_database(self, users_object_path):
+        try:
+            users = open(users_object_path, "wb")
+            pickle.dump({}, users)
+        except Exception as error:
+            logger.error("database creation failed: " + error)
+            raise ScheduleDataException("Sorry but database creation has failed.")
+
+
 class CreateNewSchedule:
+
+    __schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self.__schedule_data_service = schedule_data_service
 
     def add_sessions(self, active_user):
         sessions = []
@@ -91,40 +134,55 @@ class CreateNewSchedule:
 
         return users_schedule
 
-    def create_object_path(self, active_user):
+    def save_schedule(self, active_user, users_object_path, users_schedule):
+        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
+
+
+class EditSchedule:
+
+    def add_class(active_user):
+        classes_to_add = []
         users_object_path = root / "user_objects" / active_user
-        return users_object_path
+        schedule = open(users_object_path, "rb")
+        users_schedule = pickle.load(schedule)
 
-    def save_users_schedule(self, users_schedule, users_object_path, active_user):
+        while True:
 
-        self.__ensure_database_exists(active_user)
+            class_to_add = input("Please enter the class you wish to add in the same format you entered it "
+                                 "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+
+            if class_to_add.lower() == "done":
+                break
+
+            try:
+                class_list = class_to_add.split()
+                if len(class_list) == 3:
+                    classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
+                    logger.debug("You have entered the following classes:", end=" ")
+                    for session in classes_to_add:
+                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                    logger.debug("\n")
+                    logger.info(active_user + "added the class", class_to_add, "to their schedule.")
+
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                    logger.info(active_user + "attempted to add incorrect input " + class_to_add + " to their schedule.")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.info(active_user + " attempted to add incorrect input " + class_to_add + " to their schedule.")
+
+        for add_session in classes_to_add:
+            for user_day in users_schedule.week:
+                for user_session in user_day.sessions:
+                    if user_session.day_taught == add_session.day_taught:
+                        user_day.sessions.append(add_session)
+                        break
 
         schedule = open(users_object_path, "wb")
         pickle.dump(users_schedule, schedule)
         schedule.close()
 
-        logger.debug("\nYour schedule has been successfully created, the program will now return you "
-                     "to the previous menu.. \n \n")
-        logger.info(active_user + "has successfully set up their schedule.")
-
-    def __ensure_database_exists(self, active_user):
-        users_object_path = self.create_object_path(active_user)
-        if self.__user_database_exists(users_object_path):
-            return
-        self.__create_user_database(users_object_path)
-
-    def __user_database_exists(self, users_object_path):
-
-        return Path(users_object_path).is_file()
-
-    def __create_user_database(self, users_object_path):
-        try:
-            users = open(users_object_path, "wb")
-            pickle.dump({}, users)
-        except Exception as error:
-            logger.error("database creation failed: " + error)
-            raise ScheduleDataException("Sorry but database creation has failed.")
 
 class ScheduleDataException(Exception):
     pass
