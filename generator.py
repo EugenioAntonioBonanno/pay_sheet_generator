@@ -13,7 +13,7 @@ from user_functions import register_user, create_schedule, remove_class, add_cla
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
-from schedule_data import CreateNewSchedule, ScheduleDataService
+from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule
 
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,8 @@ while True:
                 ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService().create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                add_class(active_user)
+                users_schedule = EditSchedule(ScheduleDataService).add_classes(active_user)
+                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects" / active_user, users_schedule)
             elif make_or_write.lower() == "view":
                 view_schedule(active_user)
             elif make_or_write.lower() == "export":

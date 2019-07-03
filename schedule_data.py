@@ -32,9 +32,15 @@ class ScheduleDataService:
         pickle.dump(users_schedule, schedule)
         schedule.close()
 
-        logger.debug("\nYour schedule has been successfully created, the program will now return you "
-                     "to the previous menu.. \n \n")
-        logger.info(active_user + "has successfully set up their schedule.")
+        logger.debug("\nYour schedule has been successfully saved \n")
+        logger.info(active_user + "has successfully saved their schedule.")
+
+    def load_users_schedule(self, users_object_path):
+        schedule = open(users_object_path, "rb")
+        users_schedule = pickle.load(schedule)
+        schedule.close()
+
+        return users_schedule
 
     def __ensure_database_exists(self, active_user):
         users_object_path = self.create_object_path(active_user)
@@ -141,15 +147,20 @@ class CreateNewSchedule:
 
 class EditSchedule:
 
-    def add_class(active_user):
+    __schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self.__schedule_data_service = schedule_data_service
+
+    def add_classes(self, active_user):
         classes_to_add = []
-        users_object_path = root / "user_objects" / active_user
-        schedule = open(users_object_path, "rb")
-        users_schedule = pickle.load(schedule)
+
+        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path)
 
         while True:
 
-            class_to_add = input("Please enter the class you wish to add in the same format you entered it "
+            class_to_add = input("Please enter the class you wish to add in the same format you see below. "
                                  "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
 
             if class_to_add.lower() == "done":
@@ -179,9 +190,11 @@ class EditSchedule:
                         user_day.sessions.append(add_session)
                         break
 
-        schedule = open(users_object_path, "wb")
-        pickle.dump(users_schedule, schedule)
-        schedule.close()
+        return users_schedule
+
+
+    def save_schedule(self, active_user, users_object_path, users_schedule):
+        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 
 class ScheduleDataException(Exception):
