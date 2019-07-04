@@ -35,7 +35,8 @@ class ScheduleDataService:
         logger.debug("\nYour schedule has been successfully saved \n")
         logger.info(active_user + "has successfully saved their schedule.")
 
-    def load_users_schedule(self, users_object_path):
+    def load_users_schedule(self, users_object_path, active_user):
+        self.__ensure_database_exists(active_user)
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
         schedule.close()
@@ -44,11 +45,11 @@ class ScheduleDataService:
 
     def __ensure_database_exists(self, active_user):
         users_object_path = self.create_object_path(active_user)
-        if self.__user_database_exists(users_object_path):
+        if self.__schedule_database_exists(users_object_path):
             return
         self.__create_user_database(users_object_path)
 
-    def __user_database_exists(self, users_object_path):
+    def __schedule_database_exists(self, users_object_path):
 
         return Path(users_object_path).is_file()
 
