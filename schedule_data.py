@@ -36,9 +36,8 @@ class ScheduleDataService:
         logger.info(active_user + "has successfully saved their schedule.")
 
     def load_users_schedule(self, users_object_path, active_user):
-        # getting an Attribute error when trying to use ensure_data_base_exists. Show to Phil
-        #self.__ensure_database_exists(active_user)
-
+        # Same issue as above SAVE ME PHIL!
+        #users_object_path = self.create_object_path(active_user)
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
         schedule.close()
@@ -239,7 +238,44 @@ class EditSchedule:
 
         self.__schedule_data_service.save_users_schedule(self, users_schedule, users_object_path, active_user)
 
+class ViewSchedule:
 
+    __schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self.__schedule_data_service = schedule_data_service
+
+    def view_day(self, day_to_see, active_user):
+        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
+
+
+        to_view = []
+
+        if day_to_see == "1":
+            to_view.append("Monday")
+        elif day_to_see == "2":
+            to_view.append("Tuesday")
+        elif day_to_see == "3":
+            to_view.append("Wednesday")
+        elif day_to_see == "4":
+            to_view.append("Thursday")
+        elif day_to_see == "5":
+            to_view.append("Friday")
+        elif day_to_see.lower() == "all":
+            to_view = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        else:
+            logger.debug("Sorry that isn't a valid option please try again")
+            logger.info(active_user + "failed to view " + day_to_see + " from their schedule due to incorrect input")
+            pass
+
+        for day in users_schedule.week:
+            if day.name in to_view:
+                logger.debug("")
+                for session in day.sessions:
+                    logger.debug("Day: " + day.name + " Class Code: " + session.code + " Class length: "
+                                 + session.length)
+                logger.debug("")
 
 class ScheduleDataException(Exception):
     pass

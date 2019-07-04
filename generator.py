@@ -12,7 +12,7 @@ from user_functions import remove_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
-from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule
+from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule, ViewSchedule
 
 
 logger = logging.getLogger(__name__)
@@ -106,7 +106,16 @@ while True:
                 users_schedule = EditSchedule(ScheduleDataService).add_classes(active_user)
                 EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects" / active_user, users_schedule)
             elif make_or_write.lower() == "view":
-                view_schedule(active_user)
+                day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
+                                   " schedule or \"done\" to exit. \n [1 = Monday 5 = Friday]:\n")
+                logger.info(active_user + " is about to view the day " + day_to_see + " from their schedule")
+
+                if day_to_see.lower() == 'done':
+                    break
+                else:
+                    ViewSchedule(ScheduleDataService).view_day(day_to_see, active_user)
+
+
             elif make_or_write.lower() == "export":
                 users_object_path = root / "user_objects" / active_user
                 schedule = open(users_object_path, "rb")
