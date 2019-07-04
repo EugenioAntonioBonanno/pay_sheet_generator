@@ -101,6 +101,7 @@ class MonthSpecificData:
         while True:
             meeting = input("Did you have any meetings this month? If yes enter the days of the meeting as a number"
                             " [ex 5th = 5] \n or enter \"done\" to move on:\n")
+            logger.debug("Current days with meetings are: " + str(meetings))
 
             if meeting.lower() == "done":
                 break
