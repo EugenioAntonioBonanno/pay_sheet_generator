@@ -111,7 +111,7 @@ class UserRepository:
             return None
 
     def register_user(self, user: User):
-       self.__data_service.save_user(user)
+        self.__data_service.save_user(user)
 
 
 class UserAuthenticator:

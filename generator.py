@@ -114,7 +114,7 @@ while True:
                 break
 
             elif make_or_write.lower() == "remove":
-                remove_class(active_user)
+                EditSchedule(ScheduleDataService).remove_class(active_user)
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")

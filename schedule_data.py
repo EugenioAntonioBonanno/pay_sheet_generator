@@ -25,8 +25,8 @@ class ScheduleDataService:
         return users_object_path
 
     def save_users_schedule(self, users_schedule, users_object_path, active_user):
-
-        self.__ensure_database_exists(active_user)
+        # getting an Attribute error when trying to use ensure_data_base_exists. Show to Phil
+        #self.__ensure_database_exists(active_user)
 
         schedule = open(users_object_path, "wb")
         pickle.dump(users_schedule, schedule)
@@ -36,7 +36,9 @@ class ScheduleDataService:
         logger.info(active_user + "has successfully saved their schedule.")
 
     def load_users_schedule(self, users_object_path, active_user):
-        self.__ensure_database_exists(active_user)
+        # getting an Attribute error when trying to use ensure_data_base_exists. Show to Phil
+        #self.__ensure_database_exists(active_user)
+
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
         schedule.close()
@@ -157,7 +159,7 @@ class EditSchedule:
         classes_to_add = []
 
         users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path)
+        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
 
         while True:
 
@@ -193,9 +195,50 @@ class EditSchedule:
 
         return users_schedule
 
-
     def save_schedule(self, active_user, users_object_path, users_schedule):
         self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+
+    def remove_class(self, active_user):
+
+        classes_to_remove = []
+        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
+
+        while True:
+
+            class_to_remove = input("Please enter the class you wish to remove in the same format you entered it "
+                                    "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+
+            if class_to_remove.lower() == "done":
+                break
+
+            try:
+                class_list = class_to_remove.split()
+                if len(class_list) == 3:
+                    classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
+                    logger.debug("You have entered the following classes:", end=" ")
+                    for session in classes_to_remove:
+                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                    logger.debug("\n")
+                    logger.info(active_user + "removed the class" + class_to_remove + " from their schedule.")
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                    logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove +
+                                " from their schedule.")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove +
+                            " from their schedule.")
+
+        for day in users_schedule.week:
+            for user_session in day.sessions:
+                for delete_session in classes_to_remove:
+                    if user_session.code == delete_session.code and user_session.length == delete_session.length \
+                            and user_session.day_taught == delete_session.day_taught:
+                        day.sessions.remove(user_session)
+
+        self.__schedule_data_service.save_users_schedule(self, users_schedule, users_object_path, active_user)
+
 
 
 class ScheduleDataException(Exception):
