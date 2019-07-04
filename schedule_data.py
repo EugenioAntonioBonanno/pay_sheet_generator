@@ -25,7 +25,6 @@ class ScheduleDataService:
         return users_object_path
 
     def save_users_schedule(self, users_schedule, users_object_path, active_user):
-        # getting an Attribute error when trying to use ensure_data_base_exists. Show to Phil
         #self.__ensure_database_exists(active_user)
 
         schedule = open(users_object_path, "wb")
@@ -35,9 +34,8 @@ class ScheduleDataService:
         logger.debug("\nYour schedule has been successfully saved \n")
         logger.info(active_user + "has successfully saved their schedule.")
 
-    def load_users_schedule(self, users_object_path, active_user):
-        # Same issue as above SAVE ME PHIL!
-        #users_object_path = self.create_object_path(active_user)
+    def load_users_schedule(self, active_user):
+        users_object_path = self.create_object_path(active_user)
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
         schedule.close()
@@ -45,6 +43,7 @@ class ScheduleDataService:
         return users_schedule
 
     def __ensure_database_exists(self, active_user):
+        self.__ensure_database_exists(active_user)
         users_object_path = self.create_object_path(active_user)
         if self.__schedule_database_exists(users_object_path):
             return
@@ -157,8 +156,7 @@ class EditSchedule:
     def add_classes(self, active_user):
         classes_to_add = []
 
-        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(active_user)
 
         while True:
 
@@ -200,8 +198,8 @@ class EditSchedule:
     def remove_class(self, active_user):
 
         classes_to_remove = []
-        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
+        users_object_path = self.__schedule_data_service.create_object_path(active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(users_object_path, active_user)
 
         while True:
 
@@ -236,7 +234,7 @@ class EditSchedule:
                             and user_session.day_taught == delete_session.day_taught:
                         day.sessions.remove(user_session)
 
-        self.__schedule_data_service.save_users_schedule(self, users_schedule, users_object_path, active_user)
+        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 class ViewSchedule:
 
@@ -246,8 +244,7 @@ class ViewSchedule:
         self.__schedule_data_service = schedule_data_service
 
     def view_day(self, day_to_see, active_user):
-        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path, active_user)
+        users_schedule = self.__schedule_data_service.load_users_schedule(active_user)
 
 
         to_view = []

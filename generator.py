@@ -7,8 +7,7 @@ from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from hashlib import sha256 as hash
-from schedule_functions import find_month_length, get_days_missed,get_monthly_meeting
-from user_functions import remove_class, view_schedule
+from schedule_functions import find_month_length, get_days_missed, get_monthly_meeting
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
@@ -97,13 +96,13 @@ while True:
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CreateNewSchedule(ScheduleDataService).add_sessions(active_user)
-                week = CreateNewSchedule(ScheduleDataService).set_users_week(sessions)
-                users_schedule = CreateNewSchedule(ScheduleDataService).create_user_object(active_user, week)
+                sessions = CreateNewSchedule(ScheduleDataService()).add_sessions(active_user)
+                week = CreateNewSchedule(ScheduleDataService()).set_users_week(sessions)
+                users_schedule = CreateNewSchedule(ScheduleDataService()).create_user_object(active_user, week)
                 ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService().create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = EditSchedule(ScheduleDataService).add_classes(active_user)
+                users_schedule = EditSchedule(ScheduleDataService()).add_classes(active_user)
                 EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects" / active_user, users_schedule)
             elif make_or_write.lower() == "view":
                 day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
@@ -113,7 +112,7 @@ while True:
                 if day_to_see.lower() == 'done':
                     break
                 else:
-                    ViewSchedule(ScheduleDataService).view_day(day_to_see, active_user)
+                    ViewSchedule(ScheduleDataService()).view_day(day_to_see, active_user)
 
 
             elif make_or_write.lower() == "export":
