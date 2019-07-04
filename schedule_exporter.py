@@ -33,7 +33,7 @@ class ScheduleFormatter:
 
 class ScheduleWriter:
 
-    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked):
+    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meetings, extra_sessions_worked):
         col = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
         col_index = 0
         row_index = 4
@@ -67,7 +67,7 @@ class ScheduleWriter:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
                                                                day="Sunday")
 
-            if int(day.day) == int(monthly_meeting):
+            if str(day.day) in monthly_meetings:
                 [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
             if len(extra_sessions_worked) > 0:

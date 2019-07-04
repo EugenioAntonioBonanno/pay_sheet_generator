@@ -156,7 +156,7 @@ while True:
 
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
-        monthly_meeting = get_monthly_meeting(active_user)
+        monthly_meetings = MonthSpecificData().get_monthly_meetings(active_user)
 
         extra_sessions_worked = MonthSpecificData().get_extra_session_worked(active_user)
 
@@ -170,7 +170,7 @@ while True:
 
         # Writes users schedule to active sheet then saves workbook.
         sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule,
-                                                monthly_meeting, extra_sessions_worked)
+                                                monthly_meetings, extra_sessions_worked)
 
         try:
 

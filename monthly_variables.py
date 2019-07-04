@@ -94,3 +94,17 @@ class MonthSpecificData:
             else:
                 length = 28
         return length
+
+    def get_monthly_meetings(self, active_user):
+        meetings = []
+
+        while True:
+            meeting = input("Did you have any meetings this month? If yes enter the days of the meeting as a number"
+                            " [ex 5th = 5] \n or enter \"done\" to move on:\n")
+
+            if meeting.lower() == "done":
+                break
+            else:
+                meetings.append(meeting)
+
+        return meetings
