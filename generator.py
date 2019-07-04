@@ -99,11 +99,13 @@ while True:
                 sessions = CreateNewSchedule(ScheduleDataService()).add_sessions(active_user)
                 week = CreateNewSchedule(ScheduleDataService()).set_users_week(sessions)
                 users_schedule = CreateNewSchedule(ScheduleDataService()).create_user_object(active_user, week)
-                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService().create_object_path(active_user), active_user)
+                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService()
+                                                          .create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
                 users_schedule = EditSchedule(ScheduleDataService()).add_classes(active_user)
-                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects" / active_user, users_schedule)
+                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects"
+                                                                  / active_user, users_schedule)
             elif make_or_write.lower() == "view":
                 day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
                                    " schedule or \"done\" to exit. \n [1 = Monday 5 = Friday]:\n")
@@ -126,7 +128,7 @@ while True:
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")
-                logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input. ")
+                logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input.")
 
         year = "2019"
 
@@ -144,9 +146,9 @@ while True:
                 logger.info(active_user + ' set the month to something that is not recognized as a month:'
                                           ' ' + month + ' well making schedule.')
 
-        days_to_skip = get_days_missed(active_user)
+        days_to_skip = MonthSpecificData().get_days_missed(active_user)
 
-        end = find_month_length(month, year)
+        end = MonthSpecificData().find_month_length(month, year)
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
@@ -167,7 +169,8 @@ while True:
         sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked)
+        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule,
+                                                monthly_meeting, extra_sessions_worked)
 
         try:
 

@@ -36,7 +36,7 @@ class ScheduleDataService:
 
     def load_users_schedule(self, active_user):
         self.__ensure_database_exists(active_user)
-        
+
         users_object_path = self.create_object_path(active_user)
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
