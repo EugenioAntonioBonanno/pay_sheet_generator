@@ -22,10 +22,11 @@ class ScheduleDataService:
     def create_object_path(self, active_user):
 
         users_object_path = root / "user_objects" / active_user
+
         return users_object_path
 
     def save_users_schedule(self, users_schedule, users_object_path, active_user):
-        self.__ensure_database_exists(active_user)
+        self._ensure_database_exists(active_user)
 
         schedule = open(users_object_path, "wb")
         pickle.dump(users_schedule, schedule)
@@ -35,7 +36,7 @@ class ScheduleDataService:
         logger.info(active_user + "has successfully saved their schedule.")
 
     def load_users_schedule(self, active_user):
-        self.__ensure_database_exists(active_user)
+        self._ensure_database_exists(active_user)
 
         users_object_path = self.create_object_path(active_user)
         schedule = open(users_object_path, "rb")
@@ -44,17 +45,17 @@ class ScheduleDataService:
 
         return users_schedule
 
-    def __ensure_database_exists(self, active_user):
+    def _ensure_database_exists(self, active_user):
         users_object_path = self.create_object_path(active_user)
-        if self.__schedule_database_exists(users_object_path):
+        if self._schedule_database_exists(users_object_path):
             return
-        self.__create_user_database(users_object_path)
+        self._create_user_database(users_object_path)
 
-    def __schedule_database_exists(self, users_object_path):
+    def _schedule_database_exists(self, users_object_path):
 
         return Path(users_object_path).is_file()
 
-    def __create_user_database(self, users_object_path):
+    def _create_user_database(self, users_object_path):
         try:
             users = open(users_object_path, "wb")
             pickle.dump({}, users)
@@ -65,10 +66,10 @@ class ScheduleDataService:
 
 class CreateNewSchedule:
 
-    __schedule_data_service: ScheduleDataService
+    _schedule_data_service: ScheduleDataService
 
     def __init__(self, schedule_data_service):
-        self.__schedule_data_service = schedule_data_service
+        self._schedule_data_service = schedule_data_service
 
     def add_sessions(self, active_user):
         sessions = []
@@ -143,21 +144,21 @@ class CreateNewSchedule:
         return users_schedule
 
     def save_schedule(self, active_user, users_object_path, users_schedule):
-        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 
 
 class EditSchedule:
 
-    __schedule_data_service: ScheduleDataService
+    _schedule_data_service: ScheduleDataService
 
     def __init__(self, schedule_data_service):
-        self.__schedule_data_service = schedule_data_service
+        self._schedule_data_service = schedule_data_service
 
     def add_classes(self, active_user):
         classes_to_add = []
 
-        users_schedule = self.__schedule_data_service.load_users_schedule(active_user)
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
 
         while True:
 
@@ -194,13 +195,13 @@ class EditSchedule:
         return users_schedule
 
     def save_schedule(self, active_user, users_object_path, users_schedule):
-        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
     def remove_class(self, active_user):
 
         classes_to_remove = []
-        users_object_path = self.__schedule_data_service.create_object_path(active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(users_object_path, active_user)
+        users_object_path = self._schedule_data_service.create_object_path(active_user)
+        users_schedule = self._schedule_data_service.load_users_schedule(users_object_path, active_user)
 
         while True:
 
@@ -235,7 +236,7 @@ class EditSchedule:
                             and user_session.day_taught == delete_session.day_taught:
                         day.sessions.remove(user_session)
 
-        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 class ViewSchedule:
 

@@ -1,13 +1,11 @@
 import os
 import getpass
-import pickle
 import logging
 import openpyxl
 from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from hashlib import sha256 as hash
-from schedule_functions import find_month_length, get_days_missed, get_monthly_meeting
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
@@ -118,13 +116,12 @@ while True:
 
 
             elif make_or_write.lower() == "export":
-                users_object_path = root / "user_objects" / active_user
-                schedule = open(users_object_path, "rb")
-                users_schedule = pickle.load(schedule)
+                users_schedule = ScheduleDataService().load_users_schedule(active_user)
                 break
 
             elif make_or_write.lower() == "remove":
                 EditSchedule(ScheduleDataService).remove_class(active_user)
+
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")
@@ -169,17 +166,18 @@ while True:
         sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule,
+        sheet = ScheduleWriter(ScheduleDataService()).write_sessions(days_to_schedule, sheet, users_schedule,
                                                 monthly_meetings, extra_sessions_worked)
 
         try:
-
             if not os.path.isdir("paysheets"):
                 os.makedirs("paysheets")
             workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(active_user + ' successfully generated a paysheet.')
+
+
 
             break
         except:
