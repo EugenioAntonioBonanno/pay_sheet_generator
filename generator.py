@@ -1,4 +1,4 @@
-import os
+
 import getpass
 import logging
 import openpyxl
@@ -170,14 +170,10 @@ while True:
                                                 monthly_meetings, extra_sessions_worked)
 
         try:
-            if not os.path.isdir("paysheets"):
-                os.makedirs("paysheets")
-            workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
+            ScheduleWriter(ScheduleDataService()).export_schedule(workbook, active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(active_user + ' successfully generated a paysheet.')
-
-
 
             break
         except:

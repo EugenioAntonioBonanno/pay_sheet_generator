@@ -1,3 +1,4 @@
+import os
 from openpyxl.styles import Font
 from schedule_data import ScheduleDataService
 
@@ -139,5 +140,8 @@ class ScheduleWriter:
 
     def export_schedule(self, workbook, active_user):
 
-        user_object_path = self._schedule_data_service().create_object_path(active_user)
-        workbook.save(user_object_path)
+        if not os.path.isdir("paysheets"):
+            os.makedirs("paysheets")
+        workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
+
+
