@@ -63,7 +63,7 @@ class UserDataService:
         try:
             users = open(users_info_path, "rb")
             all_users = pickle.load(users)
-            return new_user in all_users
+            return not new_user in all_users
 
         except Exception as error:
             logger.error("database creation failed: " + error)
