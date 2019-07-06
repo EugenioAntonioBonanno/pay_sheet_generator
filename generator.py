@@ -54,9 +54,9 @@ while True:
             password_1 = hash(password_1.encode("utf-8"))
             password_2 = getpass.getpass("please enter it one more time: \n ")
             password_2 = hash(password_2.encode("utf-8"))
-            advance = UserDataService().ensure_passwords_match(password_1.digest(), password_2.digest())
+            passwords_match = UserDataService().ensure_passwords_match(password_1.digest(), password_2.digest())
 
-            if advance:
+            if passwords_match:
                 UserDataService().save_user(User(new_user, password_2.digest()))
                 logger.debug(new_user + " has been saved. GREAT SUCCESS!")
                 break
