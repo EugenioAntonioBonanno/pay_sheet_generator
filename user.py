@@ -63,10 +63,8 @@ class UserDataService:
         try:
             users = open(users_info_path, "rb")
             all_users = pickle.load(users)
-            if new_user in all_users:
-                return False
-            else:
-                return True
+            return new_user in all_users
+
         except Exception as error:
             logger.error("database creation failed: " + error)
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
