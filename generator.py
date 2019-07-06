@@ -1,4 +1,3 @@
-
 import getpass
 import logging
 import openpyxl
@@ -48,7 +47,7 @@ while True:
 
     if user_choice.lower() == 'register':
         new_user = input("Please input your desired user name:\n")
-        advance = UserDataService().check_if_user_unique(new_user)
+        advance = UserDataService().username_exists(new_user)
 
         if advance:
             password_1 = getpass.getpass("Hello " + new_user + " please create your password: \n ")

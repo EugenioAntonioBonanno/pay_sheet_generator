@@ -58,7 +58,7 @@ class UserDataService:
             logger.error("database creation failed: " + str(error))
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
 
-    def check_if_user_unique(self, new_user):
+    def username_exists(self, new_user):
         self.__ensure_database_exists()
         try:
             users = open(users_info_path, "rb")
