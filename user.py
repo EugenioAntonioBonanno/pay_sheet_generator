@@ -58,15 +58,13 @@ class UserDataService:
             logger.error("database creation failed: " + str(error))
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
 
-    def check_if_user_unique(self, new_user):
+    def username_exists(self, new_user):
         self.__ensure_database_exists()
         try:
             users = open(users_info_path, "rb")
             all_users = pickle.load(users)
-            if new_user in all_users:
-                return False
-            else:
-                return True
+            return not new_user in all_users
+
         except Exception as error:
             logger.error("database creation failed: " + error)
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
@@ -111,7 +109,7 @@ class UserRepository:
             return None
 
     def register_user(self, user: User):
-       self.__data_service.save_user(user)
+        self.__data_service.save_user(user)
 
 
 class UserAuthenticator:

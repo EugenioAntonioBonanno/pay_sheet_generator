@@ -65,3 +65,47 @@ class MonthSpecificData:
         return extra_sessions_worked
 
 
+    def get_days_missed(self, active_user):
+        days_to_skip = []
+        logger.debug("Enter any days you missed work due to sickness or holiday as a number. "
+                     "[ex \"12\"] for the 12th or enter \"done\". \n")
+
+        while True:
+
+            logger.debug("Your current missed days are as follows: " + str(days_to_skip))
+            missed_work = input("Enter a missed day as a number or \"done\" to move on. \n")
+            logger.info(active_user + " added " + missed_work + " to their list of days they did not work ")
+            logger.info((active_user + " entered:" + missed_work))
+            if missed_work.lower() == "done":
+                break
+            else:
+                days_to_skip.append(int(missed_work))
+
+        return days_to_skip
+
+    def find_month_length(self, month, year):
+        if month in ["01", "1" "03", "3", "05", "5", "07", "7", "08", "8", "10"]:
+            length = "31"
+        elif month in ["04", "4", "06", "6", "09", "9", "11", "12"]:
+            length = "30"
+        else:
+            if int(year) % 4 == 0:
+                length = 29
+            else:
+                length = 28
+        return length
+
+    def get_monthly_meetings(self, active_user):
+        meetings = []
+
+        while True:
+            meeting = input("Did you have any meetings this month? If yes enter the days of the meeting as a number"
+                            " [ex 5th = 5] \n or enter \"done\" to move on:\n")
+            logger.debug("Current days with meetings are: " + str(meetings))
+
+            if meeting.lower() == "done":
+                break
+            else:
+                meetings.append(meeting)
+
+        return meetings

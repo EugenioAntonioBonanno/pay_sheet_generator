@@ -1,4 +1,6 @@
+import os
 from openpyxl.styles import Font
+from schedule_data import ScheduleDataService
 
 class ScheduleFormatter:
 
@@ -33,7 +35,12 @@ class ScheduleFormatter:
 
 class ScheduleWriter:
 
-    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked):
+    _schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self._schedule_data_service = schedule_data_service
+
+    def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meetings, extra_sessions_worked):
         col = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
         col_index = 0
         row_index = 4
@@ -67,7 +74,7 @@ class ScheduleWriter:
                 [sheet, row_index, col_index] = self.write_day(users_schedule, row_index, col_index, day_and_month, sheet, col,
                                                                day="Sunday")
 
-            if int(day.day) == int(monthly_meeting):
+            if str(day.day) in monthly_meetings:
                 [sheet, row_index, col_index] = self.write_monthly_meeting(sheet, col, col_index, row_index, day_and_month)
 
             if len(extra_sessions_worked) > 0:
@@ -130,5 +137,11 @@ class ScheduleWriter:
 
         return [sheet, row_index, col_index]
 
+
+    def export_schedule(self, workbook, active_user):
+
+        if not os.path.isdir("paysheets"):
+            os.makedirs("paysheets")
+        workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
 
 

@@ -1,18 +1,14 @@
-import os
 import getpass
-import pickle
 import logging
 import openpyxl
 from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from hashlib import sha256 as hash
-from schedule_functions import find_month_length, get_days_missed,get_monthly_meeting
-from user_functions import remove_class, view_schedule
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
-from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule
+from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule, ViewSchedule
 
 
 logger = logging.getLogger(__name__)
@@ -51,16 +47,16 @@ while True:
 
     if user_choice.lower() == 'register':
         new_user = input("Please input your desired user name:\n")
-        advance = UserDataService().check_if_user_unique(new_user)
+        advance = UserDataService().username_exists(new_user)
 
         if advance:
             password_1 = getpass.getpass("Hello " + new_user + " please create your password: \n ")
             password_1 = hash(password_1.encode("utf-8"))
             password_2 = getpass.getpass("please enter it one more time: \n ")
             password_2 = hash(password_2.encode("utf-8"))
-            advance = UserDataService().ensure_passwords_match(password_1.digest(), password_2.digest())
+            passwords_match = UserDataService().ensure_passwords_match(password_1.digest(), password_2.digest())
 
-            if advance:
+            if passwords_match:
                 UserDataService().save_user(User(new_user, password_2.digest()))
                 logger.debug(new_user + " has been saved. GREAT SUCCESS!")
                 break
@@ -97,28 +93,38 @@ while True:
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CreateNewSchedule(ScheduleDataService).add_sessions(active_user)
-                week = CreateNewSchedule(ScheduleDataService).set_users_week(sessions)
-                users_schedule = CreateNewSchedule(ScheduleDataService).create_user_object(active_user, week)
-                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService().create_object_path(active_user), active_user)
+                sessions = CreateNewSchedule(ScheduleDataService()).add_sessions(active_user)
+                week = CreateNewSchedule(ScheduleDataService()).set_users_week(sessions)
+                users_schedule = CreateNewSchedule(ScheduleDataService()).create_user_object(active_user, week)
+                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService()
+                                                          .create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = EditSchedule(ScheduleDataService).add_classes(active_user)
-                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects" / active_user, users_schedule)
+                users_schedule = EditSchedule(ScheduleDataService()).add_classes(active_user)
+                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects"
+                                                                  / active_user, users_schedule)
             elif make_or_write.lower() == "view":
-                view_schedule(active_user)
+                day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
+                                   " schedule or \"done\" to exit. \n [1 = Monday 5 = Friday]:\n")
+                logger.info(active_user + " is about to view the day " + day_to_see + " from their schedule")
+
+                if day_to_see.lower() == 'done':
+                    break
+                else:
+                    ViewSchedule(ScheduleDataService()).view_day(day_to_see, active_user)
+
+
             elif make_or_write.lower() == "export":
-                users_object_path = root / "user_objects" / active_user
-                schedule = open(users_object_path, "rb")
-                users_schedule = pickle.load(schedule)
+                users_schedule = ScheduleDataService().load_users_schedule(active_user)
                 break
 
             elif make_or_write.lower() == "remove":
-                remove_class(active_user)
+                EditSchedule(ScheduleDataService).remove_class(active_user)
+
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")
-                logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input. ")
+                logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input.")
 
         year = "2019"
 
@@ -136,9 +142,9 @@ while True:
                 logger.info(active_user + ' set the month to something that is not recognized as a month:'
                                           ' ' + month + ' well making schedule.')
 
-        days_to_skip = get_days_missed(active_user)
+        days_to_skip = MonthSpecificData().get_days_missed(active_user)
 
-        end = find_month_length(month, year)
+        end = MonthSpecificData().find_month_length(month, year)
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
@@ -146,7 +152,7 @@ while True:
 
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
-        monthly_meeting = get_monthly_meeting(active_user)
+        monthly_meetings = MonthSpecificData().get_monthly_meetings(active_user)
 
         extra_sessions_worked = MonthSpecificData().get_extra_session_worked(active_user)
 
@@ -159,13 +165,11 @@ while True:
         sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter().write_sessions(days_to_schedule, sheet, users_schedule, monthly_meeting, extra_sessions_worked)
+        sheet = ScheduleWriter(ScheduleDataService()).write_sessions(days_to_schedule, sheet, users_schedule,
+                                                monthly_meetings, extra_sessions_worked)
 
         try:
-
-            if not os.path.isdir("paysheets"):
-                os.makedirs("paysheets")
-            workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
+            ScheduleWriter(ScheduleDataService()).export_schedule(workbook, active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(active_user + ' successfully generated a paysheet.')

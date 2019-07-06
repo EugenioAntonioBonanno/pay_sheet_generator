@@ -20,7 +20,6 @@ logger.addHandler(file_handler)
 
 # Allows a user to register a local account
 root = Path(".")
-
 users_info_path = root / "user_info" / "users"
 
 

@@ -22,11 +22,11 @@ class ScheduleDataService:
     def create_object_path(self, active_user):
 
         users_object_path = root / "user_objects" / active_user
+
         return users_object_path
 
     def save_users_schedule(self, users_schedule, users_object_path, active_user):
-
-        self.__ensure_database_exists(active_user)
+        self._ensure_database_exists(active_user)
 
         schedule = open(users_object_path, "wb")
         pickle.dump(users_schedule, schedule)
@@ -35,24 +35,27 @@ class ScheduleDataService:
         logger.debug("\nYour schedule has been successfully saved \n")
         logger.info(active_user + "has successfully saved their schedule.")
 
-    def load_users_schedule(self, users_object_path):
+    def load_users_schedule(self, active_user):
+        self._ensure_database_exists(active_user)
+
+        users_object_path = self.create_object_path(active_user)
         schedule = open(users_object_path, "rb")
         users_schedule = pickle.load(schedule)
         schedule.close()
 
         return users_schedule
 
-    def __ensure_database_exists(self, active_user):
+    def _ensure_database_exists(self, active_user):
         users_object_path = self.create_object_path(active_user)
-        if self.__user_database_exists(users_object_path):
+        if self._schedule_database_exists(users_object_path):
             return
-        self.__create_user_database(users_object_path)
+        self._create_user_database(users_object_path)
 
-    def __user_database_exists(self, users_object_path):
+    def _schedule_database_exists(self, users_object_path):
 
         return Path(users_object_path).is_file()
 
-    def __create_user_database(self, users_object_path):
+    def _create_user_database(self, users_object_path):
         try:
             users = open(users_object_path, "wb")
             pickle.dump({}, users)
@@ -63,10 +66,10 @@ class ScheduleDataService:
 
 class CreateNewSchedule:
 
-    __schedule_data_service: ScheduleDataService
+    _schedule_data_service: ScheduleDataService
 
     def __init__(self, schedule_data_service):
-        self.__schedule_data_service = schedule_data_service
+        self._schedule_data_service = schedule_data_service
 
     def add_sessions(self, active_user):
         sessions = []
@@ -141,22 +144,21 @@ class CreateNewSchedule:
         return users_schedule
 
     def save_schedule(self, active_user, users_object_path, users_schedule):
-        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 
 
 class EditSchedule:
 
-    __schedule_data_service: ScheduleDataService
+    _schedule_data_service: ScheduleDataService
 
     def __init__(self, schedule_data_service):
-        self.__schedule_data_service = schedule_data_service
+        self._schedule_data_service = schedule_data_service
 
     def add_classes(self, active_user):
         classes_to_add = []
 
-        users_object_path = self.__schedule_data_service.create_object_path(self, active_user)
-        users_schedule = self.__schedule_data_service.load_users_schedule(self, users_object_path)
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
 
         while True:
 
@@ -192,10 +194,87 @@ class EditSchedule:
 
         return users_schedule
 
-
     def save_schedule(self, active_user, users_object_path, users_schedule):
-        self.__schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
+    def remove_class(self, active_user):
+
+        classes_to_remove = []
+        users_object_path = self._schedule_data_service.create_object_path(active_user)
+        users_schedule = self._schedule_data_service.load_users_schedule(users_object_path, active_user)
+
+        while True:
+
+            class_to_remove = input("Please enter the class you wish to remove in the same format you entered it "
+                                    "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+
+            if class_to_remove.lower() == "done":
+                break
+
+            try:
+                class_list = class_to_remove.split()
+                if len(class_list) == 3:
+                    classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
+                    logger.debug("You have entered the following classes:", end=" ")
+                    for session in classes_to_remove:
+                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                    logger.debug("\n")
+                    logger.info(active_user + "removed the class" + class_to_remove + " from their schedule.")
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                    logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove +
+                                " from their schedule.")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove +
+                            " from their schedule.")
+
+        for day in users_schedule.week:
+            for user_session in day.sessions:
+                for delete_session in classes_to_remove:
+                    if user_session.code == delete_session.code and user_session.length == delete_session.length \
+                            and user_session.day_taught == delete_session.day_taught:
+                        day.sessions.remove(user_session)
+
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+
+class ViewSchedule:
+
+    __schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self.__schedule_data_service = schedule_data_service
+
+    def view_day(self, day_to_see, active_user):
+        users_schedule = self.__schedule_data_service.load_users_schedule(active_user)
+
+
+        to_view = []
+
+        if day_to_see == "1":
+            to_view.append("Monday")
+        elif day_to_see == "2":
+            to_view.append("Tuesday")
+        elif day_to_see == "3":
+            to_view.append("Wednesday")
+        elif day_to_see == "4":
+            to_view.append("Thursday")
+        elif day_to_see == "5":
+            to_view.append("Friday")
+        elif day_to_see.lower() == "all":
+            to_view = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        else:
+            logger.debug("Sorry that isn't a valid option please try again")
+            logger.info(active_user + "failed to view " + day_to_see + " from their schedule due to incorrect input")
+            pass
+
+        for day in users_schedule.week:
+            if day.name in to_view:
+                logger.debug("")
+                for session in day.sessions:
+                    logger.debug("Day: " + day.name + " Class Code: " + session.code + " Class length: "
+                                 + session.length)
+                logger.debug("")
 
 class ScheduleDataException(Exception):
     pass
