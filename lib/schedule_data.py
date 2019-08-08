@@ -216,9 +216,6 @@ class CmdInputHandler:
     def remove_session(self, active_user):
 
         sessions_to_remove = []
-        users_object_path = self._schedule_data_service.create_object_path(active_user)
-        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
-
         while True:
 
             session_to_remove = input("Please enter the session you wish to remove in the same format you entered it "
@@ -244,12 +241,4 @@ class CmdInputHandler:
                 logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
                 logger.info(active_user + "attempted to removed the session via incorrect input" + session_to_remove +
                             " from their schedule.")
-
-        for day in users_schedule.week:
-            for user_session in day.sessions:
-                for delete_session in sessions_to_remove:
-                    if user_session.code == delete_session.code and user_session.length == delete_session.length \
-                            and user_session.day_taught == delete_session.day_taught:
-                        day.sessions.remove(user_session)
-
-        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+        return sessions_to_remove
