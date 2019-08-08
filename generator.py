@@ -120,18 +120,9 @@ while True:
                 break
 
             elif make_or_write.lower() == "remove":
-                users_schedule = schedule_ds.load_users_schedule(active_user)
                 sessions_to_remove = input_handler.retrieve_sessions()
-                for day in users_schedule.week:
-                    for user_session in day.sessions:
-                        for delete_session in sessions_to_remove:
-                            if user_session.code == delete_session.code \
-                                    and user_session.length == delete_session.length \
-                                    and user_session.day_taught == delete_session.day_taught:
-                                day.sessions.remove(user_session)
-
-                ScheduleEditor(schedule_ds).save_schedule(active_user, root / "user_objects"
-                                                          / active_user, users_schedule)
+                ScheduleEditor(schedule_ds).remove_sessions(sessions_to_remove, active_user, root / "user_objects"
+                                                            / active_user)
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")

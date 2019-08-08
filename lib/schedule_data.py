@@ -133,6 +133,18 @@ class ScheduleEditor:
                         break
         self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
+    def remove_sessions(self, sessions_to_remove, active_user, users_object_path):
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
+        for day in users_schedule.week:
+            for user_session in day.sessions:
+                for delete_session in sessions_to_remove:
+                    if user_session.code == delete_session.code \
+                            and user_session.length == delete_session.length \
+                            and user_session.day_taught == delete_session.day_taught:
+                        day.sessions.remove(user_session)
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
+
+
     def save_schedule(self, active_user, users_object_path, users_schedule):
         self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
