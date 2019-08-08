@@ -179,7 +179,7 @@ class CmdInputHandler:
     def __init__(self, schedule_data_service):
         self._schedule_data_service = schedule_data_service
 
-    def add_sessions(self, active_user):
+    def retrieve_sessions(self, active_user):
         sessions = []
         logger.debug("\nPlease input your session info in EXACTLY the same format that will be described below: \n "
                      "[session (W55) length(in hours) day (as a num)]. \n"
