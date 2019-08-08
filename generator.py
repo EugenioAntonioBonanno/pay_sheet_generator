@@ -8,7 +8,7 @@ from hashlib import sha256 as hash
 from lib.user import UserDataService, UserAuthenticator, UserRepository, User
 from lib.schedule_exporter import ScheduleFormatter, ScheduleWriter
 from lib.monthly_variables import MonthSpecificData
-from lib.schedule_data import ScheduleCreator, ScheduleDataService, EditSchedule, ViewSchedule, CmdInputHandler
+from lib.schedule_data import ScheduleCreator, ScheduleDataService, ScheduleEditor, ViewSchedule, CmdInputHandler
 
 
 logger = logging.getLogger(__name__)
@@ -110,8 +110,8 @@ while True:
                             if user_session.day_taught == add_session.day_taught:
                                 user_day.sessions.append(add_session)
                                 break
-                EditSchedule(schedule_ds).save_schedule(active_user, root / "user_objects"
-                                                                  / active_user, users_schedule)
+                ScheduleEditor(schedule_ds).save_schedule(active_user, root / "user_objects"
+                                                          / active_user, users_schedule)
             elif make_or_write.lower() == "view":
                 day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
                                    " schedule or \"done\" to exit. \n [1 = Monday 5 = Friday]:\n")
@@ -138,8 +138,8 @@ while True:
                                     and user_session.day_taught == delete_session.day_taught:
                                 day.sessions.remove(user_session)
 
-                EditSchedule(schedule_ds).save_schedule(active_user, root / "user_objects"
-                                                        / active_user, users_schedule)
+                ScheduleEditor(schedule_ds).save_schedule(active_user, root / "user_objects"
+                                                          / active_user, users_schedule)
 
             else:
                 logger.debug("Sorry that wasn't one of the options, please try again.")

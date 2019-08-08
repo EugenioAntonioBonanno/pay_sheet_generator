@@ -116,7 +116,7 @@ class ScheduleCreator:
 
 
 
-class EditSchedule:
+class ScheduleEditor:
 
     _schedule_data_service: ScheduleDataService
 
