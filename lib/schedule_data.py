@@ -174,11 +174,6 @@ class ScheduleDataException(Exception):
 
 class CmdInputHandler:
 
-    __schedule_data_service: ScheduleDataService
-
-    def __init__(self, schedule_data_service):
-        self._schedule_data_service = schedule_data_service
-
     def retrieve_sessions(self, active_user):
         sessions = []
         logger.debug("\nPlease input your session info in EXACTLY the same format that will be described below: \n "

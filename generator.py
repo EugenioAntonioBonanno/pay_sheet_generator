@@ -88,13 +88,14 @@ while True:
                     "Sorry that information doesn't match our records. Please try again, or register a new account")
 
         schedule_ds = ScheduleDataService()
+        input_handler = CmdInputHandler()
         while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add sessions to your current one, "
                                   "'remove' to remove a session, 'view' to see your current schedule, or 'export' to "
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CmdInputHandler(schedule_ds).retrieve_sessions(active_user)
+                sessions = input_handler.retrieve_sessions(active_user)
                 week = ScheduleCreator(schedule_ds).set_users_week(sessions)
                 users_schedule = ScheduleCreator(schedule_ds).create_user_object(active_user, week)
                 schedule_ds.save_users_schedule(users_schedule, schedule_ds.create_object_path(active_user), active_user)
@@ -102,7 +103,7 @@ while True:
             elif make_or_write.lower() == "add":
                 users_schedule = schedule_ds.load_users_schedule(active_user)
 
-                sessions_to_add = CmdInputHandler(schedule_ds).retrieve_sessions(active_user)
+                sessions_to_add = input_handler.retrieve_sessions(active_user)
                 for add_session in sessions_to_add:
                     for user_day in users_schedule.week:
                         for user_session in user_day.sessions:
@@ -128,7 +129,7 @@ while True:
 
             elif make_or_write.lower() == "remove":
                 users_schedule = schedule_ds.load_users_schedule(active_user)
-                sessions_to_remove = CmdInputHandler(schedule_ds).remove_session(active_user)
+                sessions_to_remove = input_handler.remove_session(active_user)
                 for day in users_schedule.week:
                     for user_session in day.sessions:
                         for delete_session in sessions_to_remove:
