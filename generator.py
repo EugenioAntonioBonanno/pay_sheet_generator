@@ -87,6 +87,7 @@ while True:
                 logger.debug(
                     "Sorry that information doesn't match our records. Please try again, or register a new account")
 
+        schedule_ds = ScheduleDataService()
         while True:
             make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
                                   "'remove' to remove a class, 'view' to see your current schedule, or 'export' to "
@@ -94,14 +95,13 @@ while True:
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
                 sessions = CmdInputHandler().add_sessions(active_user)
-                week = ScheduleCreator(ScheduleDataService()).set_users_week(sessions)
-                users_schedule = ScheduleCreator(ScheduleDataService()).create_user_object(active_user, week)
-                ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService()
-                                                          .create_object_path(active_user), active_user)
+                week = ScheduleCreator(schedule_ds).set_users_week(sessions)
+                users_schedule = ScheduleCreator(schedule_ds).create_user_object(active_user, week)
+                schedule_ds.save_users_schedule(users_schedule, schedule_ds.create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = CmdInputHandler(ScheduleDataService()).add_classes(active_user)
-                EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects"
+                users_schedule = CmdInputHandler(schedule_ds).add_classes(active_user)
+                EditSchedule(schedule_ds).save_schedule(active_user, root / "user_objects"
                                                                   / active_user, users_schedule)
             elif make_or_write.lower() == "view":
                 day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
@@ -111,15 +111,15 @@ while True:
                 if day_to_see.lower() == 'done':
                     break
                 else:
-                    ViewSchedule(ScheduleDataService()).view_day(day_to_see, active_user)
+                    ViewSchedule(schedule_ds).view_day(day_to_see, active_user)
 
 
             elif make_or_write.lower() == "export":
-                users_schedule = ScheduleDataService().load_users_schedule(active_user)
+                users_schedule = schedule_ds.load_users_schedule(active_user)
                 break
 
             elif make_or_write.lower() == "remove":
-                CmdInputHandler(ScheduleDataService()).remove_class(active_user)
+                CmdInputHandler(schedule_ds).remove_class(active_user)
 
 
             else:
@@ -165,11 +165,11 @@ while True:
         sheet = ScheduleFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter(ScheduleDataService()).write_sessions(days_to_schedule, sheet, users_schedule,
+        sheet = ScheduleWriter(schedule_ds).write_sessions(days_to_schedule, sheet, users_schedule,
                                                 monthly_meetings, extra_sessions_worked)
 
         try:
-            ScheduleWriter(ScheduleDataService()).export_schedule(workbook, active_user)
+            ScheduleWriter(schedule_ds).export_schedule(workbook, active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(active_user + ' successfully generated a paysheet.')
