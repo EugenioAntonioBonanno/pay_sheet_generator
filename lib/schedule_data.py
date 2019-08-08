@@ -212,35 +212,6 @@ class CmdInputHandler:
                                 " to their schedule.")
         return sessions
 
-    def add_sessions_to_user_schedule(self, active_user):
-        sessions_to_add = []
-
-        while True:
-
-            session_to_add = input("Please enter the session you wish to add in the same format you see below. "
-                                 "\"[session, length day]\" ex: W60 1 3. Or type \"done\": \n")
-
-            if session_to_add.lower() == "done":
-                break
-
-            try:
-                session_list = session_to_add.split()
-                if len(session_list) == 3:
-                    sessions_to_add.append(Session(session_list[0], session_list[1], session_list[2]))
-                    logger.debug("You have entered the following sessions:", end=" ")
-                    for session in sessions_to_add:
-                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
-                    logger.debug("\n")
-                    logger.info(active_user + "added the session", session_to_add, "to their schedule.")
-
-                else:
-                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                    logger.info(active_user + "attempted to add incorrect input " + session_to_add + " to their schedule.")
-            except:
-                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + " attempted to add incorrect input " + session_to_add + " to their schedule.")
-
-        return sessions_to_add
 
     def remove_session(self, active_user):
 

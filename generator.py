@@ -102,7 +102,7 @@ while True:
             elif make_or_write.lower() == "add":
                 users_schedule = schedule_ds.load_users_schedule(active_user)
 
-                sessions_to_add = CmdInputHandler(schedule_ds).add_sessions_to_user_schedule(active_user)
+                sessions_to_add = CmdInputHandler(schedule_ds).add_sessions(active_user)
                 for add_session in sessions_to_add:
                     for user_day in users_schedule.week:
                         for user_session in user_day.sessions:
