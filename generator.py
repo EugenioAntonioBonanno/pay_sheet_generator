@@ -129,7 +129,7 @@ while True:
 
             elif make_or_write.lower() == "remove":
                 users_schedule = schedule_ds.load_users_schedule(active_user)
-                sessions_to_remove = input_handler.remove_session(active_user)
+                sessions_to_remove = input_handler.retrieve_sessions(active_user)
                 for day in users_schedule.week:
                     for user_session in day.sessions:
                         for delete_session in sessions_to_remove:

@@ -195,45 +195,8 @@ class CmdInputHandler:
                         logger.debug("You have entered the following sessions:")
                         for session in sessions:
                             logger.debug(session.code + " day = " + session.day_taught)
-                        logger.debug(" ")
-                        logger.info(active_user + " added the session " + session_info + " to there schedule.")
                     else:
                         logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-                        logger.info(active_user + "attempted to add the incorrect format: " + session_info +
-                                    " to their schedule.")
                 except:
                     logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-                    logger.info(active_user + "attempted to add the incorrect format:" + session_info + ""
-                                " to their schedule.")
         return sessions
-
-
-    def remove_session(self, active_user):
-
-        sessions_to_remove = []
-        while True:
-
-            session_to_remove = input("Please enter the session you wish to remove in the same format you entered it "
-                                    "\"[session, length day]\" ex: W60 1 3. Or type \"done\": \n")
-
-            if session_to_remove.lower() == "done":
-                break
-
-            try:
-                session_list = session_to_remove.split()
-                if len(session_list) == 3:
-                    sessions_to_remove.append(Session(session_list[0], session_list[1], session_list[2]))
-                    logger.debug("You have entered the following sessions:", end=" ")
-                    for session in sessions_to_remove:
-                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
-                    logger.debug("\n")
-                    logger.info(active_user + "removed the session" + session_to_remove + " from their schedule.")
-                else:
-                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                    logger.info(active_user + "attempted to removed the session via incorrect input " + session_to_remove +
-                                " from their schedule.")
-            except:
-                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + "attempted to removed the session via incorrect input" + session_to_remove +
-                            " from their schedule.")
-        return sessions_to_remove
