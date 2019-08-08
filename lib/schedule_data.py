@@ -174,7 +174,7 @@ class ScheduleDataException(Exception):
 
 class CmdInputHandler:
 
-    def retrieve_sessions(self, active_user):
+    def retrieve_sessions(self):
         sessions = []
         logger.debug("\nPlease input your session info in EXACTLY the same format that will be described below: \n "
                      "[session (W55) length(in hours) day (as a num)]. \n"
