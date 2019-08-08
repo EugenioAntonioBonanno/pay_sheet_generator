@@ -60,49 +60,17 @@ class ScheduleDataService:
             users = open(users_object_path, "wb")
             pickle.dump({}, users)
         except Exception as error:
-            logger.error("database creation failed: " + error)
+            logger.error("database creation failed: " + str(error))
             raise ScheduleDataException("Sorry but database creation has failed.")
 
 
-class CreateNewSchedule:
+class ScheduleCreator:
 
     _schedule_data_service: ScheduleDataService
 
     def __init__(self, schedule_data_service):
         self._schedule_data_service = schedule_data_service
 
-    def add_sessions(self, active_user):
-        sessions = []
-        logger.debug("\nPlease input your class info in EXACTLY the same format that will be described below: \n "
-                     "[class (W55) length(in hours) day (as a num)]. \n"
-                     "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
-                     "Use the following example to format your input: \"W60 1 3\".\n"
-                     "The above means class W60, taught for one hour, on Wednesday \n"
-                     "Do not include "" or a space before W in your input. \n")
-
-        while True:
-            session_info = input("Please input class information or type \"done\" if you are finished: \n")
-            if session_info.lower() == "done":
-                break
-            else:
-                try:
-                    session_list = session_info.split()
-                    if len(session_list) == 3:
-                        sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                        logger.debug("You have entered the following classes:")
-                        for session in sessions:
-                            logger.debug(session.code + " day = " + session.day_taught)
-                        logger.debug(" ")
-                        logger.info(active_user + " added the class " + session_info + " to there schedule.")
-                    else:
-                        logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-                        logger.info(active_user + "attempted to add the incorrect format: " + session_info +
-                                    " to their schedule.")
-                except:
-                    logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-                    logger.info(active_user + "attempted to add the incorrect format:" + session_info + ""
-                                " to their schedule.")
-        return sessions
 
     def set_users_week(self, sessions):
         monday_sessions = []
@@ -155,88 +123,11 @@ class EditSchedule:
     def __init__(self, schedule_data_service):
         self._schedule_data_service = schedule_data_service
 
-    def add_classes(self, active_user):
-        classes_to_add = []
-
-        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
-
-        while True:
-
-            class_to_add = input("Please enter the class you wish to add in the same format you see below. "
-                                 "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
-
-            if class_to_add.lower() == "done":
-                break
-
-            try:
-                class_list = class_to_add.split()
-                if len(class_list) == 3:
-                    classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
-                    logger.debug("You have entered the following classes:", end=" ")
-                    for session in classes_to_add:
-                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
-                    logger.debug("\n")
-                    logger.info(active_user + "added the class", class_to_add, "to their schedule.")
-
-                else:
-                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                    logger.info(active_user + "attempted to add incorrect input " + class_to_add + " to their schedule.")
-            except:
-                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + " attempted to add incorrect input " + class_to_add + " to their schedule.")
-
-        for add_session in classes_to_add:
-            for user_day in users_schedule.week:
-                for user_session in user_day.sessions:
-                    if user_session.day_taught == add_session.day_taught:
-                        user_day.sessions.append(add_session)
-                        break
-
-        return users_schedule
 
     def save_schedule(self, active_user, users_object_path, users_schedule):
         self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
-    def remove_class(self, active_user):
 
-        classes_to_remove = []
-        users_object_path = self._schedule_data_service.create_object_path(active_user)
-        users_schedule = self._schedule_data_service.load_users_schedule(users_object_path, active_user)
-
-        while True:
-
-            class_to_remove = input("Please enter the class you wish to remove in the same format you entered it "
-                                    "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
-
-            if class_to_remove.lower() == "done":
-                break
-
-            try:
-                class_list = class_to_remove.split()
-                if len(class_list) == 3:
-                    classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
-                    logger.debug("You have entered the following classes:", end=" ")
-                    for session in classes_to_remove:
-                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
-                    logger.debug("\n")
-                    logger.info(active_user + "removed the class" + class_to_remove + " from their schedule.")
-                else:
-                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                    logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove +
-                                " from their schedule.")
-            except:
-                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove +
-                            " from their schedule.")
-
-        for day in users_schedule.week:
-            for user_session in day.sessions:
-                for delete_session in classes_to_remove:
-                    if user_session.code == delete_session.code and user_session.length == delete_session.length \
-                            and user_session.day_taught == delete_session.day_taught:
-                        day.sessions.remove(user_session)
-
-        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
 class ViewSchedule:
 
@@ -278,3 +169,125 @@ class ViewSchedule:
 
 class ScheduleDataException(Exception):
     pass
+
+
+
+class CmdInputHandler:
+
+    __schedule_data_service: ScheduleDataService
+
+    def __init__(self, schedule_data_service):
+        self._schedule_data_service = schedule_data_service
+
+    def add_sessions(self, active_user):
+        sessions = []
+        logger.debug("\nPlease input your class info in EXACTLY the same format that will be described below: \n "
+                     "[class (W55) length(in hours) day (as a num)]. \n"
+                     "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
+                     "Use the following example to format your input: \"W60 1 3\".\n"
+                     "The above means class W60, taught for one hour, on Wednesday \n"
+                     "Do not include "" or a space before W in your input. \n")
+
+        while True:
+            session_info = input("Please input class information or type \"done\" if you are finished: \n")
+            if session_info.lower() == "done":
+                break
+            else:
+                try:
+                    session_list = session_info.split()
+                    if len(session_list) == 3:
+                        sessions.append(Session(session_list[0], session_list[1], session_list[2]))
+                        logger.debug("You have entered the following classes:")
+                        for session in sessions:
+                            logger.debug(session.code + " day = " + session.day_taught)
+                        logger.debug(" ")
+                        logger.info(active_user + " added the class " + session_info + " to there schedule.")
+                    else:
+                        logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
+                        logger.info(active_user + "attempted to add the incorrect format: " + session_info +
+                                    " to their schedule.")
+                except:
+                    logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
+                    logger.info(active_user + "attempted to add the incorrect format:" + session_info + ""
+                                " to their schedule.")
+        return sessions
+
+    def add_classes(self, active_user):
+        classes_to_add = []
+
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
+
+        while True:
+
+            class_to_add = input("Please enter the class you wish to add in the same format you see below. "
+                                 "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+
+            if class_to_add.lower() == "done":
+                break
+
+            try:
+                class_list = class_to_add.split()
+                if len(class_list) == 3:
+                    classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
+                    logger.debug("You have entered the following classes:", end=" ")
+                    for session in classes_to_add:
+                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                    logger.debug("\n")
+                    logger.info(active_user + "added the class", class_to_add, "to their schedule.")
+
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                    logger.info(active_user + "attempted to add incorrect input " + class_to_add + " to their schedule.")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.info(active_user + " attempted to add incorrect input " + class_to_add + " to their schedule.")
+
+        for add_session in classes_to_add:
+            for user_day in users_schedule.week:
+                for user_session in user_day.sessions:
+                    if user_session.day_taught == add_session.day_taught:
+                        user_day.sessions.append(add_session)
+                        break
+
+        return users_schedule
+
+    def remove_class(self, active_user):
+
+        classes_to_remove = []
+        users_object_path = self._schedule_data_service.create_object_path(active_user)
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
+
+        while True:
+
+            class_to_remove = input("Please enter the class you wish to remove in the same format you entered it "
+                                    "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+
+            if class_to_remove.lower() == "done":
+                break
+
+            try:
+                class_list = class_to_remove.split()
+                if len(class_list) == 3:
+                    classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
+                    logger.debug("You have entered the following classes:", end=" ")
+                    for session in classes_to_remove:
+                        logger.debug(session.code, "day = " + session.day_taught, end=" ")
+                    logger.debug("\n")
+                    logger.info(active_user + "removed the class" + class_to_remove + " from their schedule.")
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                    logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove +
+                                " from their schedule.")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
+                logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove +
+                            " from their schedule.")
+
+        for day in users_schedule.week:
+            for user_session in day.sessions:
+                for delete_session in classes_to_remove:
+                    if user_session.code == delete_session.code and user_session.length == delete_session.length \
+                            and user_session.day_taught == delete_session.day_taught:
+                        day.sessions.remove(user_session)
+
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
