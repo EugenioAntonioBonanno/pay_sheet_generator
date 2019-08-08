@@ -19,8 +19,8 @@ root = Path(".")
 
 users_info_path = root / "user_info" / "users"
 
-class User:
 
+class User:
     username: str
     hashed_password: str
 
@@ -29,9 +29,8 @@ class User:
         self.hashed_password = hashed_password
 
 
-class UserDataService:
-
-    def load(self):
+class UserDataSource:
+    def all(self):
         self.__ensure_database_exists()
         try:
             users = open(users_info_path, "rb")
@@ -41,6 +40,13 @@ class UserDataService:
         except Exception as e:
             print(str(e))
             return {}
+
+    def load_by_username(self, username):
+        all_users = self.all()
+        if username in all_users:
+            return User(username, all_users[username])
+        else:
+            return None
 
     def save_user(self, user: User):
         self.__ensure_database_exists()
@@ -69,20 +75,18 @@ class UserDataService:
             logger.error("database creation failed: " + error)
             raise UserDataServiceException("Sorry but we cannot currently access the database.")
 
-    def ensure_passwords_match(self, password_1, password_2):
-        return password_1 == password_2
-
-
-    def __ensure_database_exists(self):
-        if self.__user_database_exists():
+    @staticmethod
+    def __ensure_database_exists():
+        if UserDataSource.__user_database_exists():
             return
-        self.__create_user_database()
+        UserDataSource.__create_user_database()
 
-    def __user_database_exists(self):
-
+    @staticmethod
+    def __user_database_exists():
         return Path(users_info_path).is_file()
 
-    def __create_user_database(self):
+    @staticmethod
+    def __create_user_database():
         try:
             users = open(users_info_path, "wb")
             pickle.dump({}, users)
@@ -95,27 +99,6 @@ class UserDataServiceException(Exception):
     pass
 
 
-class UserRepository:
-    __data_service: UserDataService
-
-    def __init__(self, data_service):
-        self.__data_service = data_service
-
-    def find_by_username(self, username):
-        users = self.__data_service.load()
-        if username in users:
-            return User(username, users[username])
-        else:
-            return None
-
-    def register_user(self, user: User):
-        self.__data_service.save_user(user)
-
-
 class UserAuthenticator:
-
     def is_authentic(self, user: User, provided_password):
         return hash(provided_password.encode("utf-8")).digest() == user.hashed_password
-
-
-
