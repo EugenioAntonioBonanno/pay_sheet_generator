@@ -1,5 +1,5 @@
 from openpyxl.styles import Font
-from objects import SubbedSession
+from lib.objects import SubbedSession
 import logging
 
 
@@ -47,18 +47,18 @@ def format_sheet(workbook, active_user, month, year):
     sheet["C1"].font = font_obj
 
     sheet["A3"] = "Date"
-    sheet["B3"] = "Class name"
+    sheet["B3"] = "session name"
     sheet["C3"] = "Length"
     sheet["D3"] = "Signature"
     sheet["F3"] = "Date"
-    sheet["G3"] = "Class name"
+    sheet["G3"] = "session name"
     sheet["H3"] = "Length"
     sheet["I3"] = "Signature"
     return sheet
 
 
 # Writes users schedule across 8 cells before dropping down one row.
-def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, classes_subbed):
+def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, sessions_subbed):
     col = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
     col_index = 0
     row_index = 4
@@ -100,8 +100,8 @@ def write_schedule(to_schedule, sheet, users_schedule, monthly_meeting, classes_
                 col_index = 0
                 row_index += 1
 
-        if len(classes_subbed) > 0:
-            for subbed in classes_subbed:
+        if len(sessions_subbed) > 0:
+            for subbed in sessions_subbed:
                 if int(subbed.date) == int(day.day):
                     sheet[col[col_index] + str(row_index)] = day_and_month
                     col_index += 1
@@ -139,30 +139,30 @@ def get_days_missed(active_user):
     return days_to_skip
 
 
-def get_classes_subbed(active_user):
-    classes_subbed = []
-    logger.debug(("\nHave you subbed any classes this month? \nInput \"done\" if you haven\"t or when finished entering"
+def get_sessions_subbed(active_user):
+    sessions_subbed = []
+    logger.debug(("\nHave you subbed any sessions this month? \nInput \"done\" if you haven\"t or when finished entering"
                   " those you have.\n"
-                  "If you have enter each class one at a time in the following format [class id length date] \n"
+                  "If you have enter each session one at a time in the following format [session id length date] \n"
                   "ex: W34 2 13."))
     while True:
-        logger.debug("Your current list of classes you have subbed this month is as follows:")
-        for session in classes_subbed:
+        logger.debug("Your current list of sessions you have subbed this month is as follows:")
+        for session in sessions_subbed:
             logger.debug(session.code + " ")
         logger.debug("\n")
-        subbed = input("Enter a class to add to your subbed classes, or \"done\" if you are finished:\n")
+        subbed = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
         logger.info((active_user + " entered:" + subbed))
         if subbed.lower() == "done":
             break
         else:
             try:
                 subbed = subbed.split(" ")
-                classes_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
-                logger.info(active_user + " added " + subbed + "to their list of classes they subbed.")
+                sessions_subbed.append(SubbedSession(subbed[0], subbed[1], subbed[2]))
+                logger.info(active_user + " added " + subbed + "to their list of sessions they subbed.")
             except:
-                logger.debug("Sorry but you entered that class in incorrectly, it won\"t be added. Please try again")
+                logger.debug("Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
 
-    return classes_subbed
+    return sessions_subbed
 
 
 def get_monthly_meeting(active_user):

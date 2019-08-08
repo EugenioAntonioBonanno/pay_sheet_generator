@@ -2,7 +2,7 @@ import pickle
 import getpass
 import logging
 from hashlib import sha256 as hash
-from objects import Session, Day, User
+from lib.objects import Session, Day, User
 from pathlib import Path
 
 
@@ -60,17 +60,17 @@ def create_schedule(active_user, make_or_write):
     sessions = []
     users_object_path = root / "user_objects" / active_user
 
-    logger.debug("\nPlease input your class info in EXACTLY the same format that will be described below: \n "
-                 "[class (W55) length(in hours) day (as a num)]. \n"
+    logger.debug("\nPlease input your session info in EXACTLY the same format that will be described below: \n "
+                 "[session (W55) length(in hours) day (as a num)]. \n"
                  "Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday] \n"
                  "Use the following example to format your input: \"W60 1 3\".\n"
-                 "The above means class W60, taught for one hour, on Wednesday \n"
+                 "The above means session W60, taught for one hour, on Wednesday \n"
                  "Do not include "" or a space before W in your input. \n")
 
     if make_or_write.lower() == "set":
 
         while True:
-            session_info = input("Please input class information or type \"done\" if you are finished: \n")
+            session_info = input("Please input session information or type \"done\" if you are finished: \n")
             if session_info.lower() == "done":
                 break
             else:
@@ -78,11 +78,11 @@ def create_schedule(active_user, make_or_write):
                     session_list = session_info.split()
                     if len(session_list) == 3:
                         sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                        logger.debug("You have entered the following classes:", end=" ")
+                        logger.debug("You have entered the following sessions:", end=" ")
                         for session in sessions:
                             logger.debug(session.code, "day = ", session.day_taught, end=" ")
                         logger.debug("\n")
-                        logger.info(active_user + " added the class", session_info, "to there schedule.")
+                        logger.info(active_user + " added the session", session_info, "to there schedule.")
                     else:
                         logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
                         logger.info(active_user + "attempted to add the incorrect format: " + session_info +
@@ -133,38 +133,38 @@ def create_schedule(active_user, make_or_write):
         logger.info(active_user + "has successfully set up their schedule.")
 
 
-def add_class(active_user):
-    classes_to_add = []
+def add_session(active_user):
+    sessions_to_add = []
     users_object_path = root / "user_objects" / active_user
     schedule = open(users_object_path, "rb")
     users_schedule = pickle.load(schedule)
 
     while True:
 
-        class_to_add = input("Please enter the class you wish to add in the same format you entered it "
-                             "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+        session_to_add = input("Please enter the session you wish to add in the same format you entered it "
+                             "\"[session, length day]\" ex: W60 1 3. Or type \"done\": \n")
 
-        if class_to_add.lower() == "done":
+        if session_to_add.lower() == "done":
             break
 
         try:
-            class_list = class_to_add.split()
-            if len(class_list) == 3:
-                classes_to_add.append(Session(class_list[0], class_list[1], class_list[2]))
-                logger.debug("You have entered the following classes:", end=" ")
-                for session in classes_to_add:
+            session_list = session_to_add.split()
+            if len(session_list) == 3:
+                sessions_to_add.append(Session(session_list[0], session_list[1], session_list[2]))
+                logger.debug("You have entered the following sessions:", end=" ")
+                for session in sessions_to_add:
                     logger.debug(session.code, "day = " + session.day_taught, end=" ")
                 logger.debug("\n")
-                logger.info(active_user + "added the class", class_to_add, "to their schedule.")
+                logger.info(active_user + "added the session", session_to_add, "to their schedule.")
 
             else:
                 logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + "attempted to add incorrect input " + class_to_add + " to their schedule.")
+                logger.info(active_user + "attempted to add incorrect input " + session_to_add + " to their schedule.")
         except:
             logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-            logger.info(active_user + " attempted to add incorrect input " + class_to_add + " to their schedule.")
+            logger.info(active_user + " attempted to add incorrect input " + session_to_add + " to their schedule.")
 
-    for add_session in classes_to_add:
+    for add_session in sessions_to_add:
         for user_day in users_schedule.week:
             for user_session in user_day.sessions:
                 if user_session.day_taught == add_session.day_taught:
@@ -176,41 +176,41 @@ def add_class(active_user):
     schedule.close()
 
 
-def remove_class(active_user):
-    classes_to_remove = []
+def remove_session(active_user):
+    sessions_to_remove = []
     users_object_path = root / "user_objects" / active_user
     schedule = open(users_object_path, "rb")
     users_schedule = pickle.load(schedule)
 
     while True:
 
-        class_to_remove = input("Please enter the class you wish to remove in the same format you entered it "
-                                "\"[class, length day]\" ex: W60 1 3. Or type \"done\": \n")
+        session_to_remove = input("Please enter the session you wish to remove in the same format you entered it "
+                                "\"[session, length day]\" ex: W60 1 3. Or type \"done\": \n")
 
-        if class_to_remove.lower() == "done":
+        if session_to_remove.lower() == "done":
             break
 
         try:
-            class_list = class_to_remove.split()
-            if len(class_list) == 3:
-                classes_to_remove.append(Session(class_list[0], class_list[1], class_list[2]))
-                logger.debug("You have entered the following classes:", end=" ")
-                for session in classes_to_remove:
+            session_list = session_to_remove.split()
+            if len(session_list) == 3:
+                sessions_to_remove.append(Session(session_list[0], session_list[1], session_list[2]))
+                logger.debug("You have entered the following sessions:", end=" ")
+                for session in sessions_to_remove:
                     logger.debug(session.code, "day = " + session.day_taught, end=" ")
                 logger.debug("\n")
-                logger.info(active_user + "removed the class" + class_to_remove + " from their schedule.")
+                logger.info(active_user + "removed the session" + session_to_remove + " from their schedule.")
             else:
                 logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-                logger.info(active_user + "attempted to removed the class via incorrect input " + class_to_remove +
+                logger.info(active_user + "attempted to removed the session via incorrect input " + session_to_remove +
                             " from their schedule.")
         except:
             logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
-            logger.info(active_user + "attempted to removed the class via incorrect input" + class_to_remove +
+            logger.info(active_user + "attempted to removed the session via incorrect input" + session_to_remove +
                         " from their schedule.")
 
     for day in users_schedule.week:
         for user_session in day.sessions:
-            for delete_session in classes_to_remove:
+            for delete_session in sessions_to_remove:
                 if user_session.code == delete_session.code and user_session.length == delete_session.length \
                         and user_session.day_taught == delete_session.day_taught:
                     day.sessions.remove(user_session)
@@ -255,7 +255,7 @@ def view_schedule(active_user):
             if day.name in to_view:
                 logger.debug("")
                 for session in day.sessions:
-                    logger.debug("Day: " + day.name + " Class Code: " + session.code + " Class length: "
+                    logger.debug("Day: " + day.name + " session Code: " + session.code + " session length: "
                                  + session.length)
                 logger.debug("")
 

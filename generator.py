@@ -5,10 +5,10 @@ from pathlib import Path
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from hashlib import sha256 as hash
-from user import UserDataService, UserAuthenticator, UserRepository, User
-from schedule_exporter import ScheduleFormatter, ScheduleWriter
-from monthly_variables import MonthSpecificData
-from schedule_data import ScheduleCreator, ScheduleDataService, EditSchedule, ViewSchedule, CmdInputHandler
+from lib.user import UserDataService, UserAuthenticator, UserRepository, User
+from lib.schedule_exporter import ScheduleFormatter, ScheduleWriter
+from lib.monthly_variables import MonthSpecificData
+from lib.schedule_data import ScheduleCreator, ScheduleDataService, EditSchedule, ViewSchedule, CmdInputHandler
 
 
 logger = logging.getLogger(__name__)
@@ -89,8 +89,8 @@ while True:
 
         schedule_ds = ScheduleDataService()
         while True:
-            make_or_write = input("Enter 'set' create a new schedule, 'add' to add classes to your current one, "
-                                  "'remove' to remove a class, 'view' to see your current schedule, or 'export' to "
+            make_or_write = input("Enter 'set' create a new schedule, 'add' to add sessions to your current one, "
+                                  "'remove' to remove a session, 'view' to see your current schedule, or 'export' to "
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
@@ -100,7 +100,7 @@ while True:
                 schedule_ds.save_users_schedule(users_schedule, schedule_ds.create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = CmdInputHandler(schedule_ds).add_classes(active_user)
+                users_schedule = CmdInputHandler(schedule_ds).add_sessions_to_user_schedule(active_user)
                 EditSchedule(schedule_ds).save_schedule(active_user, root / "user_objects"
                                                                   / active_user, users_schedule)
             elif make_or_write.lower() == "view":
@@ -119,7 +119,7 @@ while True:
                 break
 
             elif make_or_write.lower() == "remove":
-                CmdInputHandler(schedule_ds).remove_class(active_user)
+                CmdInputHandler(schedule_ds).remove_session(active_user)
 
 
             else:

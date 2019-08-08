@@ -1,6 +1,6 @@
 import os
 from openpyxl.styles import Font
-from schedule_data import ScheduleDataService
+from lib.schedule_data import ScheduleDataService
 
 class ScheduleFormatter:
 
@@ -23,11 +23,11 @@ class ScheduleFormatter:
 
     def label_schedule(self, sheet):
         sheet["A3"] = "Date"
-        sheet["B3"] = "Class name"
+        sheet["B3"] = "session name"
         sheet["C3"] = "Length"
         sheet["D3"] = "Signature"
         sheet["F3"] = "Date"
-        sheet["G3"] = "Class name"
+        sheet["G3"] = "session name"
         sheet["H3"] = "Length"
         sheet["I3"] = "Signature"
         return sheet

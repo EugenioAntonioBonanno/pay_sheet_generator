@@ -23,16 +23,16 @@ class MonthSpecificData:
 
     def get_extra_session_worked(self, active_user):
         extra_sessions_worked = []
-        logger.debug(("\nHave you subbed any classes this month? \nInput \"done\" if you haven\"t or when finished entering"
+        logger.debug(("\nHave you subbed any sessions this month? \nInput \"done\" if you haven\"t or when finished entering"
                       " those you have.\n"
-                      "If you have enter each class one at a time in the following format [class id length date] \n"
+                      "If you have enter each session one at a time in the following format [session id length date] \n"
                       "ex: W34 2 13."))
         while True:
-            logger.debug("Your current list of classes you have subbed this month is as follows:")
+            logger.debug("Your current list of sessions you have subbed this month is as follows:")
             for session in extra_sessions_worked:
                 logger.debug(session.code + " ")
             logger.debug("\n")
-            extra_session = input("Enter a class to add to your subbed classes, or \"done\" if you are finished:\n")
+            extra_session = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
             logger.info((active_user + " entered:" + extra_session))
             if extra_session.lower() == "done":
                 break
@@ -40,9 +40,9 @@ class MonthSpecificData:
                 try:
                     extra_session_split = extra_session.split(" ")
                     extra_sessions_worked.append(ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
-                    logger.info(active_user + " added " + extra_session + "to their list of classes they subbed.")
+                    logger.info(active_user + " added " + extra_session + "to their list of sessions they subbed.")
                 except:
-                    logger.debug("Sorry but you entered that class in incorrectly, it won\"t be added. Please try again")
+                    logger.debug("Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
 
         return extra_sessions_worked
 
