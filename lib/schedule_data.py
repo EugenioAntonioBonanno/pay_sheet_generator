@@ -215,8 +215,6 @@ class CmdInputHandler:
     def add_sessions_to_user_schedule(self, active_user):
         sessions_to_add = []
 
-        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
-
         while True:
 
             session_to_add = input("Please enter the session you wish to add in the same format you see below. "
@@ -242,14 +240,7 @@ class CmdInputHandler:
                 logger.debug("Sorry it seems the data you entered doesnt match the required format. Please try again")
                 logger.info(active_user + " attempted to add incorrect input " + session_to_add + " to their schedule.")
 
-        for add_session in sessions_to_add:
-            for user_day in users_schedule.week:
-                for user_session in user_day.sessions:
-                    if user_session.day_taught == add_session.day_taught:
-                        user_day.sessions.append(add_session)
-                        break
-
-        return users_schedule
+        return sessions_to_add
 
     def remove_session(self, active_user):
 

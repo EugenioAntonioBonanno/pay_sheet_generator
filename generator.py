@@ -100,7 +100,15 @@ while True:
                 schedule_ds.save_users_schedule(users_schedule, schedule_ds.create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = CmdInputHandler(schedule_ds).add_sessions_to_user_schedule(active_user)
+                users_schedule = schedule_ds.load_users_schedule(active_user)
+
+                sessions_to_add = CmdInputHandler(schedule_ds).add_sessions_to_user_schedule(active_user)
+                for add_session in sessions_to_add:
+                    for user_day in users_schedule.week:
+                        for user_session in user_day.sessions:
+                            if user_session.day_taught == add_session.day_taught:
+                                user_day.sessions.append(add_session)
+                                break
                 EditSchedule(schedule_ds).save_schedule(active_user, root / "user_objects"
                                                                   / active_user, users_schedule)
             elif make_or_write.lower() == "view":
