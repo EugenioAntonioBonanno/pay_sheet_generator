@@ -101,17 +101,9 @@ while True:
                 schedule_ds.save_users_schedule(users_schedule, schedule_ds.create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = schedule_ds.load_users_schedule(active_user)
-
                 sessions_to_add = input_handler.retrieve_sessions()
-                for add_session in sessions_to_add:
-                    for user_day in users_schedule.week:
-                        for user_session in user_day.sessions:
-                            if user_session.day_taught == add_session.day_taught:
-                                user_day.sessions.append(add_session)
-                                break
-                ScheduleEditor(schedule_ds).save_schedule(active_user, root / "user_objects"
-                                                          / active_user, users_schedule)
+                ScheduleEditor(schedule_ds).add_sessions(sessions_to_add, active_user, root / "user_objects"
+                                                         / active_user)
             elif make_or_write.lower() == "view":
                 day_to_see = input("Please enter the day you wish to view as a number, enter \"all\" to see your entire"
                                    " schedule or \"done\" to exit. \n [1 = Monday 5 = Friday]:\n")

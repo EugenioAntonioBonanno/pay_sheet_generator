@@ -123,6 +123,15 @@ class ScheduleEditor:
     def __init__(self, schedule_data_service):
         self._schedule_data_service = schedule_data_service
 
+    def add_sessions(self, sessions_to_add, active_user, users_object_path):
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
+        for add_session in sessions_to_add:
+            for user_day in users_schedule.week:
+                for user_session in user_day.sessions:
+                    if user_session.day_taught == add_session.day_taught:
+                        user_day.sessions.append(add_session)
+                        break
+        self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
 
     def save_schedule(self, active_user, users_object_path, users_schedule):
         self._schedule_data_service.save_users_schedule(users_schedule, users_object_path, active_user)
