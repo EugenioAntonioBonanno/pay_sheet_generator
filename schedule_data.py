@@ -64,7 +64,7 @@ class ScheduleDataService:
             raise ScheduleDataException("Sorry but database creation has failed.")
 
 
-class CreateNewSchedule:
+class ScheduleCreator:
 
     _schedule_data_service: ScheduleDataService
 
@@ -201,7 +201,7 @@ class EditSchedule:
 
         classes_to_remove = []
         users_object_path = self._schedule_data_service.create_object_path(active_user)
-        users_schedule = self._schedule_data_service.load_users_schedule(users_object_path, active_user)
+        users_schedule = self._schedule_data_service.load_users_schedule(active_user)
 
         while True:
 

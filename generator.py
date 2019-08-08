@@ -119,7 +119,7 @@ while True:
                 break
 
             elif make_or_write.lower() == "remove":
-                EditSchedule(ScheduleDataService).remove_class(active_user)
+                EditSchedule(ScheduleDataService()).remove_class(active_user)
 
 
             else:
