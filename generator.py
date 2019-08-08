@@ -8,7 +8,7 @@ from hashlib import sha256 as hash
 from user import UserDataService, UserAuthenticator, UserRepository, User
 from schedule_exporter import ScheduleFormatter, ScheduleWriter
 from monthly_variables import MonthSpecificData
-from schedule_data import CreateNewSchedule, ScheduleDataService, EditSchedule, ViewSchedule
+from schedule_data import ScheduleCreator, ScheduleDataService, EditSchedule, ViewSchedule, CmdInputHandler
 
 
 logger = logging.getLogger(__name__)
@@ -93,14 +93,14 @@ while True:
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CreateNewSchedule(ScheduleDataService()).add_sessions(active_user)
-                week = CreateNewSchedule(ScheduleDataService()).set_users_week(sessions)
-                users_schedule = CreateNewSchedule(ScheduleDataService()).create_user_object(active_user, week)
+                sessions = CmdInputHandler().add_sessions(active_user)
+                week = ScheduleCreator(ScheduleDataService()).set_users_week(sessions)
+                users_schedule = ScheduleCreator(ScheduleDataService()).create_user_object(active_user, week)
                 ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService()
                                                           .create_object_path(active_user), active_user)
 
             elif make_or_write.lower() == "add":
-                users_schedule = EditSchedule(ScheduleDataService()).add_classes(active_user)
+                users_schedule = CmdInputHandler(ScheduleDataService()).add_classes(active_user)
                 EditSchedule(ScheduleDataService()).save_schedule(active_user, root / "user_objects"
                                                                   / active_user, users_schedule)
             elif make_or_write.lower() == "view":
@@ -119,7 +119,7 @@ while True:
                 break
 
             elif make_or_write.lower() == "remove":
-                EditSchedule(ScheduleDataService()).remove_class(active_user)
+                CmdInputHandler(ScheduleDataService()).remove_class(active_user)
 
 
             else:

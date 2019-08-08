@@ -21,24 +21,6 @@ class ExtraSession:
 
 class MonthSpecificData:
 
-    def get_days_missed(self, active_user):
-        days_to_skip = []
-        logger.debug("Enter any days you missed work due to sickness or holiday as a number. "
-                     "[ex \"12\"] for the 12th or enter \"done\". \n")
-
-        while True:
-
-            logger.debug("Your current missed days are as follows: " + str(days_to_skip))
-            missed_work = input("Enter a missed day as a number or \"done\" to move on. \n")
-            logger.info(active_user + " added " + missed_work + " to their list of days they did not work ")
-            logger.info((active_user + " entered:" + missed_work))
-            if missed_work.lower() == "done":
-                break
-            else:
-                days_to_skip.append(int(missed_work))
-
-        return days_to_skip
-
     def get_extra_session_worked(self, active_user):
         extra_sessions_worked = []
         logger.debug(("\nHave you subbed any classes this month? \nInput \"done\" if you haven\"t or when finished entering"
