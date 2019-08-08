@@ -72,15 +72,15 @@ while True:
             name = input("Please enter your user name:\n")
             password = getpass.getpass("Please enter your password:\n")
 
-            user = UserRepository(UserDataService()).find_by_username(name)
+            current_user = UserRepository(UserDataService()).find_by_username(name)
 
-            if user is None:
+            if current_user is None:
                 logger.debug("Sorry but that user doesn't exist")
                 break
 
-            is_authenticated = UserAuthenticator().is_authentic(user, password)
+            is_authenticated = UserAuthenticator().is_authentic(current_user, password)
             if is_authenticated:
-                active_user = user.username
+                active_user = current_user.username
                 logger.debug("Welcome " + name + ".")
                 logger.info(active_user + " has successfully logged in")
             else:
