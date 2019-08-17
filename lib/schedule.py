@@ -1,6 +1,55 @@
+import pickle
 import os
+from pathlib import Path
 from openpyxl.styles import Font
-from lib.schedule_data import ScheduleDataSource
+from lib.logger import Logger
+
+root = Path(".")
+
+logger = Logger.get_logger(__name__)
+
+
+class ScheduleDataSource:
+    def save_users_schedule(self, schedule, active_user):
+        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
+        self._ensure_database_exists(active_user)
+        schedule_file = open(users_object_path, "wb")
+        pickle.dump(schedule, schedule_file)
+        schedule_file.close()
+        logger.debug("\nYour schedule has been successfully saved \n")
+        logger.info(active_user + "has successfully saved their schedule.")
+
+    def load_users_schedule(self, active_user):
+        self._ensure_database_exists(active_user)
+
+        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
+        schedule = open(users_object_path, "rb")
+        users_schedule = pickle.load(schedule)
+        schedule.close()
+
+        return users_schedule
+
+    def _ensure_database_exists(self, active_user):
+        if self._schedule_database_exists(active_user):
+            return
+        self._create_user_database(active_user)
+
+    @staticmethod
+    def _create_user_object_path(active_user):
+        return root / "user_objects" / active_user
+
+    @staticmethod
+    def _schedule_database_exists(active_user):
+        return Path(ScheduleDataSource._create_user_object_path(active_user)).is_file()
+
+    @staticmethod
+    def _create_user_database(active_user):
+        try:
+            users = open(ScheduleDataSource._create_user_object_path(active_user), "wb")
+            pickle.dump({}, users)
+        except Exception as error:
+            logger.error("database creation failed: " + str(error))
+            raise ScheduleDataException("Sorry but database creation has failed.")
 
 
 class ScheduleFormatter:
@@ -83,11 +132,10 @@ class ScheduleWriter:
                                                                           col_index, row_index, day_and_month)
         return sheet
 
-    def write_day(self, users_schedule, row_index, col_index, day_and_month, sheet, col, day="Monday"):
-        schedule = users_schedule.week
-        for weekday in schedule:
-            for session in weekday.sessions:
-                if weekday.name == day:
+    def write_day(self, schedule, row_index, col_index, day_and_month, sheet, col, day="Monday"):
+        for weekday, sessions in schedule.week.items():
+            for session in sessions:
+                if weekday == day:
                     sheet[col[col_index] + str(row_index)] = day_and_month
                     col_index += 1
                     sheet[col[col_index] + str(row_index)] = session.code
@@ -141,3 +189,41 @@ class ScheduleWriter:
         if not os.path.isdir("paysheets"):
             os.makedirs("paysheets")
         workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
+
+
+class Schedule:
+
+    def __init__(self):
+        self.week = {
+            "Monday": [],
+            "Tuesday": [],
+            "Wednesday": [],
+            "Thursday": [],
+            "Friday": [],
+        }
+
+    def add_sessions(self, sessions):
+        for session in sessions:
+            if session.day_taught == "monday" or session.day_taught == "1":
+                self.week["Monday"].append(session)
+            elif session.day_taught == "tuesday" or session.day_taught == "2":
+                self.week["Tuesday"].append(session)
+            elif session.day_taught == "wednesday" or session.day_taught == "3":
+                self.week["Wednesday"].append(session)
+            elif session.day_taught == "thursday" or session.day_taught == "4":
+                self.week["Thursday"].append(session)
+            elif session.day_taught == "friday" or session.day_taught == "5":
+                self.week["Friday"].append(session)
+        return self
+
+    def remove_sessions(self, sessions):
+        for sessionToRemove in sessions:
+            for weekday in self.week:
+                if sessionToRemove.day_taught != weekday:
+                    continue
+                self.week[weekday].remove(sessionToRemove)
+
+
+class ScheduleDataException(Exception):
+    pass
+

@@ -1,15 +1,6 @@
-import logging
+from lib.logger import Logger
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(format="%(message)s", level=logging.DEBUG)
-
-formatter = logging.Formatter("%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s")
-
-file_handler = logging.FileHandler("logs.txt")
-file_handler.setFormatter(formatter)
-file_handler.setLevel(logging.INFO)
-
-logger.addHandler(file_handler)
+logger = Logger.get_logger(__name__)
 
 
 class ExtraSession:
@@ -23,10 +14,11 @@ class MonthSpecificData:
 
     def get_extra_session_worked(self, active_user):
         extra_sessions_worked = []
-        logger.debug(("\nHave you subbed any sessions this month? \nInput \"done\" if you haven\"t or when finished entering"
-                      " those you have.\n"
-                      "If you have enter each session one at a time in the following format [session id length date] \n"
-                      "ex: W34 2 13."))
+        logger.debug(
+            "\nHave you subbed any sessions this month? \nInput \"done\" if you haven\"t or when finished entering"
+            " those you have.\n"
+            "If you have enter each session one at a time in the following format [session id length date] \n"
+            "ex: W34 2 13.")
         while True:
             logger.debug("Your current list of sessions you have subbed this month is as follows:")
             for session in extra_sessions_worked:
@@ -39,13 +31,14 @@ class MonthSpecificData:
             else:
                 try:
                     extra_session_split = extra_session.split(" ")
-                    extra_sessions_worked.append(ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
+                    extra_sessions_worked.append(
+                        ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
                     logger.info(active_user + " added " + extra_session + "to their list of sessions they subbed.")
                 except:
-                    logger.debug("Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
+                    logger.debug(
+                        "Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
 
         return extra_sessions_worked
-
 
     def get_days_missed(self, active_user):
         days_to_skip = []
@@ -77,7 +70,7 @@ class MonthSpecificData:
                 length = 28
         return length
 
-    def get_monthly_meetings(self, active_user):
+    def get_monthly_meetings(self):
         meetings = []
 
         while True:

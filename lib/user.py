@@ -1,19 +1,11 @@
-import logging
 import pickle
 from pathlib import Path
 from hashlib import sha256 as hash
 
+from lib.controller import CmdInputHandler
+from lib.logger import Logger
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
-
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(funcName)s:%(levelname)s:%(message)s')
-
-file_handler = logging.FileHandler('logs.txt')
-file_handler.setFormatter(formatter)
-file_handler.setLevel(logging.INFO)
-
-logger.addHandler(file_handler)
+logger = Logger.get_logger(__name__)
 
 root = Path(".")
 
@@ -102,3 +94,44 @@ class UserDataServiceException(Exception):
 class UserAuthenticator:
     def is_authentic(self, user: User, provided_password):
         return hash(provided_password.encode("utf-8")).digest() == user.hashed_password
+
+
+class UserRegistrar:
+    __input_handler: CmdInputHandler
+    __user_ds: UserDataSource
+
+    def __init__(self, input_handler: CmdInputHandler, user_ds: UserDataSource):
+        self.__input_handler = input_handler
+        self.__user_ds = user_ds
+
+    def register(self):
+        new_user = self.__input_handler.retrieve_username()
+        user_exists = self.__user_ds.username_exists(new_user)
+        while user_exists:
+            logger.debug("Sorry that name is already taken. Please try again")
+            new_user = self.__input_handler.retrieve_username()
+            user_exists = self.__user_ds.username_exists(new_user)
+        password = self.__input_handler.retrieve_password()
+        user = User(new_user, password)
+        self.__user_ds.save_user(user)
+
+    def login(self):
+        is_authenticated = False
+        while not is_authenticated:
+            credentials = self.__input_handler.retrieve_credentials()
+            current_user = self.__user_ds.load_by_username(credentials["name"])
+
+            if current_user is None:
+                logger.debug("Sorry but that user doesn't exist")
+                break
+
+            is_authenticated = UserAuthenticator().is_authentic(current_user, credentials["password"])
+            if is_authenticated:
+                active_user = current_user.username
+                logger.debug("Welcome " + active_user + ".")
+                logger.info(active_user + " has successfully logged in")
+                return active_user
+            else:
+                logger.debug(
+                    "Sorry that information doesn't match our records. Please try again, or register a new account")
+
