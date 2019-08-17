@@ -227,3 +227,15 @@ class Schedule:
 class ScheduleDataException(Exception):
     pass
 
+
+class Session:
+    def __init__(self, code, length, day_taught):
+        self.code = code
+        self.length = length
+        self.day_taught = day_taught
+
+    def __eq__(self, other):
+        return isinstance(other, Session) \
+               and self.code == other.code \
+               and self.length == other.length \
+               and self.day_taught == other.day_taught
