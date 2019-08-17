@@ -1,33 +1,62 @@
 import openpyxl
-
+from typing import Optional
 from lib.input_handler import CmdInputHandler
 from lib.logger import Logger
 from lib.monthly_variables import MonthSpecificData
-
-from lib.schedule import ScheduleFormatter, ScheduleWriter, ScheduleDataSource, Schedule
-from lib.user import UserDataSource, User
+from lib.schedule import ScheduleFormatter, ScheduleWriter, Schedule
+from lib.user import User
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
+from lib.schedule import ScheduleDataSource
+from lib.user import UserDataSource, UserRegistrar
 
 
 logger = Logger.get_logger(__name__)
 
 
-class Controller:
-    __active_user: User
+class ApplicationFactory:
+
+    @staticmethod
+    def make():
+        schedule_data_source = ScheduleDataSource()
+        input_handler = CmdInputHandler()
+        user_data_source = UserDataSource()
+        user_registrar = UserRegistrar(input_handler, user_data_source)
+        return Application(user_registrar,
+                           input_handler,
+                           user_data_source,
+                           schedule_data_source)
+
+
+class Application:
+    __active_user: Optional[User]
+
+    __registrar: UserRegistrar
     __input_handler: CmdInputHandler
     __user_ds: UserDataSource
     __schedule_ds: ScheduleDataSource
 
-    def __init__(self, active_user: User, input_handler: CmdInputHandler, user_repo: UserDataSource,
+    def __init__(self, registrar: UserRegistrar, input_handler: CmdInputHandler, user_repo: UserDataSource,
                  schedule_ds: ScheduleDataSource):
-        self.__active_user = active_user
+        self.__registrar = registrar
         self.__input_handler = input_handler
         self.__user_repo = user_repo
         self.__schedule_ds = schedule_ds
+        self.__active_user = None
 
-    def execute(self, action):
-        getattr(self, action)()
+    def run(self):
+        self.register_or_login()
+        while True:
+            action = self.__input_handler.retrieve_action()
+            getattr(self, action)()
+
+    def register_or_login(self):
+        if self.__active_user is None:
+            user_choice = self.__input_handler.retrieve_user_choice()
+            if user_choice == 'register':
+                self.__active_user = self.__registrar.register()
+            else:
+                self.__active_user = self.__registrar.login()
 
     def add(self):
         sessions_to_add = self.__input_handler.retrieve_sessions()

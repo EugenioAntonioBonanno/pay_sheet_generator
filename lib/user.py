@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 from hashlib import sha256 as hash
 
-from lib.controller import CmdInputHandler
+from lib.application import CmdInputHandler
 from lib.logger import Logger
 
 logger = Logger.get_logger(__name__)
@@ -114,6 +114,7 @@ class UserRegistrar:
         password = self.__input_handler.retrieve_password()
         user = User(new_user, password)
         self.__user_ds.save_user(user)
+        return user
 
     def login(self):
         is_authenticated = False
