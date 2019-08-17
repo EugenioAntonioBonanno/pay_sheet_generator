@@ -5,7 +5,7 @@ import logging
 from lib.monthly_variables import MonthSpecificData
 from lib.objects import Session
 from pathlib import Path
-from lib.schedule_data import CmdInputHandler, ScheduleDataSource
+
 from lib.schedule_exporter import ScheduleFormatter, ScheduleWriter
 from lib.user import UserDataSource, User, UserAuthenticator
 from dateutil.rrule import rrule, DAILY
@@ -27,6 +27,142 @@ file_handler.setLevel(logging.INFO)
 
 logger.addHandler(file_handler)
 
+class CmdInputHandler:
+    available_user_choices = ["register", "login"]
+
+    available_actions = ["new", "add", "edit", "export", "view", "remove", "done"]
+
+    username_input_message = """
+    Please input your desired user name:
+    """
+
+    action_input_message = """
+    Enter 'new' create a new schedule, 'add' to add sessions to your current one,
+    remove' to remove a session, 'view' to see your current schedule, or 'export' to
+    create a copy of it:
+    """
+
+    sessions_help = """
+    Please input your session info in EXACTLY the same format that will be described below:
+    [session (W55) length(in hours) day (as a num)].
+    Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday]
+    Use the following example to format your input: "W60 1 3"
+    The above means session W60, taught for one hour, on Wednesday
+    Do not include "" or a space before W in your input.
+    """
+
+    sessions_input_message = """
+    Please input session information or type "done" if you are finished:
+    """
+
+    view_day_input_message = """
+    Please enter the day you wish to view, enter "all" to see your entire
+    schedule or "done" to exit.
+    """
+
+    def retrieve_user_choice(self):
+        user_choice_known = False
+        while not user_choice_known:
+            user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
+            logger.info("A user entered: " + user_choice)
+            user_choice_known = user_choice in self.available_user_choices
+
+    def retrieve_password(self):
+        while True:
+            password_1 = getpass.getpass("Please enter your password:\n")
+            password_1 = hash(password_1.encode("utf-8")).digest()
+            password_2 = getpass.getpass("Please enter it one more time:\n")
+            password_2 = hash(password_2.encode("utf-8")).digest()
+            if password_1 == password_2:
+                return password_1
+            else:
+                logger.debug("Sorry your passwords don't match.")
+
+    def retrieve_username(self):
+        return input(self.username_input_message).lower()
+
+    def retrieve_action(self):
+        action_known = False
+        while not action_known:
+            action = input(self.action_input_message).lower()
+            action_known = action in self.available_actions
+            if not action_known:
+                logger.debug("Sorry that wasn't one of the options, please try again.")
+                logger.info("Could not proceed with option  " + action + " due to invalid input.")
+        return action
+
+    def retrieve_sessions(self):
+        sessions = []
+        logger.debug(self.sessions_help)
+
+        while True:
+            session_info = input(self.sessions_input_message).lower()
+            if session_info == "done":
+                return sessions
+
+            try:
+                session_list = session_info.split()
+                if len(session_list) == 3:
+                    sessions.append(Session(session_list[0], session_list[1], session_list[2]))
+                    logger.debug("You have entered the following sessions:")
+                    for session in sessions:
+                        logger.debug(session.code + " day = " + session.day_taught)
+                else:
+                    logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
+            except:
+                logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
+
+    def retrieve_credentials(self):
+        name = input("Please enter your user name:\n").lower()
+        password = getpass.getpass("Please enter your password:\n")
+        return {"name": name, "password": password}
+
+    def retrieve_day_to_view(self):
+        return input(self.view_day_input_message).lower()
+
+
+class ScheduleDataSource:
+    def save_users_schedule(self, schedule, active_user):
+        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
+        self._ensure_database_exists(active_user)
+        schedule_file = open(users_object_path, "wb")
+        pickle.dump(schedule, schedule_file)
+        schedule_file.close()
+        logger.debug("\nYour schedule has been successfully saved \n")
+        logger.info(active_user + "has successfully saved their schedule.")
+
+    def load_users_schedule(self, active_user):
+        self._ensure_database_exists(active_user)
+
+        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
+        schedule = open(users_object_path, "rb")
+        users_schedule = pickle.load(schedule)
+        schedule.close()
+
+        return users_schedule
+
+    def _ensure_database_exists(self, active_user):
+        if self._schedule_database_exists(active_user):
+            return
+        self._create_user_database(active_user)
+
+    @staticmethod
+    def _create_user_object_path(active_user):
+        return root / "user_objects" / active_user
+
+    @staticmethod
+    def _schedule_database_exists(active_user):
+        return Path(ScheduleDataSource._create_user_object_path(active_user)).is_file()
+
+    @staticmethod
+    def _create_user_database(active_user):
+        try:
+            users = open(ScheduleDataSource._create_user_object_path(active_user), "wb")
+            pickle.dump({}, users)
+        except Exception as error:
+            logger.error("database creation failed: " + str(error))
+            raise ScheduleDataException("Sorry but database creation has failed.")
+
 
 class Controller:
     __active_user: User
@@ -39,6 +175,9 @@ class Controller:
         __input_handler = input_handler
         __user_repo = user_repo
         __schedule_ds = schedule_ds
+
+    def execute(self, action):
+        getattr(self, action)()
 
     def add(self):
         sessions_to_add = self.__input_handler.retrieve_sessions()
@@ -135,6 +274,9 @@ class Controller:
         schedule.remove_sessions(sessions_to_remove)
         self.__schedule_ds.save_users_schedule(schedule, self.__active_user)
 
+    def done(self):
+        exit("Program exited.")
+
 
 class UserRegistrar:
     __input_handler: CmdInputHandler
@@ -176,50 +318,6 @@ class UserRegistrar:
                     "Sorry that information doesn't match our records. Please try again, or register a new account")
 
 
-
-class ScheduleDataSource:
-    def save_users_schedule(self, schedule, active_user):
-        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
-        self._ensure_database_exists(active_user)
-        schedule_file = open(users_object_path, "wb")
-        pickle.dump(schedule, schedule_file)
-        schedule_file.close()
-        logger.debug("\nYour schedule has been successfully saved \n")
-        logger.info(active_user + "has successfully saved their schedule.")
-
-    def load_users_schedule(self, active_user):
-        self._ensure_database_exists(active_user)
-
-        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
-        schedule = open(users_object_path, "rb")
-        users_schedule = pickle.load(schedule)
-        schedule.close()
-
-        return users_schedule
-
-    def _ensure_database_exists(self, active_user):
-        if self._schedule_database_exists(active_user):
-            return
-        self._create_user_database(active_user)
-
-    @staticmethod
-    def _create_user_object_path(active_user):
-        return root / "user_objects" / active_user
-
-    @staticmethod
-    def _schedule_database_exists(active_user):
-        return Path(ScheduleDataSource._create_user_object_path(active_user)).is_file()
-
-    @staticmethod
-    def _create_user_database(active_user):
-        try:
-            users = open(ScheduleDataSource._create_user_object_path(active_user), "wb")
-            pickle.dump({}, users)
-        except Exception as error:
-            logger.error("database creation failed: " + str(error))
-            raise ScheduleDataException("Sorry but database creation has failed.")
-
-
 class Schedule:
 
     def __init__(self):
@@ -256,87 +354,3 @@ class Schedule:
 class ScheduleDataException(Exception):
     pass
 
-
-class CmdInputHandler:
-    available_user_choices = ["register", "login"]
-
-    username_input_message = """
-    Please input your desired user name:
-    """
-
-    action_input_message = """
-    Enter 'new' create a new schedule, 'add' to add sessions to your current one,
-    remove' to remove a session, 'view' to see your current schedule, or 'export' to
-    create a copy of it:
-    """
-
-    sessions_help = """
-    Please input your session info in EXACTLY the same format that will be described below:
-    [session (W55) length(in hours) day (as a num)].
-    Days taught are entered as a number between 1-5 [1 = Monday 5 = Friday]
-    Use the following example to format your input: "W60 1 3"
-    The above means session W60, taught for one hour, on Wednesday
-    Do not include "" or a space before W in your input.
-    """
-
-    sessions_input_message = """
-    Please input session information or type "done" if you are finished:
-    """
-
-    view_day_input_message = """
-    Please enter the day you wish to view, enter "all" to see your entire
-    schedule or "done" to exit.
-    """
-
-    def retrieve_user_choice(self):
-        user_choice_known = False
-        while not user_choice_known:
-            user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
-            logger.info("A user entered: " + user_choice)
-            user_choice_known = user_choice in self.available_user_choices
-
-    def retrieve_password(self):
-        while True:
-            password_1 = getpass.getpass("Please enter your password:\n")
-            password_1 = hash(password_1.encode("utf-8")).digest()
-            password_2 = getpass.getpass("Please enter it one more time:\n")
-            password_2 = hash(password_2.encode("utf-8")).digest()
-            if password_1 == password_2:
-                return password_1
-            else:
-                logger.debug("Sorry your passwords don't match.")
-
-    def retrieve_username(self):
-        return input(self.username_input_message).lower()
-
-    def retrieve_action(self):
-        return input(self.action_input_message).lower()
-
-    def retrieve_sessions(self):
-        sessions = []
-        logger.debug(self.sessions_help)
-
-        while True:
-            session_info = input(self.sessions_input_message).lower()
-            if session_info == "done":
-                return sessions
-
-            try:
-                session_list = session_info.split()
-                if len(session_list) == 3:
-                    sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                    logger.debug("You have entered the following sessions:")
-                    for session in sessions:
-                        logger.debug(session.code + " day = " + session.day_taught)
-                else:
-                    logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-            except:
-                logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-
-    def retrieve_credentials(self):
-        name = input("Please enter your user name:\n").lower()
-        password = getpass.getpass("Please enter your password:\n")
-        return {"name": name, "password": password}
-
-    def retrieve_day_to_view(self):
-        return input(self.view_day_input_message).lower()

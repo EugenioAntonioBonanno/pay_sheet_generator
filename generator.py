@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 from lib.user import UserDataSource
 from lib.schedule_data import CmdInputHandler, Controller, UserRegistrar
 
@@ -26,19 +25,4 @@ active_user = user_registrar.login()
 controller = Controller(active_user, input_handler, user_ds)
 while True:
     action = input_handler.retrieve_action()
-    if action == "new":
-        controller.new()
-    elif action == "add":
-        controller.add()
-    elif action == "view":
-        controller.view()
-    elif action == "export":
-        controller.export()
-    elif action == "remove":
-        controller.remove()
-    elif action == "done":
-        exit()
-    else:
-        logger.debug("Sorry that wasn't one of the options, please try again.")
-        logger.info("Could not proceed with option  " + action + " due to invalid input.")
-
+    controller.execute(action)

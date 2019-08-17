@@ -2,6 +2,7 @@ import os
 from openpyxl.styles import Font
 from lib.schedule_data import ScheduleDataSource
 
+
 class ScheduleFormatter:
 
     def create_schedule(self, workbook):
