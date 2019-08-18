@@ -1,3 +1,4 @@
+import os
 import pickle
 from pathlib import Path
 from hashlib import sha256 as hash
@@ -8,7 +9,7 @@ logger = Logger.get_logger(__name__)
 
 root = Path(".")
 
-users_info_path = root / "user_info" / "users"
+users_info_path = os.path.join('data', 'users.db')
 
 
 class User:
