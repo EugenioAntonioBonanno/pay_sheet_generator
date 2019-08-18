@@ -7,7 +7,7 @@ from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
 from lib.monthly_variables import MonthSpecificData
 from lib.schedule import Schedule, ScheduleDataSource
-from lib.generator import ScheduleFormatter, ScheduleWriter
+from lib.generator import ExcelSheetFormatter, ExcelSheetGenerator
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
 logger = Logger.get_logger(__name__)
@@ -144,18 +144,18 @@ class Application:
 
         workbook = openpyxl.Workbook()
 
-        sheet = ScheduleFormatter().create_schedule(workbook)
+        sheet = ExcelSheetFormatter().create_schedule(workbook)
 
-        sheet = ScheduleFormatter().format_schedule(sheet, self._active_user, month, year)
+        sheet = ExcelSheetFormatter().format_schedule(sheet, self._active_user, month, year)
 
-        sheet = ScheduleFormatter().label_schedule(sheet)
+        sheet = ExcelSheetFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ScheduleWriter(self._schedule_ds).write_sessions(days_to_schedule, sheet, users_schedule,
-                                                                 monthly_meetings, extra_sessions_worked)
+        sheet = ExcelSheetGenerator(self._schedule_ds).write_sessions(days_to_schedule, sheet, users_schedule,
+                                                                      monthly_meetings, extra_sessions_worked)
 
         try:
-            ScheduleWriter(self._schedule_ds).export_schedule(workbook, self._active_user)
+            ExcelSheetGenerator(self._schedule_ds).export_schedule(workbook, self._active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(self._active_user.name + ' successfully generated a paysheet.')

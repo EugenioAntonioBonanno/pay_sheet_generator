@@ -6,7 +6,7 @@ import config
 from lib.schedule import ScheduleDataSource
 
 
-class ScheduleFormatter:
+class ExcelSheetFormatter:
 
     def create_schedule(self, workbook):
         sheet = workbook.active
@@ -37,7 +37,7 @@ class ScheduleFormatter:
         return sheet
 
 
-class ScheduleWriter:
+class ExcelSheetGenerator:
     _schedule_ds: ScheduleDataSource
 
     def __init__(self, schedule_ds: ScheduleDataSource):
