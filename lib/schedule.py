@@ -11,42 +11,39 @@ logger = Logger.get_logger(__name__)
 
 
 class ScheduleDataSource:
-    def save_users_schedule(self, schedule, active_user):
-        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
-        self._ensure_database_exists(active_user)
-        schedule_file = open(users_object_path, "wb")
-        pickle.dump(schedule, schedule_file)
-        schedule_file.close()
+    def save_users_schedule(self, schedule, user: User):
+        ScheduleDataSource._ensure_database_exists(user)
+        schedule_db = open(ScheduleDataSource._get_user_schedule_path(user), "wb")
+        pickle.dump(schedule, schedule_db)
+        schedule_db.close()
         logger.debug("\nYour schedule has been successfully saved \n")
-        logger.info(active_user.name + "has successfully saved their schedule.")
+        logger.info(user.name + "has successfully saved their schedule.")
 
-    def load_users_schedule(self, active_user):
-        self._ensure_database_exists(active_user)
+    def load_users_schedule(self, user: User):
+        ScheduleDataSource._ensure_database_exists(user)
+        schedule_db = open(ScheduleDataSource._get_user_schedule_path(user), "rb")
+        schedule = pickle.load(schedule_db)
+        schedule_db.close()
+        return schedule
 
-        users_object_path = ScheduleDataSource._create_user_object_path(active_user)
-        schedule = open(users_object_path, "rb")
-        users_schedule = pickle.load(schedule)
-        schedule.close()
-
-        return users_schedule
-
-    def _ensure_database_exists(self, active_user):
-        if self._schedule_database_exists(active_user):
+    @staticmethod
+    def _ensure_database_exists(user: User):
+        if ScheduleDataSource._schedule_database_exists(user):
             return
-        self._create_user_database(active_user)
+        ScheduleDataSource._create_user_database(user)
 
     @staticmethod
-    def _create_user_object_path(active_user: User):
-        return os.path.join(config.user_schedules_dir, active_user.name)
+    def _get_user_schedule_path(user: User):
+        return os.path.join(config.user_schedules_dir, user.name)
 
     @staticmethod
-    def _schedule_database_exists(active_user):
-        return Path(ScheduleDataSource._create_user_object_path(active_user)).is_file()
+    def _schedule_database_exists(user: User):
+        return Path(ScheduleDataSource._get_user_schedule_path(user)).is_file()
 
     @staticmethod
-    def _create_user_database(active_user):
+    def _create_user_database(user: User):
         try:
-            users = open(ScheduleDataSource._create_user_object_path(active_user), "wb")
+            users = open(ScheduleDataSource._get_user_schedule_path(user), "wb")
             pickle.dump({}, users)
         except Exception as error:
             logger.error("database creation failed: " + str(error))
