@@ -88,7 +88,7 @@ class CmdInputHandler:
                     sessions.append(Session(session_list[0], session_list[1], session_list[2]))
                     logger.debug("You have entered the following sessions:")
                     for session in sessions:
-                        logger.debug(session.code + " day = " + session.day_taught)
+                        logger.debug(session.code + " day = " + session.day)
                 else:
                     logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
             except:

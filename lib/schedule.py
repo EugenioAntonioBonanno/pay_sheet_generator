@@ -211,22 +211,22 @@ class Schedule:
 
     def add_sessions(self, sessions):
         for session in sessions:
-            if session.day_taught == "monday" or session.day_taught == "1":
+            if session.day == "monday" or session.day == "1":
                 self.week["Monday"].append(session)
-            elif session.day_taught == "tuesday" or session.day_taught == "2":
+            elif session.day == "tuesday" or session.day == "2":
                 self.week["Tuesday"].append(session)
-            elif session.day_taught == "wednesday" or session.day_taught == "3":
+            elif session.day == "wednesday" or session.day == "3":
                 self.week["Wednesday"].append(session)
-            elif session.day_taught == "thursday" or session.day_taught == "4":
+            elif session.day == "thursday" or session.day == "4":
                 self.week["Thursday"].append(session)
-            elif session.day_taught == "friday" or session.day_taught == "5":
+            elif session.day == "friday" or session.day == "5":
                 self.week["Friday"].append(session)
         return self
 
     def remove_sessions(self, sessions):
         for sessionToRemove in sessions:
             for weekday in self.week:
-                if sessionToRemove.day_taught != weekday:
+                if sessionToRemove.day != weekday:
                     continue
                 self.week[weekday].remove(sessionToRemove)
 
@@ -236,13 +236,13 @@ class ScheduleDataException(Exception):
 
 
 class Session:
-    def __init__(self, code, length, day_taught):
+    def __init__(self, code, length, day):
         self.code = code
         self.length = length
-        self.day_taught = day_taught
+        self.day = day
 
     def __eq__(self, other):
         return isinstance(other, Session) \
                and self.code == other.code \
                and self.length == other.length \
-               and self.day_taught == other.day_taught
+               and self.day == other.day
