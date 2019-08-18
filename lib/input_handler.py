@@ -102,6 +102,19 @@ class CmdInputHandler:
     def retrieve_day_to_view(self):
         return input(self.view_day_input_message).lower()
 
+    def retrieve_month(self):
+        possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
+                           "9", '09', "10", '11', '12']
+        valid_month = False
+        while not valid_month:
+            month = input("Please input a month as a numeric value [E.g. 4 for April]: \n")
+            if len(month) == 1:
+                month = "0" + month
+            valid_month = month in possible_months
+            if not valid_month:
+                logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
+        return month
+
 
 class FakeInputHandler(CmdInputHandler):
 

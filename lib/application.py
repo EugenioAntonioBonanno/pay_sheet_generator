@@ -124,19 +124,8 @@ class Application:
 
         year = "2019"
         users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
-        while True:
-            possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
-                               "9", '09', "10", '11', '12']
-            month = input("Please input a month as a numeric value [EX 4 for April]: \n")
-            logger.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
-            if len(month) == 1:
-                month = "0" + month
-            if month in possible_months:
-                break
-            else:
-                logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
-                logger.info(self._active_user.name + ' set the month to something that is not recognized as a month:'
-                                                     ' ' + month + ' well making schedule.')
+        month = self._input_handler.retrieve_month()
+        logger.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
 
         days_to_skip = MonthSpecificData().get_days_missed(self._active_user)
 
