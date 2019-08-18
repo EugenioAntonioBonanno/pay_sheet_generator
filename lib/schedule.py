@@ -193,10 +193,9 @@ class ScheduleWriter:
         return [sheet, row_index, col_index]
 
     def export_schedule(self, workbook, active_user):
-
-        if not os.path.isdir(os.path.join('data', 'export')):
-            os.makedirs(os.path.join('data', 'export'))
-        workbook.save(os.path.join('data', 'export', active_user.name + "_paysheet" + '.xlsx'))
+        if not os.path.isdir(config.pay_sheet_export_dir):
+            os.makedirs(config.pay_sheet_export_dir)
+        workbook.save(os.path.join(config.pay_sheet_export_dir, active_user.name + "_paysheet" + '.xlsx'))
 
 
 class Schedule:
