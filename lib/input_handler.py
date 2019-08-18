@@ -101,3 +101,39 @@ class CmdInputHandler:
 
     def retrieve_day_to_view(self):
         return input(self.view_day_input_message).lower()
+
+
+class FakeInputHandler(CmdInputHandler):
+
+    user_choice_count = 0
+
+    action_count = 0
+
+    def retrieve_user_choice(self):
+        self.user_choice_count += 1
+        if self.user_choice_count is 1:
+            return 'register'
+        else:
+            return 'login'
+
+    def retrieve_password(self):
+        return "1234"
+
+    def retrieve_username(self):
+        return "test"
+
+    def retrieve_action(self):
+        self.action_count += 1
+        if self.action_count is 1:
+            return "new"
+        else:
+            return "done"
+
+    def retrieve_sessions(self):
+        return [Session("W12", "2", "4")]
+
+    def retrieve_credentials(self):
+        return {"name": "test", "password": "1234"}
+
+    def retrieve_day_to_view(self):
+        return "all"
