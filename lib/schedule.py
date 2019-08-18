@@ -37,7 +37,7 @@ class ScheduleDataSource:
 
     @staticmethod
     def _create_user_object_path(active_user: User):
-        return root / "user_objects" / active_user.name
+        return os.path.join('data', 'schedules', active_user.name)
 
     @staticmethod
     def _schedule_database_exists(active_user):
