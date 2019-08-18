@@ -87,13 +87,6 @@ class UserDataSourceException(Exception):
     pass
 
 
-class UserAuthenticator:
-
-    def is_authentic(self, user: User, provided_password):
-        if not hash(provided_password.encode("utf-8")).digest() == user.hashed_password:
-            raise CredentialsMismatchException("passwords did not match")
-
-
 class UserRegistrar:
     __user_ds: UserDataSource
 
@@ -115,9 +108,10 @@ class UserRegistrar:
         if current_user is None:
             raise UserNotFoundException("user %s not found".format(credentials["name"]))
 
-        is_authentic = UserAuthenticator().is_authentic(current_user, credentials["password"])
-        if is_authentic:
-            return current_user
+        if not hash(credentials["password"].encode("utf-8")).digest() == current_user.hashed_password:
+            raise CredentialsMismatchException("passwords did not match")
+
+        return current_user
 
 
 class UserAlreadyExistsException(Exception):
