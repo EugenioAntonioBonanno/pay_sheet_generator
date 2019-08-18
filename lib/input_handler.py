@@ -41,7 +41,7 @@ class CmdInputHandler:
     schedule or "done" to exit.
     """
 
-    def retrieve_user_choice(self):
+    def register_or_login(self):
         user_choice_known = False
         while not user_choice_known:
             user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
@@ -109,7 +109,7 @@ class FakeInputHandler(CmdInputHandler):
 
     action_count = 0
 
-    def retrieve_user_choice(self):
+    def register_or_login(self):
         self.user_choice_count += 1
         if self.user_choice_count is 1:
             return 'register'

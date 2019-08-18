@@ -7,7 +7,7 @@ from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
 from lib.monthly_variables import MonthSpecificData
 from lib.schedule import ScheduleFormatter, ScheduleWriter, Schedule, ScheduleDataSource
-from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar
+from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
 logger = Logger.get_logger(__name__)
 
@@ -56,26 +56,27 @@ class Application:
 
     def register_or_login(self):
         if self._active_user is None:
-            user_choice = self._input_handler.retrieve_user_choice()
-            if user_choice == 'register':
-                new_user = self._input_handler.retrieve_username()
-                password = self._input_handler.retrieve_password()
-                try:
-                    self._active_user = self._registrar.register(new_user, password)
-                except UserAlreadyExistsException:
-                    logger.debug("Sorry that name is already taken. Please try again")
-                    self.register_or_login()
-            else:
-                credentials = self._input_handler.retrieve_credentials()
-                self._active_user = self._registrar.login(credentials)
+            user_choice = self._input_handler.register_or_login()
+            getattr(self, user_choice)()
 
-                if self._active_user is None:
-                    logger.debug(
-                        "Sorry that information doesn't match our records. Please try again, or register a new account")
-                    self.register_or_login()
-                else:
-                    logger.debug("Welcome " + self._active_user.name + ".")
-                    logger.info(self._active_user.name + " has successfully logged in")
+    def login(self):
+        credentials = self._input_handler.retrieve_credentials()
+        try:
+            self._active_user = self._registrar.login(credentials)
+            logger.debug("Welcome " + self._active_user.name + ".")
+            logger.info(self._active_user.name + " has successfully logged in")
+        except UserNotFoundException:
+            logger.debug("Sorry that information doesn't match our records. Please try again, or register new")
+            self.register_or_login()
+
+    def register(self):
+        name = self._input_handler.retrieve_username()
+        password = self._input_handler.retrieve_password()
+        try:
+            self._active_user = self._registrar.register(name, password)
+        except UserAlreadyExistsException:
+            logger.debug("Sorry that name is already taken. Please try again")
+            self.register_or_login()
 
     def add(self):
         sessions_to_add = self._input_handler.retrieve_sessions()
