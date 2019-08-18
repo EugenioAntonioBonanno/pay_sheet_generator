@@ -50,7 +50,7 @@ class UserDataSource:
 
         except Exception as error:
             logger.error("database creation failed: " + str(error))
-            raise UserDataServiceException("Sorry but we cannot currently access the database.")
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     def username_exists(self, new_user):
         self.__ensure_database_exists()
@@ -61,7 +61,7 @@ class UserDataSource:
 
         except Exception as error:
             logger.error("database creation failed: " + error)
-            raise UserDataServiceException("Sorry but we cannot currently access the database.")
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     @staticmethod
     def __ensure_database_exists():
@@ -80,10 +80,10 @@ class UserDataSource:
             pickle.dump({}, users)
         except Exception as error:
             logger.error("database creation failed: " + error)
-            raise UserDataServiceException("Sorry but database creation has failed.")
+            raise UserDataSourceException("Sorry but database creation has failed.")
 
 
-class UserDataServiceException(Exception):
+class UserDataSourceException(Exception):
     pass
 
 
