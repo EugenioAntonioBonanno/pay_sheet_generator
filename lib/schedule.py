@@ -2,10 +2,10 @@ import pickle
 import os
 from pathlib import Path
 from openpyxl.styles import Font
+
+import config
 from lib.logger import Logger
 from lib.user import User
-
-root = Path(".")
 
 logger = Logger.get_logger(__name__)
 
@@ -37,7 +37,7 @@ class ScheduleDataSource:
 
     @staticmethod
     def _create_user_object_path(active_user: User):
-        return os.path.join('data', 'schedules', active_user.name)
+        return os.path.join(config.user_schedules_dir, active_user.name)
 
     @staticmethod
     def _schedule_database_exists(active_user):
