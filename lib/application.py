@@ -151,11 +151,11 @@ class Application:
         sheet = ExcelSheetFormatter().label_schedule(sheet)
 
         # Writes users schedule to active sheet then saves workbook.
-        sheet = ExcelSheetGenerator(self._schedule_ds).write_sessions(days_to_schedule, sheet, users_schedule,
-                                                                      monthly_meetings, extra_sessions_worked)
+        sheet = ExcelSheetGenerator().write_sessions(days_to_schedule, sheet, users_schedule,
+                                                     monthly_meetings, extra_sessions_worked)
 
         try:
-            ExcelSheetGenerator(self._schedule_ds).export_schedule(workbook, self._active_user)
+            ExcelSheetGenerator().export_schedule(workbook, self._active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
             logger.info(self._active_user.name + ' successfully generated a paysheet.')

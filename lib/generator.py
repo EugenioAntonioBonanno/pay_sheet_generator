@@ -38,10 +38,6 @@ class ExcelSheetFormatter:
 
 
 class ExcelSheetGenerator:
-    _schedule_ds: ScheduleDataSource
-
-    def __init__(self, schedule_ds: ScheduleDataSource):
-        self._schedule_ds = schedule_ds
 
     def write_sessions(self, to_schedule, sheet, users_schedule, monthly_meetings, extra_sessions_worked):
         col = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
