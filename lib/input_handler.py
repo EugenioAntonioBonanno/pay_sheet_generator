@@ -1,9 +1,8 @@
 import getpass
-
-from lib.logger import Logger
 from hashlib import sha256 as hash
 
 from lib.schedule import Session
+from lib.logger import Logger
 
 logger = Logger.get_logger(__name__)
 

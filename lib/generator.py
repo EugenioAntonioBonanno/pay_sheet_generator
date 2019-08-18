@@ -1,9 +1,8 @@
 import os
-
 from openpyxl.styles import Font
 
 import config
-from lib.schedule import ScheduleDataSource
+from lib.user import User
 
 
 class ExcelSheetFormatter:
@@ -13,7 +12,7 @@ class ExcelSheetFormatter:
         sheet.title = "Paysheet"
         return sheet
 
-    def format_schedule(self, sheet, user, month, year):
+    def format_schedule(self, sheet, user: User, month, year):
         sheet.merge_cells("C1:G2")
         sheet.column_dimensions["A"].width = 6
         sheet.column_dimensions["F"].width = 6
@@ -141,7 +140,7 @@ class ExcelSheetGenerator:
 
         return [sheet, row_index, col_index]
 
-    def export_schedule(self, workbook, user):
+    def export_schedule(self, workbook, user: User):
         if not os.path.isdir(config.pay_sheet_export_dir):
             os.makedirs(config.pay_sheet_export_dir)
         workbook.save(os.path.join(config.pay_sheet_export_dir, user.name + "_paysheet" + '.xlsx'))
