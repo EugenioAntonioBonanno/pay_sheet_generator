@@ -4,7 +4,7 @@ from lib.input_handler import CmdInputHandler
 from lib.logger import Logger
 from lib.monthly_variables import MonthSpecificData
 from lib.schedule import ScheduleFormatter, ScheduleWriter, Schedule
-from lib.user import User
+from lib.user import User, UserAlreadyExistsException
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from lib.schedule import ScheduleDataSource
@@ -21,7 +21,7 @@ class ApplicationFactory:
         schedule_data_source = ScheduleDataSource()
         input_handler = CmdInputHandler()
         user_data_source = UserDataSource()
-        user_registrar = UserRegistrar(input_handler, user_data_source)
+        user_registrar = UserRegistrar(user_data_source)
         return Application(user_registrar,
                            input_handler,
                            user_data_source,
@@ -54,9 +54,25 @@ class Application:
         if self.__active_user is None:
             user_choice = self.__input_handler.retrieve_user_choice()
             if user_choice == 'register':
-                self.__active_user = self.__registrar.register()
+                new_user = self.__input_handler.retrieve_username()
+                password = self.__input_handler.retrieve_password()
+                try:
+                    self.__active_user = self.__registrar.register(new_user, password)
+                except UserAlreadyExistsException:
+                    logger.debug("Sorry that name is already taken. Please try again")
+                    self.register_or_login()
             else:
-                self.__active_user = self.__registrar.login()
+                credentials = self.__input_handler.retrieve_credentials()
+                self.__active_user = self.__registrar.login(credentials)
+
+                if self.__active_user is None:
+                    logger.debug(
+                        "Sorry that information doesn't match our records. Please try again, or register a new account")
+                    self.register_or_login()
+                else:
+                    logger.debug("Welcome " + self.__active_user.name + ".")
+                    logger.info(self.__active_user.name + " has successfully logged in")
+
 
     def add(self):
         sessions_to_add = self.__input_handler.retrieve_sessions()
@@ -71,7 +87,7 @@ class Application:
 
     def view(self):
         day_to_see = self.__input_handler.retrieve_day_to_view()
-        logger.info(self.__active_user + " is about to view the day " + day_to_see + " from their schedule")
+        logger.info(self.__active_user.name + " is about to view the day " + day_to_see + " from their schedule")
 
         if day_to_see.lower() == 'done':
             return
@@ -108,14 +124,14 @@ class Application:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
                                "9", '09', "10", '11', '12']
             month = input("Please input a month as a numeric value [EX 4 for April]: \n")
-            logger.info(self.__active_user + ' set the month to ' + month + ' well making schedule.')
+            logger.info(self.__active_user.name + ' set the month to ' + month + ' well making schedule.')
             if len(month) == 1:
                 month = "0" + month
             if month in possible_months:
                 break
             else:
                 logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
-                logger.info(self.__active_user + ' set the month to something that is not recognized as a month:'
+                logger.info(self.__active_user.name + ' set the month to something that is not recognized as a month:'
                                                  ' ' + month + ' well making schedule.')
 
         days_to_skip = MonthSpecificData().get_days_missed(self.__active_user)
@@ -148,12 +164,12 @@ class Application:
             ScheduleWriter(self.__schedule_ds).export_schedule(workbook, self.__active_user)
             logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
                          " located inside the folder containing this program.")
-            logger.info(self.__active_user + ' successfully generated a paysheet.')
+            logger.info(self.__active_user.name + ' successfully generated a paysheet.')
         except:
             logger.debug("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are "
                          "currently open. If they are close them, and then retry well paying careful attention to "
                          "the on screen instructions.")
-            logger.info(self.__active_user + ' encountered an error well generating a paysheet.')
+            logger.info(self.__active_user.name + ' encountered an error well generating a paysheet.')
 
     def remove(self):
         sessions_to_remove = self.__input_handler.retrieve_sessions()

@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from openpyxl.styles import Font
 from lib.logger import Logger
+from lib.user import User
 
 root = Path(".")
 
@@ -17,7 +18,7 @@ class ScheduleDataSource:
         pickle.dump(schedule, schedule_file)
         schedule_file.close()
         logger.debug("\nYour schedule has been successfully saved \n")
-        logger.info(active_user + "has successfully saved their schedule.")
+        logger.info(active_user.name + "has successfully saved their schedule.")
 
     def load_users_schedule(self, active_user):
         self._ensure_database_exists(active_user)
@@ -35,8 +36,8 @@ class ScheduleDataSource:
         self._create_user_database(active_user)
 
     @staticmethod
-    def _create_user_object_path(active_user):
-        return root / "user_objects" / active_user
+    def _create_user_object_path(active_user: User):
+        return root / "user_objects" / active_user.name
 
     @staticmethod
     def _schedule_database_exists(active_user):
@@ -66,7 +67,7 @@ class ScheduleFormatter:
         sheet.column_dimensions["B"].width = 17
         sheet.column_dimensions["G"].width = 17
         sheet.column_dimensions["E"].width = 5
-        sheet["C1"] = active_user.title() + "\"s " + "Paysheet: " + month + "/" + year
+        sheet["C1"] = active_user.name.title() + "\"s " + "Paysheet: " + month + "/" + year
         font_obj = Font(name="Times New Roman", bold=True, size=20, italic=True)
         sheet["C1"].font = font_obj
         return sheet
@@ -188,7 +189,7 @@ class ScheduleWriter:
 
         if not os.path.isdir("paysheets"):
             os.makedirs("paysheets")
-        workbook.save(os.path.join('paysheets', active_user + "paysheet" + '.xlsx'))
+        workbook.save(os.path.join('paysheets', active_user.name + "paysheet" + '.xlsx'))
 
 
 class Schedule:

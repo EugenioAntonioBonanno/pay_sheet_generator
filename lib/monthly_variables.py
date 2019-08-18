@@ -25,7 +25,7 @@ class MonthSpecificData:
                 logger.debug(session.code + " ")
             logger.debug("\n")
             extra_session = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
-            logger.info((active_user + " entered:" + extra_session))
+            logger.info((active_user.name + " entered:" + extra_session))
             if extra_session.lower() == "done":
                 break
             else:
@@ -33,7 +33,7 @@ class MonthSpecificData:
                     extra_session_split = extra_session.split(" ")
                     extra_sessions_worked.append(
                         ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
-                    logger.info(active_user + " added " + extra_session + "to their list of sessions they subbed.")
+                    logger.info(active_user.name + " added " + extra_session + "to their list of sessions they subbed.")
                 except:
                     logger.debug(
                         "Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
@@ -49,8 +49,8 @@ class MonthSpecificData:
 
             logger.debug("Your current missed days are as follows: " + str(days_to_skip))
             missed_work = input("Enter a missed day as a number or \"done\" to move on. \n")
-            logger.info(active_user + " added " + missed_work + " to their list of days they did not work ")
-            logger.info((active_user + " entered:" + missed_work))
+            logger.info(active_user.name + " added " + missed_work + " to their list of days they did not work ")
+            logger.info((active_user.name + " entered:" + missed_work))
             if missed_work.lower() == "done":
                 break
             else:

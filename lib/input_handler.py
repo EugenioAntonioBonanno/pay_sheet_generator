@@ -47,6 +47,7 @@ class CmdInputHandler:
             user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
             logger.info("A user entered: " + user_choice)
             user_choice_known = user_choice in self.available_user_choices
+        return user_choice
 
     def retrieve_password(self):
         while True:
