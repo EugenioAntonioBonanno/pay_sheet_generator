@@ -1,15 +1,11 @@
-import os
 import pickle
 from pathlib import Path
 from hashlib import sha256 as hash
 
+import config
 from lib.logger import Logger
 
 logger = Logger.get_logger(__name__)
-
-root = Path(".")
-
-users_info_path = os.path.join('data', 'users.db')
 
 
 class User:
@@ -25,7 +21,7 @@ class UserDataSource:
     def all(self):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
             users.close()
             return all_users
@@ -43,12 +39,12 @@ class UserDataSource:
     def save_user(self, user: User):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
             users.close()
 
             all_users[user.name] = user.hashed_password
-            users = open(users_info_path, "wb")
+            users = open(config.user_db_path, "wb")
             pickle.dump(all_users, users)
             users.close()
 
@@ -59,7 +55,7 @@ class UserDataSource:
     def username_exists(self, new_user):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
             return new_user in all_users
 
@@ -75,12 +71,12 @@ class UserDataSource:
 
     @staticmethod
     def __user_database_exists():
-        return Path(users_info_path).is_file()
+        return Path(config.user_db_path).is_file()
 
     @staticmethod
     def __create_user_database():
         try:
-            users = open(users_info_path, "wb")
+            users = open(config.user_db_path, "wb")
             pickle.dump({}, users)
         except Exception as error:
             logger.error("database creation failed: " + error)
