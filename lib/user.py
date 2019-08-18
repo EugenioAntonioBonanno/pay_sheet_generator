@@ -60,7 +60,7 @@ class UserDataSource:
         try:
             users = open(users_info_path, "rb")
             all_users = pickle.load(users)
-            return not new_user in all_users
+            return new_user in all_users
 
         except Exception as error:
             logger.error("database creation failed: " + error)
@@ -100,7 +100,7 @@ class UserAuthenticator:
 class UserRegistrar:
     __user_ds: UserDataSource
 
-    def __init__(self,user_ds: UserDataSource):
+    def __init__(self, user_ds: UserDataSource):
         self.__user_ds = user_ds
 
     def register(self, name, password):
