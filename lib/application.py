@@ -6,7 +6,8 @@ from dateutil.parser import parse
 from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
 from lib.monthly_variables import MonthSpecificData
-from lib.schedule import ScheduleFormatter, ScheduleWriter, Schedule, ScheduleDataSource
+from lib.schedule import Schedule, ScheduleDataSource
+from lib.generator import ScheduleFormatter, ScheduleWriter
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
 logger = Logger.get_logger(__name__)
