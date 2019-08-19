@@ -97,3 +97,10 @@ class Session:
                and self.code == other.code \
                and self.length == other.length \
                and self.day == other.day
+
+
+class ExtraSession:
+    def __init__(self, code, length, date):
+        self.code = code
+        self.length = length
+        self.date = date

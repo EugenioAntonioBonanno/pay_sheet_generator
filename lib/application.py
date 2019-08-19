@@ -5,7 +5,6 @@ from dateutil.parser import parse
 
 from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
-from lib.monthly_variables import MonthSpecificData
 from lib.schedule import Schedule, ScheduleDataSource
 from lib.generator import ExcelSheetFormatter, ExcelSheetGenerator
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
@@ -128,9 +127,9 @@ class Application:
         month = self._input_handler.retrieve_month()
         logger.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
 
-        days_to_skip = MonthSpecificData().get_days_missed(self._active_user)
+        days_to_skip = self._input_handler.get_days_missed()
 
-        end = MonthSpecificData().find_month_length(month, year)
+        end = self._input_handler.find_month_length(month, year)
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
@@ -138,9 +137,9 @@ class Application:
 
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
-        monthly_meetings = MonthSpecificData().get_monthly_meetings()
+        monthly_meetings = self._input_handler.get_monthly_meetings()
 
-        extra_sessions_worked = MonthSpecificData().get_extra_session_worked(self._active_user)
+        extra_sessions_worked = self._input_handler.get_extra_session_worked()
 
         workbook = openpyxl.Workbook()
 
