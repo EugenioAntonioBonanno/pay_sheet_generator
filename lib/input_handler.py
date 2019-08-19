@@ -1,5 +1,4 @@
 import getpass
-from hashlib import sha256 as hash
 
 from lib.logger import Logger
 from lib.schedule import Session, ExtraSession
@@ -50,12 +49,10 @@ class CmdInputHandler:
 
     def retrieve_password(self):
         while True:
-            password_1 = getpass.getpass("Please enter your password:\n")
-            password_1 = hash(password_1.encode("utf-8")).digest()
-            password_2 = getpass.getpass("Please enter it one more time:\n")
-            password_2 = hash(password_2.encode("utf-8")).digest()
-            if password_1 == password_2:
-                return password_1
+            password = getpass.getpass("Please enter your password:\n")
+            password_confirm = getpass.getpass("Please enter it one more time:\n")
+            if password == password_confirm:
+                return password
             else:
                 LOGGER.debug("Sorry your passwords don't match.")
 

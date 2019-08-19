@@ -95,7 +95,7 @@ class UserRegistrar:
         if user_exists:
             raise UserAlreadyExistsException("user %s already exists" % name)
 
-        user = User(name, password)
+        user = User(name, sha256hash(password.encode("utf-8")).digest())
         self.__user_ds.save_user(user)
         return user
 
