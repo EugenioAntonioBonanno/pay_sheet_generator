@@ -1,4 +1,10 @@
 from lib.application import ApplicationFactory
 
-app = ApplicationFactory.make()
-app.run()
+
+def run():
+    app = ApplicationFactory.make()
+    app.run()
+
+
+if __name__ == "__main__":
+    run()

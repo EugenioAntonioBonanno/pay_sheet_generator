@@ -5,7 +5,7 @@ from openpyxl.styles import Font
 import config
 from lib.logger import Logger
 
-logger = Logger.get_logger(__name__)
+LOGGER = Logger.get_logger(__name__)
 
 
 class ExcelSheetGenerator:
@@ -123,14 +123,14 @@ class ExcelSheetGenerator:
 
     def export(self, workbook, user_name):
         try:
-            if not os.path.isdir(config.pay_sheet_export_dir):
-                os.makedirs(config.pay_sheet_export_dir)
-            workbook.save(os.path.join(config.pay_sheet_export_dir, user_name + "_paysheet" + '.xlsx'))
-            logger.debug("Your Paysheet has been created and saved and should be available in a folder name '%s'"
-                         " located inside the folder containing this program." % config.pay_sheet_export_dir)
-            logger.info(user_name + ' successfully generated a paysheet.')
+            if not os.path.isdir(config.PAY_SHEET_EXPORT_DIR):
+                os.makedirs(config.PAY_SHEET_EXPORT_DIR)
+            workbook.save(os.path.join(config.PAY_SHEET_EXPORT_DIR, user_name + "_paysheet" + '.xlsx'))
+            LOGGER.debug("Your Paysheet has been created and saved and should be available in a folder name '%s'"
+                         " located inside the folder containing this program." % config.PAY_SHEET_EXPORT_DIR)
+            LOGGER.info(user_name + ' successfully generated a paysheet.')
         except:
-            logger.debug("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are "
+            LOGGER.debug("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are "
                          "currently open. If they are close them, and then retry well paying careful attention to "
                          "the on screen instructions.")
-            logger.info(user_name + ' encountered an error well generating a paysheet.')
+            LOGGER.info(user_name + ' encountered an error well generating a paysheet.')

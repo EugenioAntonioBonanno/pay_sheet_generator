@@ -6,7 +6,7 @@ import config
 from lib.logger import Logger
 from lib.user import User
 
-logger = Logger.get_logger(__name__)
+LOGGER = Logger.get_logger(__name__)
 
 
 class ScheduleDataSource:
@@ -15,8 +15,8 @@ class ScheduleDataSource:
         schedule_db = open(ScheduleDataSource._get_user_schedule_path(user), "wb")
         pickle.dump(schedule, schedule_db)
         schedule_db.close()
-        logger.debug("\nYour schedule has been successfully saved \n")
-        logger.info(user.name + "has successfully saved their schedule.")
+        LOGGER.debug("\nYour schedule has been successfully saved \n")
+        LOGGER.info(user.name + "has successfully saved their schedule.")
 
     def load_users_schedule(self, user: User):
         ScheduleDataSource._ensure_database_exists(user)
@@ -33,7 +33,7 @@ class ScheduleDataSource:
 
     @staticmethod
     def _get_user_schedule_path(user: User):
-        return os.path.join(config.user_schedules_dir, user.name)
+        return os.path.join(config.USER_SCHEDULES_DIR, user.name)
 
     @staticmethod
     def _schedule_database_exists(user: User):
@@ -45,7 +45,7 @@ class ScheduleDataSource:
             users = open(ScheduleDataSource._get_user_schedule_path(user), "wb")
             pickle.dump({}, users)
         except Exception as error:
-            logger.error("database creation failed: " + str(error))
+            LOGGER.error("database creation failed: " + str(error))
             raise ScheduleDataException("Sorry but database creation has failed.")
 
 

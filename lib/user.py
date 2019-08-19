@@ -5,7 +5,7 @@ from hashlib import sha256 as hash
 import config
 from lib.logger import Logger
 
-logger = Logger.get_logger(__name__)
+LOGGER = Logger.get_logger(__name__)
 
 
 class User:
@@ -21,7 +21,7 @@ class UserDataSource:
     def all(self):
         self.__ensure_database_exists()
         try:
-            users = open(config.user_db_path, "rb")
+            users = open(config.USER_DB_PATH, "rb")
             all_users = pickle.load(users)
             users.close()
             return all_users
@@ -39,28 +39,28 @@ class UserDataSource:
     def save_user(self, user: User):
         self.__ensure_database_exists()
         try:
-            users = open(config.user_db_path, "rb")
+            users = open(config.USER_DB_PATH, "rb")
             all_users = pickle.load(users)
             users.close()
 
             all_users[user.name] = user.hashed_password
-            users = open(config.user_db_path, "wb")
+            users = open(config.USER_DB_PATH, "wb")
             pickle.dump(all_users, users)
             users.close()
 
         except Exception as error:
-            logger.error("database creation failed: " + str(error))
+            LOGGER.error("database creation failed: " + str(error))
             raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     def username_exists(self, new_user):
         self.__ensure_database_exists()
         try:
-            users = open(config.user_db_path, "rb")
+            users = open(config.USER_DB_PATH, "rb")
             all_users = pickle.load(users)
             return new_user in all_users
 
         except Exception as error:
-            logger.error("database creation failed: " + error)
+            LOGGER.error("database creation failed: " + error)
             raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     @staticmethod
@@ -71,15 +71,15 @@ class UserDataSource:
 
     @staticmethod
     def __user_database_exists():
-        return Path(config.user_db_path).is_file()
+        return Path(config.USER_DB_PATH).is_file()
 
     @staticmethod
     def __create_user_database():
         try:
-            users = open(config.user_db_path, "wb")
+            users = open(config.USER_DB_PATH, "wb")
             pickle.dump({}, users)
         except Exception as error:
-            logger.error("database creation failed: " + error)
+            LOGGER.error("database creation failed: " + error)
             raise UserDataSourceException("Sorry but database creation has failed.")
 
 

@@ -8,7 +8,7 @@ from lib.schedule import Schedule, ScheduleDataSource
 from lib.generator import ExcelSheetGenerator
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
-logger = Logger.get_logger(__name__)
+LOGGER = Logger.get_logger(__name__)
 
 
 class ApplicationFactory:
@@ -62,10 +62,10 @@ class Application:
         credentials = self._input_handler.retrieve_credentials()
         try:
             self._active_user = self._registrar.login(credentials)
-            logger.debug("Welcome " + self._active_user.name + ".")
-            logger.info(self._active_user.name + " has successfully logged in")
+            LOGGER.debug("Welcome " + self._active_user.name + ".")
+            LOGGER.info(self._active_user.name + " has successfully logged in")
         except UserNotFoundException:
-            logger.debug("Sorry that information doesn't match our records. Please try again, or register new")
+            LOGGER.debug("Sorry that information doesn't match our records. Please try again, or register new")
             self.register_or_login()
 
     def register(self):
@@ -74,7 +74,7 @@ class Application:
         try:
             self._active_user = self._registrar.register(name, password)
         except UserAlreadyExistsException:
-            logger.debug("Sorry that name is already taken. Please try again")
+            LOGGER.debug("Sorry that name is already taken. Please try again")
             self.register_or_login()
 
     def add(self):
@@ -90,7 +90,7 @@ class Application:
 
     def view(self):
         day_to_see = self._input_handler.retrieve_day_to_view()
-        logger.info(self._active_user.name + " is about to view the day " + day_to_see + " from their schedule")
+        LOGGER.info(self._active_user.name + " is about to view the day " + day_to_see + " from their schedule")
 
         if day_to_see.lower() == 'done':
             return
@@ -98,18 +98,18 @@ class Application:
             users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
             for weekday, sessions in users_schedule.week.items():
                 for session in sessions:
-                    logger.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
+                    LOGGER.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
                                  + session.length)
-                logger.debug("")
+                LOGGER.debug("")
         else:
             users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
             for weekday, sessions in users_schedule.week.items():
                 if weekday != day_to_see:
                     continue
                 for session in sessions:
-                    logger.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
+                    LOGGER.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
                                  + session.length)
-                logger.debug("")
+                LOGGER.debug("")
 
     def export(self):
         def make_skipped_days_filter(skipped_days):
@@ -124,7 +124,7 @@ class Application:
         year = "2019"
         users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
         month = self._input_handler.retrieve_month()
-        logger.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
+        LOGGER.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
 
         days_to_skip = self._input_handler.retrieve_missed_days()
 
