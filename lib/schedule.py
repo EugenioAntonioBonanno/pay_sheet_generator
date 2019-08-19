@@ -16,7 +16,7 @@ class ScheduleDataSource:
         pickle.dump(schedule, schedule_db)
         schedule_db.close()
         LOGGER.debug("\nYour schedule has been successfully saved \n")
-        LOGGER.info(user.name + "has successfully saved their schedule.")
+        LOGGER.info("%s has successfully saved their schedule.", user.name)
 
     def load_users_schedule(self, user: User):
         ScheduleDataSource._ensure_database_exists(user)
@@ -45,7 +45,7 @@ class ScheduleDataSource:
             users = open(ScheduleDataSource._get_user_schedule_path(user), "wb")
             pickle.dump({}, users)
         except Exception as error:
-            LOGGER.error("database creation failed: " + str(error))
+            LOGGER.error("database creation failed: %s", str(error))
             raise ScheduleDataException("Sorry but database creation has failed.")
 
 
