@@ -164,9 +164,9 @@ class CmdInputHandler:
             length = "30"
         else:
             if int(year) % 4 == 0:
-                length = 29
+                length = "29"
             else:
-                length = 28
+                length = "28"
         return length
 
     def get_monthly_meetings(self):
