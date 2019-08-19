@@ -31,10 +31,7 @@ class UserDataSource:
 
     def load_by_username(self, username):
         all_users = self.all()
-        if username in all_users:
-            return User(username, all_users[username])
-        else:
-            return None
+        return User(username, all_users[username]) if username in all_users else None
 
     def save_user(self, user: User):
         self.__ensure_database_exists()
