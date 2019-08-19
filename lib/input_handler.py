@@ -1,9 +1,8 @@
 import getpass
-
-from lib.logger import Logger
 from hashlib import sha256 as hash
 
 from lib.schedule import Session
+from lib.logger import Logger
 
 logger = Logger.get_logger(__name__)
 
@@ -41,7 +40,7 @@ class CmdInputHandler:
     schedule or "done" to exit.
     """
 
-    def retrieve_user_choice(self):
+    def register_or_login(self):
         user_choice_known = False
         while not user_choice_known:
             user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
@@ -88,7 +87,7 @@ class CmdInputHandler:
                     sessions.append(Session(session_list[0], session_list[1], session_list[2]))
                     logger.debug("You have entered the following sessions:")
                     for session in sessions:
-                        logger.debug(session.code + " day = " + session.day_taught)
+                        logger.debug(session.code + " day = " + session.day)
                 else:
                     logger.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
             except:
@@ -101,3 +100,52 @@ class CmdInputHandler:
 
     def retrieve_day_to_view(self):
         return input(self.view_day_input_message).lower()
+
+    def retrieve_month(self):
+        possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
+                           "9", '09', "10", '11', '12']
+        valid_month = False
+        while not valid_month:
+            month = input("Please input a month as a numeric value [E.g. 4 for April]: \n")
+            if len(month) == 1:
+                month = "0" + month
+            valid_month = month in possible_months
+            if not valid_month:
+                logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
+        return month
+
+
+class FakeInputHandler(CmdInputHandler):
+
+    user_choice_count = 0
+
+    action_count = 0
+
+    def register_or_login(self):
+        self.user_choice_count += 1
+        if self.user_choice_count is 1:
+            return 'register'
+        else:
+            return 'login'
+
+    def retrieve_password(self):
+        return "1234"
+
+    def retrieve_username(self):
+        return "test"
+
+    def retrieve_action(self):
+        self.action_count += 1
+        if self.action_count is 1:
+            return "new"
+        else:
+            return "done"
+
+    def retrieve_sessions(self):
+        return [Session("W12", "2", "4")]
+
+    def retrieve_credentials(self):
+        return {"name": "test", "password": "1234"}
+
+    def retrieve_day_to_view(self):
+        return "all"

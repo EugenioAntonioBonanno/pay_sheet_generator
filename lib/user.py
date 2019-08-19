@@ -2,13 +2,10 @@ import pickle
 from pathlib import Path
 from hashlib import sha256 as hash
 
+import config
 from lib.logger import Logger
 
 logger = Logger.get_logger(__name__)
-
-root = Path(".")
-
-users_info_path = root / "user_info" / "users"
 
 
 class User:
@@ -24,7 +21,7 @@ class UserDataSource:
     def all(self):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
             users.close()
             return all_users
@@ -42,29 +39,29 @@ class UserDataSource:
     def save_user(self, user: User):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
             users.close()
 
             all_users[user.name] = user.hashed_password
-            users = open(users_info_path, "wb")
+            users = open(config.user_db_path, "wb")
             pickle.dump(all_users, users)
             users.close()
 
         except Exception as error:
             logger.error("database creation failed: " + str(error))
-            raise UserDataServiceException("Sorry but we cannot currently access the database.")
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     def username_exists(self, new_user):
         self.__ensure_database_exists()
         try:
-            users = open(users_info_path, "rb")
+            users = open(config.user_db_path, "rb")
             all_users = pickle.load(users)
-            return not new_user in all_users
+            return new_user in all_users
 
         except Exception as error:
             logger.error("database creation failed: " + error)
-            raise UserDataServiceException("Sorry but we cannot currently access the database.")
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     @staticmethod
     def __ensure_database_exists():
@@ -74,33 +71,26 @@ class UserDataSource:
 
     @staticmethod
     def __user_database_exists():
-        return Path(users_info_path).is_file()
+        return Path(config.user_db_path).is_file()
 
     @staticmethod
     def __create_user_database():
         try:
-            users = open(users_info_path, "wb")
+            users = open(config.user_db_path, "wb")
             pickle.dump({}, users)
         except Exception as error:
             logger.error("database creation failed: " + error)
-            raise UserDataServiceException("Sorry but database creation has failed.")
+            raise UserDataSourceException("Sorry but database creation has failed.")
 
 
-class UserDataServiceException(Exception):
+class UserDataSourceException(Exception):
     pass
-
-
-class UserAuthenticator:
-
-    def is_authentic(self, user: User, provided_password):
-        if not hash(provided_password.encode("utf-8")).digest() == user.hashed_password:
-            raise CredentialsMismatchException("passwords did not match")
 
 
 class UserRegistrar:
     __user_ds: UserDataSource
 
-    def __init__(self,user_ds: UserDataSource):
+    def __init__(self, user_ds: UserDataSource):
         self.__user_ds = user_ds
 
     def register(self, name, password):
@@ -118,9 +108,10 @@ class UserRegistrar:
         if current_user is None:
             raise UserNotFoundException("user %s not found".format(credentials["name"]))
 
-        is_authentic = UserAuthenticator().is_authentic(current_user, credentials["password"])
-        if is_authentic:
-            return current_user
+        if not hash(credentials["password"].encode("utf-8")).digest() == current_user.hashed_password:
+            raise CredentialsMismatchException("passwords did not match")
+
+        return current_user
 
 
 class UserAlreadyExistsException(Exception):
