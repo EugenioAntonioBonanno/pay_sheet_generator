@@ -63,8 +63,8 @@ class Application:
         credentials = self._input_handler.retrieve_credentials()
         try:
             self._active_user = self._registrar.login(credentials)
-            LOGGER.debug("Welcome " + self._active_user.name + ".")
-            LOGGER.info(self._active_user.name + " has successfully logged in")
+            LOGGER.debug("Welcome %s.", self._active_user.name)
+            LOGGER.info("%s has successfully logged in", self._active_user.name)
         except UserNotFoundException:
             LOGGER.debug("Sorry that information doesn't match our records. Please try again, or register new")
             self.register_or_login()
@@ -91,7 +91,7 @@ class Application:
 
     def view(self):
         day_to_see = self._input_handler.retrieve_day_to_view()
-        LOGGER.info(self._active_user.name + " is about to view the day " + day_to_see + " from their schedule")
+        LOGGER.info("%s is about to view the day %s from their schedule", self._active_user.name, day_to_see)
 
         if day_to_see.lower() == 'done':
             return
@@ -99,18 +99,14 @@ class Application:
             users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
             for weekday, sessions in users_schedule.week.items():
                 for session in sessions:
-                    LOGGER.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
-                                 + session.length)
-                LOGGER.debug("")
+                    LOGGER.debug("Day: %s session Code: %s session length: %s", weekday, session.code, session.length)
         else:
             users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
             for weekday, sessions in users_schedule.week.items():
                 if weekday != day_to_see:
                     continue
                 for session in sessions:
-                    LOGGER.debug("Day: " + weekday + " session Code: " + session.code + " session length: "
-                                 + session.length)
-                LOGGER.debug("")
+                    LOGGER.debug("Day: %s session Code: %s session length: %s", weekday, session.code, session.length)
 
     def export(self):
         def make_skipped_days_filter(skipped_days):
@@ -125,7 +121,7 @@ class Application:
         year = "2019"
         users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
         month = self._input_handler.retrieve_month()
-        LOGGER.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
+        LOGGER.info("%s set the month to %s well making schedule.", self._active_user.name, month)
 
         days_to_skip = self._input_handler.retrieve_missed_days()
 
