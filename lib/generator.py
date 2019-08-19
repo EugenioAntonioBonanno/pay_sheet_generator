@@ -10,6 +10,16 @@ logger = Logger.get_logger(__name__)
 
 class ExcelSheetGenerator:
 
+    weekdays_map = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday",
+    }
+
     def _create_preformatted_workbook(self, user_name, month, year):
         workbook = Workbook()
         workbook.active.title = "Paysheet"
@@ -45,38 +55,10 @@ class ExcelSheetGenerator:
         for day in to_schedule:
             day_and_month = str(day.month) + "/" + str(day.day)
 
-            if day.weekday() == 0:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
+            weekday = self.weekdays_map[day.weekday()]
+            [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
                                                                sheet, col,
-                                                               day="Monday")
-
-            elif day.weekday() == 1:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Tuesday")
-
-            elif day.weekday() == 2:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Wednesday")
-
-            elif day.weekday() == 3:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Thursday")
-
-            elif day.weekday() == 4:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Friday")
-            elif day.weekday() == 5:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Saturday")
-            elif day.weekday() == 4:
-                [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day="Sunday")
+                                                               day=weekday)
 
             if str(day.day) in monthly_meetings:
                 [sheet, row_index, col_index] = self._write_monthly_meeting(sheet, col, col_index, row_index,
