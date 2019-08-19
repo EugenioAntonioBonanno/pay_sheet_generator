@@ -25,9 +25,9 @@ class UserDataSource:
             all_users = pickle.load(users)
             users.close()
             return all_users
-        except Exception as e:
-            print(str(e))
-            return {}
+        except Exception as error:
+            LOGGER.error("database creation failed: %s", str(error))
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     def load_by_username(self, username):
         all_users = self.all()
@@ -46,7 +46,7 @@ class UserDataSource:
             users.close()
 
         except Exception as error:
-            LOGGER.error("database creation failed: " + str(error))
+            LOGGER.error("database creation failed: %s", str(error))
             raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     def username_exists(self, new_user):
@@ -57,7 +57,7 @@ class UserDataSource:
             return new_user in all_users
 
         except Exception as error:
-            LOGGER.error("database creation failed: " + error)
+            LOGGER.error("database creation failed: %s", str(error))
             raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
     @staticmethod
@@ -76,8 +76,8 @@ class UserDataSource:
             users = open(config.USER_DB_PATH, "wb")
             pickle.dump({}, users)
         except Exception as error:
-            LOGGER.error("database creation failed: " + error)
-            raise UserDataSourceException("Sorry but database creation has failed.")
+            LOGGER.error("database creation failed: %s", str(error))
+            raise UserDataSourceException("Sorry but we cannot currently access the database.")
 
 
 class UserDataSourceException(Exception):
