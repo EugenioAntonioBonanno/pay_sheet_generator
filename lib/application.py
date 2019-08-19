@@ -145,5 +145,5 @@ class Application:
         schedule.remove_sessions(sessions_to_remove)
         self._schedule_ds.save_users_schedule(schedule, self._active_user)
 
-    def done(self):  # pylint: disable=R0201
+    def done(self):
         exit("Program exited.")
