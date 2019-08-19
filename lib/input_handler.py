@@ -77,17 +77,15 @@ class CmdInputHandler:
             if session_info == "done":
                 return sessions
 
-            try:
-                session_list = session_info.split()
-                if len(session_list) == 3:
-                    sessions.append(Session(session_list[0], session_list[1], session_list[2]))
-                    LOGGER.debug("You have entered the following sessions:")
-                    for session in sessions:
-                        LOGGER.debug("%s day = %s", session.code, session.day)
-                else:
-                    LOGGER.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
-            except:
+            session_args = session_info.split()
+            if len(session_args) is not 3:
                 LOGGER.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
+                continue
+
+            sessions.append(Session(session_args[0], session_args[1], session_args[2]))
+            LOGGER.debug("You have entered the following sessions:")
+            for session in sessions:
+                LOGGER.debug("%s day = %s", session.code, session.day)
 
     def retrieve_credentials(self):
         name = input("Please enter your user name:\n").lower()
@@ -124,16 +122,17 @@ class CmdInputHandler:
             LOGGER.debug("\n")
             extra_session = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
             LOGGER.info(("Entered: %s", extra_session))
+
             if extra_session.lower() == "done":
-                break
-            else:
-                try:
-                    extra_session_split = extra_session.split(" ")
-                    extra_sessions.append(
-                        ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
-                    LOGGER.info("Added %s to their list of sessions they subbed.", extra_session)
-                except:
-                    LOGGER.debug("Sorry, you entered that session in incorrectly, it won't be added. Please try again.")
+                return extra_sessions
+
+            session_args = extra_session.split()
+            if len(session_args) is not 3:
+                LOGGER.debug("Sorry, you entered that session in incorrectly, it won't be added. Please try again.")
+                continue
+
+            extra_sessions.append(ExtraSession(session_args[0], session_args[1], session_args[2]))
+            LOGGER.info("Added %s to their list of sessions they subbed.", extra_session)
 
         return extra_sessions
 
