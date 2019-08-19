@@ -75,11 +75,11 @@ class Schedule:
         return self
 
     def remove_sessions(self, sessions):
-        for sessionToRemove in sessions:
+        for session in sessions:
             for weekday in self.week:
-                if sessionToRemove.day != weekday:
+                if session.day != weekday:
                     continue
-                self.week[weekday].remove(sessionToRemove)
+                self.week[weekday].remove(session)
 
 
 class ScheduleDataException(Exception):
