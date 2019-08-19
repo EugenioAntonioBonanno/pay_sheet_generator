@@ -114,8 +114,8 @@ class CmdInputHandler:
                 logger.debug("Sorry I can't make sense of what month you mean. Please try again.")
         return month
 
-    def get_extra_session_worked(self):
-        extra_sessions_worked = []
+    def retrieve_extra_sessions(self):
+        extra_sessions = []
         logger.debug(
             "\nHave you subbed any sessions this month? \nInput \"done\" if you haven\"t or when finished entering"
             " those you have.\n"
@@ -123,7 +123,7 @@ class CmdInputHandler:
             "ex: W34 2 13.")
         while True:
             logger.debug("Your current list of sessions you have subbed this month is as follows:")
-            for session in extra_sessions_worked:
+            for session in extra_sessions:
                 logger.debug(session.code + " ")
             logger.debug("\n")
             extra_session = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
@@ -133,29 +133,29 @@ class CmdInputHandler:
             else:
                 try:
                     extra_session_split = extra_session.split(" ")
-                    extra_sessions_worked.append(
+                    extra_sessions.append(
                         ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
                     logger.info("Added " + extra_session + " to their list of sessions they subbed.")
                 except:
                     logger.debug(
                         "Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
 
-        return extra_sessions_worked
+        return extra_sessions
 
-    def get_days_missed(self):
-        days_to_skip = []
+    def retrieve_missed_days(self):
+        missed_days = []
         logger.debug("Enter any days you missed work due to sickness or holiday as a number. "
                      "[ex \"12\"] for the 12th or enter \"done\". \n")
 
         while True:
-            logger.debug("Your current missed days are as follows: " + str(days_to_skip))
-            missed_work = input("Enter a missed day as a number or \"done\" to move on. \n")
-            if missed_work.lower() == "done":
+            logger.debug("Your current missed days are as follows: " + str(missed_days))
+            missed_day = input("Enter a missed day as a number or \"done\" to move on. \n")
+            if missed_day.lower() == "done":
                 break
             else:
-                days_to_skip.append(int(missed_work))
+                missed_days.append(int(missed_day))
 
-        return days_to_skip
+        return missed_days
 
     def find_month_length(self, month, year):
         if month in ["01", "1" "03", "3", "05", "5", "07", "7", "08", "8", "10"]:

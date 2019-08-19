@@ -127,7 +127,7 @@ class Application:
         month = self._input_handler.retrieve_month()
         logger.info(self._active_user.name + ' set the month to ' + month + ' well making schedule.')
 
-        days_to_skip = self._input_handler.get_days_missed()
+        days_to_skip = self._input_handler.retrieve_missed_days()
 
         end = self._input_handler.find_month_length(month, year)
 
@@ -139,7 +139,7 @@ class Application:
 
         monthly_meetings = self._input_handler.get_monthly_meetings()
 
-        extra_sessions_worked = self._input_handler.get_extra_session_worked()
+        extra_sessions_worked = self._input_handler.retrieve_extra_sessions()
 
         workbook = openpyxl.Workbook()
 
