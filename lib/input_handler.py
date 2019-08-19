@@ -53,8 +53,7 @@ class CmdInputHandler:
             password_confirm = getpass.getpass("Please enter it one more time:\n")
             if password == password_confirm:
                 return password
-            else:
-                LOGGER.debug("Sorry your passwords don't match.")
+            LOGGER.debug("Sorry your passwords don't match.")
 
     def retrieve_username(self):
         return input(self.username_input_message).lower()
@@ -190,8 +189,7 @@ class FakeInputHandler(CmdInputHandler):
         self.user_choice_count += 1
         if self.user_choice_count is 1:
             return 'register'
-        else:
-            return 'login'
+        return 'login'
 
     def retrieve_password(self):
         return "1234"
@@ -203,10 +201,9 @@ class FakeInputHandler(CmdInputHandler):
         self.action_count += 1
         if self.action_count is 1:
             return "new"
-        elif self.action_count is 2:
+        if self.action_count is 2:
             return "export"
-        else:
-            return "done"
+        return "done"
 
     def retrieve_sessions(self):
         return [Session("W12", "2", "4")]
