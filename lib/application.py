@@ -1,4 +1,3 @@
-import openpyxl
 from typing import Optional
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
@@ -6,7 +5,7 @@ from dateutil.parser import parse
 from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
 from lib.schedule import Schedule, ScheduleDataSource
-from lib.generator import ExcelSheetFormatter, ExcelSheetGenerator
+from lib.generator import ExcelSheetGenerator
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
 logger = Logger.get_logger(__name__)
@@ -139,30 +138,12 @@ class Application:
 
         monthly_meetings = self._input_handler.get_monthly_meetings()
 
-        extra_sessions_worked = self._input_handler.retrieve_extra_sessions()
+        extra_sessions = self._input_handler.retrieve_extra_sessions()
 
-        workbook = openpyxl.Workbook()
-
-        sheet = ExcelSheetFormatter().create_schedule(workbook)
-
-        sheet = ExcelSheetFormatter().format_schedule(sheet, self._active_user, month, year)
-
-        sheet = ExcelSheetFormatter().label_schedule(sheet)
-
-        # Writes users schedule to active sheet then saves workbook.
-        sheet = ExcelSheetGenerator().write_sessions(days_to_schedule, sheet, users_schedule,
-                                                     monthly_meetings, extra_sessions_worked)
-
-        try:
-            ExcelSheetGenerator().export_schedule(workbook, self._active_user)
-            logger.debug("Your Paysheet has been created and saved and should be available in a folder name 'paysheets'"
-                         " located inside the folder containing this program.")
-            logger.info(self._active_user.name + ' successfully generated a paysheet.')
-        except:
-            logger.debug("An error occurred when attempting to save your Paysheet. Make sure no spreadsheets are "
-                         "currently open. If they are close them, and then retry well paying careful attention to "
-                         "the on screen instructions.")
-            logger.info(self._active_user.name + ' encountered an error well generating a paysheet.')
+        generator = ExcelSheetGenerator()
+        sheet = generator.generate(self._active_user.name, month, year, users_schedule,
+                                   days_to_schedule, monthly_meetings, extra_sessions)
+        generator.export(sheet, self._active_user.name)
 
     def remove(self):
         sessions_to_remove = self._input_handler.retrieve_sessions()
