@@ -1,8 +1,8 @@
 import getpass
 from hashlib import sha256 as hash
 
-from lib.schedule import Session, ExtraSession
 from lib.logger import Logger
+from lib.schedule import Session, ExtraSession
 
 LOGGER = Logger.get_logger(__name__)
 
@@ -186,7 +186,6 @@ class CmdInputHandler:
 
 
 class FakeInputHandler(CmdInputHandler):
-
     user_choice_count = 0
 
     action_count = 0

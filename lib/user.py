@@ -1,6 +1,6 @@
 import pickle
-from pathlib import Path
 from hashlib import sha256 as hash
+from pathlib import Path
 
 import config
 from lib.logger import Logger

@@ -1,4 +1,5 @@
 import os
+
 from openpyxl import Workbook
 from openpyxl.styles import Font
 
@@ -9,7 +10,6 @@ LOGGER = Logger.get_logger(__name__)
 
 
 class ExcelSheetGenerator:
-
     weekdays_map = {
         0: "Monday",
         1: "Tuesday",
@@ -57,8 +57,8 @@ class ExcelSheetGenerator:
 
             weekday = self.weekdays_map[day.weekday()]
             [sheet, row_index, col_index] = self.write_day(user_schedule, row_index, col_index, day_and_month,
-                                                               sheet, col,
-                                                               day=weekday)
+                                                           sheet, col,
+                                                           day=weekday)
 
             if str(day.day) in monthly_meetings:
                 [sheet, row_index, col_index] = self._write_monthly_meeting(sheet, col, col_index, row_index,

@@ -1,11 +1,12 @@
 from typing import Optional
-from dateutil.rrule import rrule, DAILY
-from dateutil.parser import parse
 
+from dateutil.parser import parse
+from dateutil.rrule import rrule, DAILY
+
+from lib.generator import ExcelSheetGenerator
 from lib.input_handler import CmdInputHandler, FakeInputHandler
 from lib.logger import Logger
 from lib.schedule import Schedule, ScheduleDataSource
-from lib.generator import ExcelSheetGenerator
 from lib.user import User, UserAlreadyExistsException, UserDataSource, UserRegistrar, UserNotFoundException
 
 LOGGER = Logger.get_logger(__name__)
