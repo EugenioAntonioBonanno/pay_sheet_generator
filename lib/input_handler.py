@@ -43,7 +43,7 @@ class CmdInputHandler:
         user_choice_known = False
         while not user_choice_known:
             user_choice = input("Hello, please enter 'login' to login, or type 'register' to create an account:\n")
-            LOGGER.info("A user entered: " + user_choice)
+            LOGGER.info("A user entered: %s", user_choice)
             user_choice_known = user_choice in self.available_user_choices
         return user_choice
 
@@ -66,7 +66,7 @@ class CmdInputHandler:
             action_known = action in self.available_actions
             if not action_known:
                 LOGGER.debug("Sorry that wasn't one of the options, please try again.")
-                LOGGER.info("Could not proceed with option  " + action + " due to invalid input.")
+                LOGGER.info("Could not proceed with option  %s due to invalid input.", action)
         return action
 
     def retrieve_sessions(self):
@@ -84,7 +84,7 @@ class CmdInputHandler:
                     sessions.append(Session(session_list[0], session_list[1], session_list[2]))
                     LOGGER.debug("You have entered the following sessions:")
                     for session in sessions:
-                        LOGGER.debug(session.code + " day = " + session.day)
+                        LOGGER.debug("%s day = %s", session.code, session.day)
                 else:
                     LOGGER.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
             except:
@@ -121,10 +121,10 @@ class CmdInputHandler:
         while True:
             LOGGER.debug("Your current list of sessions you have subbed this month is as follows:")
             for session in extra_sessions:
-                LOGGER.debug(session.code + " ")
+                LOGGER.debug("%s ", session.code)
             LOGGER.debug("\n")
             extra_session = input("Enter a session to add to your subbed sessions, or \"done\" if you are finished:\n")
-            LOGGER.info(("Entered: " + extra_session))
+            LOGGER.info(("Entered: %s", extra_session))
             if extra_session.lower() == "done":
                 break
             else:
@@ -132,10 +132,9 @@ class CmdInputHandler:
                     extra_session_split = extra_session.split(" ")
                     extra_sessions.append(
                         ExtraSession(extra_session_split[0], extra_session_split[1], extra_session_split[2]))
-                    LOGGER.info("Added " + extra_session + " to their list of sessions they subbed.")
+                    LOGGER.info("Added %s to their list of sessions they subbed.", extra_session)
                 except:
-                    LOGGER.debug(
-                        "Sorry but you entered that session in incorrectly, it won\"t be added. Please try again")
+                    LOGGER.debug("Sorry, you entered that session in incorrectly, it won't be added. Please try again.")
 
         return extra_sessions
 
@@ -145,7 +144,7 @@ class CmdInputHandler:
                      "[ex \"12\"] for the 12th or enter \"done\". \n")
 
         while True:
-            LOGGER.debug("Your current missed days are as follows: " + str(missed_days))
+            LOGGER.debug("Your current missed days are as follows: %s", str(missed_days))
             missed_day = input("Enter a missed day as a number or \"done\" to move on. \n")
             if missed_day.lower() == "done":
                 break
@@ -172,7 +171,7 @@ class CmdInputHandler:
         while True:
             meeting = input("Did you have any meetings this month? If yes enter the days of the meeting as a number"
                             " [ex 5th = 5] \n or enter \"done\" to move on:\n")
-            LOGGER.debug("Current days with meetings are: " + str(meetings))
+            LOGGER.debug("Current days with meetings are: %s", str(meetings))
 
             if meeting.lower() == "done":
                 break
