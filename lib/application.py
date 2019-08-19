@@ -95,7 +95,8 @@ class Application:
 
         if day_to_see.lower() == 'done':
             return
-        elif day_to_see.lower() == 'all':
+
+        if day_to_see.lower() == 'all':
             users_schedule = self._schedule_ds.load_users_schedule(self._active_user)
             for weekday, sessions in users_schedule.week.items():
                 for session in sessions:
