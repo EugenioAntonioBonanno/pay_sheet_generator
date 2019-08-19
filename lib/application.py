@@ -1,3 +1,4 @@
+import calendar
 from typing import Optional
 
 from dateutil.parser import parse
@@ -122,11 +123,11 @@ class Application:
 
         days_to_skip = self._input_handler.retrieve_missed_days()
 
-        end = self._input_handler.find_month_length(month, year)
+        last_day_of_month = str(calendar.monthrange(int(year), int(month))[1])
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
-                                until=parse("2019" + month + end + "T090000")))
+                                until=parse("2019" + month + last_day_of_month + "T090000")))
 
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 

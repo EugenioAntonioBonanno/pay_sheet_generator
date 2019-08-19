@@ -151,18 +151,6 @@ class CmdInputHandler:
 
         return missed_days
 
-    def find_month_length(self, month, year):
-        if month in ["01", "1" "03", "3", "05", "5", "07", "7", "08", "8", "10"]:
-            length = "31"
-        elif month in ["04", "4", "06", "6", "09", "9", "11", "12"]:
-            length = "30"
-        else:
-            if int(year) % 4 == 0:
-                length = "29"
-            else:
-                length = "28"
-        return length
-
     def get_monthly_meetings(self):
         meetings = []
 
@@ -221,9 +209,6 @@ class FakeInputHandler(CmdInputHandler):
 
     def retrieve_missed_days(self):
         return [15]
-
-    def find_month_length(self, month, year):
-        return "31"
 
     def get_monthly_meetings(self):
         return "done"
