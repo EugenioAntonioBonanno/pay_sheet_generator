@@ -208,6 +208,8 @@ class FakeInputHandler(CmdInputHandler):
         self.action_count += 1
         if self.action_count is 1:
             return "new"
+        elif self.action_count is 2:
+            return "export"
         else:
             return "done"
 
@@ -220,4 +222,17 @@ class FakeInputHandler(CmdInputHandler):
     def retrieve_day_to_view(self):
         return "all"
 
+    def retrieve_month(self):
+        return "08"
 
+    def retrieve_extra_sessions(self):
+        return [ExtraSession("W99", "3", "13")]
+
+    def retrieve_missed_days(self):
+        return [15]
+
+    def find_month_length(self, month, year):
+        return "31"
+
+    def get_monthly_meetings(self):
+        return "done"
