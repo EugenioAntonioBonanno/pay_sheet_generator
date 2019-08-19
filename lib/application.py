@@ -112,11 +112,7 @@ class Application:
     def export(self):
         def make_skipped_days_filter(skipped_days):
             def sick_days_filter(day):
-                if day.day in skipped_days:
-                    return False
-                else:
-                    return True
-
+                return day.day not in skipped_days
             return sick_days_filter
 
         year = "2019"
