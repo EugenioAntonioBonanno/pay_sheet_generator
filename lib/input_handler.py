@@ -78,7 +78,7 @@ class CmdInputHandler:
                 return sessions
 
             session_args = session_info.split()
-            if len(session_args) is not 3:
+            if len(session_args) != 3:
                 LOGGER.debug("Sorry it seems the data you entered doesnt the required format. Please try again")
                 continue
 
@@ -127,7 +127,7 @@ class CmdInputHandler:
                 return extra_sessions
 
             session_args = extra_session.split()
-            if len(session_args) is not 3:
+            if len(session_args) != 3:
                 LOGGER.debug("Sorry, you entered that session in incorrectly, it won't be added. Please try again.")
                 continue
 
@@ -186,7 +186,7 @@ class FakeInputHandler(CmdInputHandler):
 
     def register_or_login(self):
         self.user_choice_count += 1
-        if self.user_choice_count is 1:
+        if self.user_choice_count == 1:
             return 'register'
         return 'login'
 
@@ -198,9 +198,9 @@ class FakeInputHandler(CmdInputHandler):
 
     def retrieve_action(self):
         self.action_count += 1
-        if self.action_count is 1:
+        if self.action_count == 1:
             return "new"
-        if self.action_count is 2:
+        if self.action_count == 2:
             return "export"
         return "done"
 
