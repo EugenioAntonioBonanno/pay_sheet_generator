@@ -93,7 +93,7 @@ class UserRegistrar:
     def register(self, name, password):
         user_exists = self.__user_ds.username_exists(name)
         if user_exists:
-            raise UserAlreadyExistsException("user %s already exists".format(name))
+            raise UserAlreadyExistsException("user %s already exists" % name)
 
         user = User(name, password)
         self.__user_ds.save_user(user)
@@ -103,7 +103,7 @@ class UserRegistrar:
         current_user = self.__user_ds.load_by_username(credentials["name"])
 
         if current_user is None:
-            raise UserNotFoundException("user %s not found".format(credentials["name"]))
+            raise UserNotFoundException("user %s not found" % credentials["name"])
 
         if not sha256hash(credentials["password"].encode("utf-8")).digest() == current_user.hashed_password:
             raise CredentialsMismatchException("passwords did not match")
