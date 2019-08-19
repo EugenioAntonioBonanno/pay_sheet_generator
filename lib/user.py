@@ -1,5 +1,5 @@
 import pickle
-from hashlib import sha256 as hash
+from hashlib import sha256 as sha256hash
 from pathlib import Path
 
 import config
@@ -108,7 +108,7 @@ class UserRegistrar:
         if current_user is None:
             raise UserNotFoundException("user %s not found".format(credentials["name"]))
 
-        if not hash(credentials["password"].encode("utf-8")).digest() == current_user.hashed_password:
+        if not sha256hash(credentials["password"].encode("utf-8")).digest() == current_user.hashed_password:
             raise CredentialsMismatchException("passwords did not match")
 
         return current_user
