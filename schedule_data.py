@@ -170,8 +170,6 @@ class ViewSchedule:
 class ScheduleDataException(Exception):
     pass
 
-
-
 class CmdInputHandler:
 
     __schedule_data_service: ScheduleDataService

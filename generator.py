@@ -93,7 +93,7 @@ while True:
                                   "create a copy of it: \n")
             logger.info(active_user + " has chosen the option: " + make_or_write)
             if make_or_write.lower() == "set":
-                sessions = CmdInputHandler().add_sessions(active_user)
+                sessions = CmdInputHandler(ScheduleDataService()).add_sessions(active_user)
                 week = ScheduleCreator(ScheduleDataService()).set_users_week(sessions)
                 users_schedule = ScheduleCreator(ScheduleDataService()).create_user_object(active_user, week)
                 ScheduleDataService().save_users_schedule(users_schedule, ScheduleDataService()
