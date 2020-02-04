@@ -147,8 +147,8 @@ while True:
         end = MonthSpecificData().find_month_length(month, year)
 
         # Creates a list of all the days in the month
-        date_range = list(rrule(DAILY, dtstart=parse("2019" + month + "01T090000"),
-                                until=parse("2019" + month + end + "T090000")))
+        date_range = list(rrule(DAILY, dtstart=parse(year + month + "01T090000"),
+                                until=parse(year + month + end + "T090000")))
 
         days_to_schedule = list(filter(make_skipped_days_filter(days_to_skip), date_range))
 
