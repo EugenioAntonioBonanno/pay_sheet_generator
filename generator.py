@@ -126,7 +126,7 @@ while True:
                 logger.debug("Sorry that wasn't one of the options, please try again.")
                 logger.info(active_user + " could not proceed with option  " + make_or_write + " due to invalid input.")
 
-        year = "2019"
+        year = "2020"
 
         while True:
             possible_months = ['01', '1', '2', '02', "3", '03', "4", '04', "5", '05', "6", '06', "7", '07', "8", '08',
