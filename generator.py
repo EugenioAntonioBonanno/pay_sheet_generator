@@ -144,7 +144,7 @@ while True:
 
         days_to_skip = MonthSpecificData().get_days_missed(active_user)
 
-        end = MonthSpecificData().find_month_length(month, year)
+        end = str(MonthSpecificData().find_month_length(month, year))
 
         # Creates a list of all the days in the month
         date_range = list(rrule(DAILY, dtstart=parse(year + month + "01T090000"),
