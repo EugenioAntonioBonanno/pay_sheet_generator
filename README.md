@@ -4,3 +4,7 @@ This is a Python command line program that is being used to help people working 
 The main idea is that the user has a fairly consistent schedule they can enter. The program will save this schedule and attach it
 to the users name. The user can login and then feed some information to the program about the current month, and any irregularites
 in their working time that month, and the program will export the schedule into an excel sheet.
+
+A very rough demo on how to use this
+
+https://www.youtube.com/watch?v=ooluu-jjMFE&t=12s
